@@ -48,42 +48,14 @@ export function getDbPool() {
     // Supabase only supports IPv6, so we need to ensure proper IPv6 handling
     let poolConfig;
     
-    try {
-      const url = new URL(connectionString);
-      
-      // Supabase only supports IPv6
-      // Use IPv6 address directly ONLY on Windows/local to avoid DNS resolution issues
-      // On Vercel (production), use hostname normally as Vercel network supports IPv6 well
-      const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-      const isWindows = process.platform === 'win32';
-      
-      let host = url.hostname;
-      
-      // Only replace with IPv6 address on Windows/local, not on Vercel
-      if (host.includes('supabase.co') && !isVercel && isWindows) {
-        const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
-        host = SUPABASE_IPV6;
-        console.log('[DB] Using IPv6 address directly for Supabase (bypassing DNS on Windows)');
-      } else if (host.includes('supabase.co')) {
-        console.log('[DB] Using hostname for Supabase (Vercel/cloud environment)');
-      }
-      
-      poolConfig = {
-        user: decodeURIComponent(url.username),
-        password: decodeURIComponent(url.password),
-        host: host,
-        port: parseInt(url.port) || 5432,
-        database: url.pathname.slice(1), // Remove leading /
-        ssl: { rejectUnauthorized: false },
-        max: 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 20000, // Increased for IPv6 connection latency
-      };
-      console.log('[DB] ✅ Parsed connection string to config object');
-      console.log('[DB] Host:', poolConfig.host, 'Port:', poolConfig.port);
-    } catch (error) {
-      // Fallback to connectionString
-      console.warn('[DB] Could not parse as URL, using connectionString:', error.message);
+    const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+    const isWindows = process.platform === 'win32';
+    
+    // On Vercel, use connectionString directly to avoid DNS resolution issues
+    // On Windows/local, parse URL and use IPv6 address if needed
+    if (isVercel) {
+      // Use connectionString directly on Vercel - let pg library handle DNS resolution
+      console.log('[DB] Using connectionString directly on Vercel');
       poolConfig = {
         connectionString,
         ssl: { rejectUnauthorized: false },
@@ -91,6 +63,43 @@ export function getDbPool() {
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 20000
       };
+    } else {
+      // On Windows/local, parse URL and potentially use IPv6 address
+      try {
+        const url = new URL(connectionString);
+        let host = url.hostname;
+        
+        // Use IPv6 address directly on Windows to avoid DNS resolution issues
+        if (host.includes('supabase.co') && isWindows) {
+          const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
+          host = SUPABASE_IPV6;
+          console.log('[DB] Using IPv6 address directly for Supabase (bypassing DNS on Windows)');
+        }
+        
+        poolConfig = {
+          user: decodeURIComponent(url.username),
+          password: decodeURIComponent(url.password),
+          host: host,
+          port: parseInt(url.port) || 5432,
+          database: url.pathname.slice(1), // Remove leading /
+          ssl: { rejectUnauthorized: false },
+          max: 10,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 20000, // Increased for IPv6 connection latency
+        };
+        console.log('[DB] ✅ Parsed connection string to config object');
+        console.log('[DB] Host:', poolConfig.host, 'Port:', poolConfig.port);
+      } catch (error) {
+        // Fallback to connectionString
+        console.warn('[DB] Could not parse as URL, using connectionString:', error.message);
+        poolConfig = {
+          connectionString,
+          ssl: { rejectUnauthorized: false },
+          max: 10,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 20000
+        };
+      }
     }
 
     pool = new Pool(poolConfig);
