@@ -1,0 +1,547 @@
+/**
+ * EVENT POPUP STYLES
+ *
+ * *** PHIÊN BẢN CẬP NHẬT (SỬA LỖI UI) ***
+ * - Sửa lỗi: Vị trí nút AI Tiêu đề (Yêu cầu 3)
+ * - Sửa lỗi: Vị trí nút AI Mô tả (Yêu cầu 4)
+ * - Thêm: Style .ai-loading cho nút
+ */
+
+/* === OVERLAY === */
+.ai-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-overlay-dark, rgba(0, 0, 0, 0.6));
+  backdrop-filter: blur(4px);
+  z-index: var(--z-action-popup, 10000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Đảm bảo d-none hoạt động trong Shadow DOM */
+.ai-popup-overlay.d-none {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* === POPUP CONTAINER === */
+.ai-popup-container {
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-xl, 16px);
+  box-shadow: var(--shadow-lg, 0 24px 48px rgba(0, 0, 0, 0.25));
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === HEADER === */
+.ai-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg, 24px) var(--spacing-lg, 24px) var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.ai-popup-title {
+  margin: 0;
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--text-primary, #202124);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+}
+
+.ai-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-popup-action-btn {
+  background: none;
+  border: none;
+  font-size: var(--font-2xl);
+  color: var(--text-secondary, #5f6368);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.ai-popup-action-btn:hover {
+  background: var(--bg-hover, #f1f3f4);
+  color: var(--text-primary, #202124);
+}
+
+.ai-popup-close-btn {
+  font-size: var(--font-2xl);
+}
+
+.ai-popup-add-btn {
+  font-size: var(--font-2xl-lg); 
+  background: var(--color-primary-alpha, rgba(248, 106, 1, 0.1));
+  color: var(--color-primary, #f86a01);
+}
+.ai-popup-add-btn:hover {
+  background: var(--bg-hover, #d2e3fc);
+  color: var(--color-primary-dark, #d45a01);
+}
+.ai-popup-add-btn svg {
+  fill: currentColor;
+}
+
+
+/* === BODY === */
+.ai-popup-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 300px;
+}
+
+/* === LOADING STATE === */
+.ai-popup-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.ai-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color, #e0e0e0);
+  border-top-color: var(--color-primary, #f86a01);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-loading-text {
+  margin: var(--spacing-lg, 24px) 0 var(--spacing-sm, 8px);
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--text-primary, #202124);
+}
+
+.ai-loading-subtext {
+  margin: 0;
+  font-size: var(--font-base);
+  color: var(--text-secondary, #5f6368);
+}
+
+/* === ERROR STATE === */
+.ai-popup-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+.ai-error-icon { font-size: var(--font-5xl); margin-bottom: 16px; }
+.ai-error-title { margin: 0 0 var(--spacing-sm, 8px); font-size: var(--font-xl-md); font-weight: 600; color: var(--color-error, #d93025); }
+.ai-error-message { margin: 0 0 var(--spacing-lg, 24px); font-size: var(--font-base); color: var(--text-secondary, #5f6368); max-width: 400px; }
+.ai-retry-btn { padding: 10px var(--spacing-lg, 24px); background: var(--color-primary, #f86a01); color: var(--color-text-on-primary, white); border: none; border-radius: var(--radius-md, 8px); font-size: var(--font-base); font-weight: 500; cursor: pointer; transition: background var(--transition-fast, 0.2s); }
+.ai-retry-btn:hover { background: var(--color-primary-dark, #d45a01); }
+
+/* === EMPTY STATE === */
+.ai-popup-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+.ai-empty-icon { font-size: var(--font-5xl); margin-bottom: 16px; }
+.ai-empty-title { margin: 0 0 var(--spacing-sm, 8px); font-size: var(--font-xl-md); font-weight: 600; color: var(--text-primary, #202124); }
+.ai-empty-message { margin: 0; font-size: var(--font-base); color: var(--text-secondary, #5f6368); max-width: 400px; line-height: var(--leading-normal, 1.5); }
+
+/* === INFO BANNER === */
+.ai-info-banner { background: var(--bg-info, #e8f0fe); border: 1px solid var(--border-color, #d2e3fc); border-radius: var(--radius-md, 8px); padding: var(--spacing-md-sm, 12px) var(--spacing-md, 16px); margin-bottom: var(--spacing-lg, 24px); display: flex; align-items: center; gap: var(--spacing-md-sm, 12px); }
+.ai-info-icon { font-size: var(--font-xl); flex-shrink: 0; }
+.ai-info-text { font-size: var(--font-base); color: var(--color-info, #1967d2); line-height: var(--leading-normal, 1.5); }
+
+/* === SUGGESTIONS CONTAINER === */
+.ai-suggestions-container { display: flex; flex-direction: column; gap: 16px; }
+
+/* === SUGGESTION CARD === */
+.ai-suggestion-card { display: flex; gap: var(--spacing-md-sm, 12px); padding: 20px; background: var(--bg-secondary, #f8f9fa); border: 2px solid var(--border-color, #e0e0e0); border-radius: var(--radius-lg, 12px); transition: all var(--transition-fast, 0.2s); }
+.ai-suggestion-card:hover { background: var(--bg-primary, #ffffff); border-color: var(--color-primary, #f86a01); box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.1)); }
+.ai-suggestion-card.ai-unchecked { opacity: 0.5; background: var(--bg-disabled, #fafafa); }
+
+/* === CHECKBOX === */
+.ai-card-checkbox { flex-shrink: 0; padding-top: 4px; }
+.ai-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--color-primary, #0066FF); }
+
+/* === CARD CONTENT === */
+.ai-card-content { flex: 1; min-width: 0; }
+
+/* === CARD HEADER (Hiển thị) === */
+.ai-card-header { 
+  display: flex; 
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px; 
+}
+.ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.ai-card-type-badge { padding: var(--spacing-xs, 4px) var(--spacing-md-sm, 12px); background: var(--color-primary); color: var(--color-text-on-primary, white); border-radius: var(--radius-lg, 12px); font-size: var(--font-sm); font-weight: 600; text-transform: uppercase; flex-shrink: 0; }
+.ai-card-type-badge.task-badge { background: var(--color-warning); }
+.ai-card-title { margin: 0; font-size: var(--font-lg); font-weight: 600; color: var(--text-primary, #202124); line-height: 1.4; word-break: break-word; }
+
+/* === CARD DETAILS (Hiển thị) === */
+.ai-card-details { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.ai-card-detail-row { display: flex; align-items: flex-start; gap: 8px; font-size: var(--font-base); }
+.ai-detail-icon { font-size: var(--font-lg); flex-shrink: 0; margin-top: 2px; }
+.ai-detail-text { color: var(--text-secondary, #5f6368); line-height: var(--leading-normal, 1.5); word-break: break-word; }
+.ai-card-time { display: flex; align-items: center; gap: 6px; }
+.ai-card-time-warning { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex-shrink: 0; cursor: help; position: relative; margin-left: 4px; }
+.ai-card-time-warning img { width: 18px; height: 18px; display: block; }
+.ai-card-time-warning::after { content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px); background: var(--color-tooltip-bg, rgba(32, 33, 36, 0.95)); color: var(--color-text-on-tooltip, white); padding: var(--spacing-sm, 6px) var(--spacing-md-sm, 12px); border-radius: var(--radius-sm, 6px); font-size: var(--font-sm, 12px); font-weight: 500; white-space: nowrap; opacity: 0; pointer-events: none; transition: all var(--transition-fast, 0.2s) ease; box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.2)); z-index: 1000; }
+.ai-card-time-warning:hover::after { opacity: 1; transform: translateX(-50%) translateY(-12px); }
+
+/* === DESCRIPTION (HTML) (Hiển thị) === */
+.ai-card-description { line-height: var(--leading-relaxed, 1.7); color: var(--text-primary, #3c4043); font-size: var(--font-base); background: var(--bg-primary, #ffffff); border: 1px solid var(--border-color, #e0e0e0); padding: var(--spacing-md, 16px); border-radius: var(--radius-md, 8px); margin-top: var(--spacing-xs, 4px); box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05)); }
+.ai-card-description strong, .ai-card-description b { font-weight: 600; color: var(--text-primary, #202124); }
+.ai-card-description em, .ai-card-description i { font-style: italic; color: var(--text-secondary, #5f6368); }
+.ai-card-description u { text-decoration: underline; text-decoration-color: var(--color-primary, #0066FF); text-underline-offset: 2px; }
+.ai-card-description a { color: var(--color-primary, #0066FF); text-decoration: none; transition: all var(--transition-fast, 0.2s); border-bottom: 1px solid transparent; }
+.ai-card-description a:hover { border-bottom-color: var(--color-primary, #0066FF); }
+.ai-card-description h1, .ai-card-description h2, .ai-card-description h3, .ai-card-description h4, .ai-card-description h5, .ai-card-description h6 { margin: var(--spacing-md-sm, 12px) 0 var(--spacing-sm, 8px) 0; font-weight: 600; color: var(--text-primary, #202124); line-height: var(--leading-snug, 1.3); }
+.ai-card-description h1 { font-size: var(--font-xl-md); } .ai-card-description h2 { font-size: var(--font-lg); } .ai-card-description h3 { font-size: var(--font-base-md); } .ai-card-description h4, .ai-card-description h5, .ai-card-description h6 { font-size: var(--font-base); }
+.ai-card-description p { margin: var(--spacing-sm, 8px) 0; line-height: var(--leading-relaxed, 1.7); }
+.ai-card-description p:first-child { margin-top: 0; } .ai-card-description p:last-child { margin-bottom: 0; }
+.ai-card-description ul, .ai-card-description ol { margin: var(--spacing-sm, 8px) 0; padding-left: var(--spacing-lg, 24px); }
+.ai-card-description ul { list-style-type: disc; } .ai-card-description ol { list-style-type: decimal; }
+.ai-card-description li { margin: var(--spacing-xs, 4px) 0; line-height: var(--leading-normal, 1.6); color: var(--text-primary, #3c4043); }
+.ai-card-description li::marker { color: var(--color-primary, #0066FF); font-weight: 600; }
+.ai-card-description ul ul, .ai-card-description ol ol, .ai-card-description ul ol, .ai-card-description ol ul { margin: var(--spacing-xs, 4px) 0; }
+.ai-card-description ul ul { list-style-type: circle; } .ai-card-description ul ul ul { list-style-type: square; }
+.ai-card-description blockquote { margin: var(--spacing-md-sm, 12px) 0; padding: var(--spacing-md-sm, 12px) var(--spacing-md, 16px); border-left: 4px solid var(--color-primary, #0066FF); background: var(--bg-secondary, #f8f9fa); border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0; font-style: italic; color: var(--text-secondary, #5f6368); }
+.ai-card-description code { background: var(--bg-code, #f1f3f4); padding: 2px var(--spacing-sm, 6px); border-radius: var(--radius-xs, 4px); font-family: var(--font-family-mono); font-size: var(--font-sm-md); color: var(--color-error, #d93025); }
+.ai-card-description pre { background: var(--bg-secondary, #f8f9fa); border: 1px solid var(--border-color, #e0e0e0); border-radius: var(--radius-md, 8px); padding: var(--spacing-md-sm, 12px); margin: var(--spacing-md-sm, 12px) 0; overflow-x: auto; }
+.ai-card-description pre code { background: none; padding: 0; color: var(--text-primary, #202124); font-size: var(--font-sm-md); }
+.ai-card-description hr { border: none; border-top: 1px solid var(--border-color, #e0e0e0); margin: var(--spacing-md, 16px) 0; }
+.ai-card-description table { width: 100%; border-collapse: collapse; margin: var(--spacing-md-sm, 12px) 0; }
+.ai-card-description th, .ai-card-description td { padding: var(--spacing-sm, 8px) var(--spacing-md-sm, 12px); border: 1px solid var(--border-color, #e0e0e0); text-align: left; }
+.ai-card-description th { background: var(--bg-secondary, #f8f9fa); font-weight: 600; color: var(--text-primary, #202124); }
+.ai-card-description tr:hover { background: var(--bg-secondary, #f8f9fa); }
+.ai-card-description mark { background: var(--bg-highlight, #fff59d); padding: 2px var(--spacing-xs, 4px); border-radius: 2px; }
+.ai-card-description s, .ai-card-description strike, .ai-card-description del { text-decoration: line-through; color: var(--text-placeholder, #9e9e9e); }
+.ai-card-description sub, .ai-card-description sup { font-size: var(--font-sm); line-height: 0; }
+
+/* === CONFIDENCE (Hiển thị) === */
+.ai-card-confidence { display: flex; align-items: center; gap: var(--spacing-sm, 8px); font-size: var(--font-sm-md); flex: 1; margin-bottom: var(--spacing-md-sm, 12px); }
+.ai-confidence-label { color: var(--text-secondary, #5f6368); font-weight: 500; }
+.ai-confidence-value { font-weight: 600; color: var(--text-primary, #202124); }
+.ai-confidence-bar { flex: 1; height: 6px; background: var(--border-color, #e0e0e0); border-radius: 3px; overflow: hidden; max-width: 120px; }
+.ai-confidence-bar-fill { height: 100%; background: var(--color-primary); transition: width var(--transition-normal, 0.3s) ease; }
+
+/* === LANGUAGE TOGGLE (Hiển thị) === */
+.ai-card-lang-toggle { display: flex; align-items: center; background: var(--bg-hover, #e8eaf6); border-radius: var(--radius-xl, 16px); padding: 2px; flex-shrink: 0; }
+.ai-lang-btn { background: transparent; border: none; border-radius: 14px; padding: var(--spacing-xs, 4px) var(--spacing-md-sm, 12px); font-size: var(--font-sm); font-weight: 600; color: var(--text-secondary, #5f6368); cursor: pointer; transition: all var(--transition-fast, 0.2s) ease; }
+.ai-lang-btn.active { background: var(--bg-primary, #ffffff); color: var(--color-primary, #0066FF); box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1)); }
+
+/* === SOURCE TEXT (Hiển thị) === */
+.ai-card-source { margin-top: var(--spacing-md-sm, 12px); }
+.ai-source-toggle { background: none; border: none; padding: var(--spacing-sm, 6px) var(--spacing-sm, 8px); color: var(--color-primary, #0066FF); font-size: var(--font-sm-md); cursor: pointer; display: flex; align-items: center; gap: var(--spacing-sm, 6px); border-radius: var(--radius-xs, 4px); transition: background var(--transition-fast, 0.2s); }
+.ai-source-toggle:hover { background: var(--color-primary-alpha, rgba(248, 106, 1, 0.1)); }
+.ai-source-icon { font-size: var(--font-base); }
+.ai-source-text { margin-top: var(--spacing-sm, 8px); padding: var(--spacing-md-sm, 12px); background: var(--bg-primary, #ffffff); border: 1px solid var(--border-color, #e0e0e0); border-radius: var(--radius-md, 8px); font-size: var(--font-sm-md); color: var(--text-secondary, #5f6368); font-style: italic; line-height: var(--leading-normal, 1.6); }
+
+/* === CARD ACTIONS (Hiển thị) === */
+.ai-card-actions { display: flex; flex-direction: row; align-items: center;  gap: var(--spacing-sm, 8px); flex-shrink: 0; }
+.ai-card-action-btn { background: none; border: none; cursor: pointer; transition: all var(--transition-fast, 0.2s); }
+.ai-card-action-btn.ai-edit-btn { background: var(--bg-hover, #f1f3f4); border-radius: 14px; padding: var(--spacing-xs, 4px) var(--spacing-md-sm, 12px); font-size: var(--font-sm); font-weight: 600; color: var(--text-secondary, #5f6368); line-height: var(--leading-normal, 1.6); height: 29px; box-sizing: border-box; }
+.ai-card-action-btn.ai-edit-btn:hover { background: var(--bg-icon-hover, #e8eaf6); color: var(--color-primary, #0066FF); }
+
+/* === FOOTER === */
+.ai-popup-footer { display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-md, 16px) var(--spacing-lg, 24px); border-top: 1px solid var(--border-color, #e0e0e0); background: var(--bg-secondary, #fafafa); border-radius: 0 0 var(--radius-xl, 16px) var(--radius-xl, 16px); }
+.ai-popup-stats { font-size: var(--font-base); color: var(--text-secondary, #5f6368); font-weight: 500; }
+.ai-popup-actions { display: flex; gap: 12px; }
+
+/* === BUTTONS === */
+.ai-btn { padding: 10px 24px; border: none; border-radius: 8px; font-size: var(--font-base); font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.ai-btn-primary { background: var(--color-primary, #0066FF); color: var(--color-text-on-primary, white); }
+.ai-btn-primary:hover:not(:disabled) { background: var(--color-primary-dark, #d45a01); box-shadow: var(--shadow-sm, 0 2px 8px rgba(248, 106, 1, 0.3)); }
+.ai-btn-primary:disabled { background: var(--bg-disabled, #e0e0e0); color: var(--text-placeholder, #9e9e9e); cursor: not-allowed; }
+.ai-btn-secondary { background: var(--bg-primary, #ffffff); color: var(--text-secondary, #5f6368); border: 1px solid var(--border-color, #dadce0); }
+.ai-btn-secondary:hover { background: var(--bg-hover, #f8f9fa); border-color: var(--text-secondary, #5f6368); }
+
+/* ===
+ * CẬP NHẬT: INLINE EDIT STYLES
+ === */
+.ai-card-edit-form {
+  display: none;
+  flex-direction: column;
+  gap: 12px; 
+}
+
+.ai-event-field-group,
+.ai-task-field-group {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-card-edit-form label {
+  font-size: var(--font-sm-md);
+  font-weight: 600;
+  color: var(--text-primary, #3c4043);
+  margin-bottom: -6px; 
+}
+.ai-card-edit-form .ai-edit-field {
+  width: 100%;
+  padding: var(--spacing-sm, 8px) 10px;
+  border: 1px solid var(--border-color, #dadce0);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--font-base);
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast, 0.2s);
+  background: var(--bg-primary, #fff);
+}
+.ai-card-edit-form .ai-edit-field:focus {
+  border-color: var(--color-primary, #0066FF);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--color-primary, #0066FF);
+}
+.ai-card-edit-form .ai-edit-attendees {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.ai-form-row {
+  display: flex;
+  gap: 12px;
+}
+.ai-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.ai-form-col label {
+  margin-bottom: 0; 
+}
+
+.ai-rich-text-editor {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--spacing-sm, 8px) 10px;
+  border: 1px solid var(--border-color, #dadce0);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--font-base);
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast, 0.2s);
+  background: var(--bg-primary, #ffffff);
+  line-height: var(--leading-relaxed, 1.7);
+  color: var(--text-primary, #3c4043);
+}
+.ai-rich-text-editor:focus {
+  border-color: var(--color-primary, #0066FF);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--color-primary, #0066FF);
+}
+.ai-rich-text-editor p { margin: 8px 0; line-height: 1.7; }
+.ai-rich-text-editor p:first-child { margin-top: 0; }
+.ai-rich-text-editor p:last-child { margin-bottom: 0; }
+.ai-rich-text-editor ul, .ai-rich-text-editor ol { margin: 8px 0; padding-left: 24px; }
+
+
+/* === EMAIL LINK STYLE === */
+.ai-card-emaillink-row .ai-email-link {
+  text-decoration: none;
+  color: var(--color-primary, #0066FF);
+  transition: color var(--transition-normal);
+}
+
+.ai-card-emaillink-row .ai-email-link:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark, #d45a01);
+}
+
+/* === SỬA LỖI (Yêu cầu 3 & 4): AI REWRITE WRAPPER === */
+.ai-rewrite-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Yêu cầu 3: Style cho wrapper của input[type=text] (Tiêu đề) */
+.ai-rewrite-wrapper:has(.ai-edit-title) .ai-edit-title {
+  /* Thêm padding bên phải để icon không đè lên chữ */
+  padding-right: 72px; /* 2 nút * 28px + gap + lề */
+}
+.ai-rewrite-wrapper:has(.ai-edit-title) .ai-rewrite-actions {
+  position: absolute;
+  top: 50%; /* Căn giữa theo chiều dọc */
+  transform: translateY(-50%);
+  right: 6px; /* Khoảng cách lề */
+  display: flex;
+  gap: 4px;
+}
+
+/* Yêu cầu 4: Style cho wrapper của contenteditable (Mô tả) */
+.ai-rewrite-wrapper:has(.ai-rich-text-editor) .ai-rich-text-editor {
+  /* Thêm padding để nút không đè lên text */
+  padding-right: 40px; 
+  padding-bottom: 40px; 
+}
+.ai-rewrite-wrapper:has(.ai-rich-text-editor) .ai-rewrite-actions {
+  position: absolute;
+  /* Sửa: bottom thay vì top */
+  bottom: 8px; 
+  right: 8px; 
+  display: flex;
+  flex-direction: row; /* Xếp ngang */
+  gap: 4px;
+  background: var(--bg-overlay-light, rgba(255, 255, 255, 0.8));
+  backdrop-filter: blur(2px);
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--spacing-xs, 4px);
+  z-index: 10;
+}
+
+/* Style cho các nút icon AI */
+.ai-btn.ai-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: var(--font-lg);
+  background: var(--bg-hover, #f1f3f4);
+  color: var(--text-secondary, #5f6368);
+  border: 1px solid var(--border-color, #e0e0e0);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.1));
+  transition: all var(--transition-fast, 0.2s);
+}
+.ai-btn.ai-btn-icon:hover {
+  background: var(--bg-icon-hover, #e8eaf6);
+  color: var(--color-primary, #0066FF);
+}
+.ai-btn.ai-btn-icon[disabled] {
+  background: var(--bg-hover, #f1f3f4);
+  color: var(--text-placeholder, #9e9e9e);
+  opacity: 0.7;
+}
+/* Thêm style loading (quay) */
+.ai-btn.ai-btn-icon.ai-loading svg {
+    animation: spin 1s linear infinite;
+}
+
+.ai-btn.ai-btn-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+
+/* GOOGLE MEET CHECKBOX */
+.ai-meet-checkbox-wrapper {
+  display: none; 
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  padding: var(--spacing-sm, 8px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: var(--radius-md, 8px);
+  margin-top: var(--spacing-xs, 4px);
+}
+.ai-meet-checkbox-wrapper input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary, #0066FF);
+}
+.ai-meet-checkbox-wrapper label {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text-primary, #3c4043);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  cursor: pointer;
+}
+.ai-meet-checkbox-wrapper label img {
+  width: 16px;
+  height: 16px;
+}
+
+
+/* Nút Hủy / Lưu trong form Edit */
+.ai-card-edit-form .ai-edit-actions {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm, 8px);
+}
+.ai-card-edit-form .ai-edit-actions .ai-btn {
+  padding: var(--spacing-sm, 6px) var(--spacing-md, 16px);
+  font-size: var(--font-sm-md);
+}
+
+/* Logic bật/tắt của Inline Edit */
+.ai-suggestion-card.ai-is-editing .ai-card-display-content {
+  display: none;
+}
+.ai-suggestion-card.ai-is-editing .ai-card-edit-form {
+  display: flex;
+}
+.ai-suggestion-card.ai-is-editing .ai-card-actions {
+  display: none; 
+}
+.ai-suggestion-card.ai-is-editing .ai-card-checkbox {
+  visibility: hidden; 
+}
+
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .ai-popup-container { width: 95%; max-height: 95vh; }
+  .ai-popup-header, .ai-popup-body, .ai-popup-footer { padding: var(--spacing-md, 16px); }
+  .ai-suggestion-card { flex-direction: column; }
+  .ai-form-row { flex-direction: column; }
+}
+
+/* === ANIMATIONS === */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.ai-creating { animation: pulse 1.5s ease-in-out infinite; }

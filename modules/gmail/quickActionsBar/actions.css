@@ -1,0 +1,189 @@
+/* ========================================
+   Gmail Quick Actions Bar
+   Design System compliant styles
+   ======================================== */
+
+/* Container chung cho các nút */
+.ai-custom-actions-container {
+  display: inline-flex; 
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-right: var(--spacing-md); 
+  float: left;
+}
+
+/* Class nút */
+.ai-gradient-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs, 4px); 
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full, 20px); 
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  font-size: var(--font-sm, 13px); 
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap; 
+}
+
+.ai-gradient-button:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.ai-gradient-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--bg-disabled);
+  color: var(--text-placeholder);
+}
+
+.ai-gradient-button img.icon {
+  width: 14px;
+  height: 14px;
+  opacity: 1;
+  filter: none;
+  vertical-align: middle;
+}
+
+.ai-gradient-button:hover img.icon {
+  filter: none;
+  opacity: 1;
+}
+
+/* CSS cho nút đã dịch (màu xám) */
+.ai-button-translated {
+  background: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.ai-button-translated:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* CSS CHO KẾT QUẢ DỊCH SONG NGỮ */
+/* CSS cho khối dịch (dùng cho logic email "phẳng") */
+.ai-translation-result-block {
+  font-style: italic;
+  color: var(--color-link);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  line-height: var(--leading-relaxed);
+  user-select: text;
+}
+
+/* CSS cho dịch song ngữ (dùng cho logic email "có cấu trúc") */
+.ai-translation-result {
+  font-style: italic;
+  color: var(--color-link);
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin-top: var(--spacing-xxs, 2px); 
+  margin-bottom: var(--spacing-sm); 
+  line-height: var(--leading-relaxed);
+  user-select: text; 
+  display: block; 
+}
+
+/* CSS cho dropdown HÀNH ĐỘNG NHANH */
+.quick-actions-wrapper {
+  position: relative; 
+  display: inline-block;
+}
+
+.quick-actions-dropdown {
+  display: none; 
+  position: absolute;
+  top: 100%; 
+  left: 0; 
+  margin-top: var(--spacing-xs);
+  width: 220px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 999999;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.quick-actions-wrapper.open .quick-actions-dropdown {
+  display: block;
+}
+
+.quick-actions-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast);
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quick-actions-option:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.quick-actions-option:hover {
+  background-color: var(--bg-hover);
+}
+
+.quick-actions-option:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--bg-disabled);
+  color: var(--text-placeholder);
+}
+
+.quick-actions-option svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Thanh hành động nhanh */
+.quick-actions-bar {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  margin: var(--spacing-md) 0;
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.quick-actions-button {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.quick-actions-button:hover {
+  background-color: var(--bg-hover);
+  box-shadow: var(--shadow-sm);
+}

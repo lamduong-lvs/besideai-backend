@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant</title>
+    <!-- Design System -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/variables.css">
+    <link rel="stylesheet" href="../../styles/theme-light.css">
+    <link rel="stylesheet" href="../../styles/theme-dark.css">
+    <link rel="stylesheet" href="../../styles/components.css">
+    <link rel="stylesheet" href="../../styles/icons.css">
+    <link rel="stylesheet" href="../../styles/tooltip-system.css">
+    <link rel="stylesheet" href="menu-toolbar.css">
+</head>
+<body>
+    <div class="popup-container">
+        <div class="popup-header">
+            <div id="header-logged-out" class="header-content">
+                <button id="login-with-google-btn" class="google-login-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    <span data-i18n="loginButton">Đăng nhập với Google</span>
+                </button>
+            </div>
+            <div id="header-logged-in" class="header-content hidden">
+                <img id="user-info-avatar" src="" alt="Avatar" class="user-avatar">
+                <div class="user-info-text">
+                    <div id="user-info-name" class="user-name"></div>
+                    <div id="user-info-email" class="user-email"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup-tabs hidden">
+            <button class="tab-btn" data-panel="record-panel">
+                <img src="../../icons/svg/icon/Video, Audio, Sound/Camera.svg" alt="Record" class="icon">
+                <span data-i18n="tabRecord">Ghi Hình</span>
+            </button>
+            <button class="tab-btn" data-panel="capture-panel">
+                <img src="../../icons/svg/icon/Electronic, Devices/Monitor.svg" alt="Capture" class="icon">
+                <span data-i18n="tabCapture">Chụp Hình</span>
+            </button>
+        </div>
+
+        <div class="popup-content">
+            <div id="main-menu-panel" class="tab-panel">
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <div class="menu-label">
+                            <img class="icon" src="../../icons/svg/icon/Weather/Moon.svg" alt="Theme">
+                            <span data-i18n="settings_interface_theme">Chế độ hiển thị</span>
+                        </div>
+                        <div class="theme-toggle-group">
+                            <div class="theme-toggle-slider" id="toolbar-theme-toggle-slider"></div>
+                            <button class="theme-toggle-btn" data-theme="light" aria-label="Sáng" data-tooltip="settings_theme_light">
+                                <img src="../../icons/svg/icon-theme-light.svg" alt="Sáng" class="theme-icon">
+                            </button>
+                            <button class="theme-toggle-btn" data-theme="dark" aria-label="Tối" data-tooltip="settings_theme_dark">
+                                <img src="../../icons/svg/icon-theme-dark.svg" alt="Tối" class="theme-icon">
+                            </button>
+                            <button class="theme-toggle-btn" data-theme="auto" aria-label="Tự động" data-tooltip="settings_theme_auto">
+                                <img src="../../icons/svg/icon-theme-auto.svg" alt="Tự động" class="theme-icon">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                <div class="menu-label">
+                    <img id="lang-selector-flag-icon" class="icon" src="../../icons/svg/icon/Network, IT, Programming/Translation.svg" alt="Language">
+                    <span data-i18n="menuLanguage">Language</span>
+                </div>
+                
+                <div class="custom-select-wrapper" id="language-selector-wrapper">
+                    <div class="custom-select-trigger" id="language-selector-trigger">
+                        <span id="language-selected-value" class="selected-value"></span>
+                        <svg class="icon chevron-right" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <ul class="custom-select-menu" id="language-selector-menu" data-setting="language">
+                        </ul>
+                </div>
+            </div>
+                    <button id="settings-btn" class="menu-item">
+                        <div class="menu-label">
+                            <img class="icon" src="../../icons/svg/icon/Settings, Fine Tuning/Settings.svg" alt="Settings">
+                            <span data-i18n="menuSettings">Settings</span>
+                        </div>
+                        <svg class="icon chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                    <button id="google-account-btn" class="menu-item">
+                        <div class="menu-label">
+                            <img class="icon" src="../../icons/svg/icon/Users/User.svg" alt="Account">
+                            <span data-i18n="menuAccount">Account</span>
+                        </div>
+                        <svg class="icon chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                    <button id="logout-btn" class="menu-item danger">
+                        <div class="menu-label">
+                            <img class="icon" src="../../icons/svg/icon/Arrows Action/Logout.svg" alt="Logout">
+                            <span data-i18n="menuLogout">Logout</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="record-panel" class="tab-panel">
+                <div class="popup-body">
+                    <div class="setting-group">
+                        <div class="setting-label" data-i18n="recordSource">Chọn nguồn quay</div>
+                        <div class="source-selector">
+                            <button class="source-btn active" id="desktopBtn" data-source="desktop" data-tooltip="tooltips.toolbar.recordSourceDesktop">
+                                <span class="icon icon-source-desktop" aria-hidden="true"></span>
+                                <span class="btn-label" data-i18n="recordSourceDesktopLabel">Màn hình</span>
+                            </button>
+                            <button class="source-btn" id="cameraOnlyBtn" data-source="camera_only" data-tooltip="tooltips.toolbar.recordSourceCamera">
+                                <span class="icon icon-source-camera" aria-hidden="true"></span>
+                                <span class="btn-label" data-i18n="recordSourceCameraLabel">Chỉ Camera</span>
+                            </button>
+                            <button class="source-btn" id="tabBtn" data-source="this_tab" data-tooltip="tooltips.toolbar.recordSourceTab">
+                                <span class="icon icon-source-tab" aria-hidden="true"></span>
+                                <span class="btn-label" data-i18n="recordSourceTabLabel">Tab này</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <div class="setting-label" data-i18n="recordOptions">Tùy chọn ghi hình</div>
+                        <div class="settings-row">
+                            <button class="setting-btn" id="micBtn" data-setting="mic" data-tooltip="tooltips.toolbar.recordMic">
+                                <span class="icon icon-mic" aria-hidden="true"></span>
+                            </button>
+                            <button class="setting-btn" id="systemAudioBtn" data-setting="systemAudio" data-tooltip="tooltips.toolbar.recordSystemAudio">
+                                <span class="icon icon-volume" aria-hidden="true"></span>
+                            </button>
+                            <button class="setting-btn" id="cameraBtn" data-setting="camera" data-tooltip="tooltips.toolbar.recordCamera">
+                                <span class="icon icon-camera" aria-hidden="true"></span>
+                            </button>
+                            <div class="shape-selector-vertical" id="shapeSelector">
+                                <button class="shape-btn" data-shape="square" data-tooltip="tooltips.toolbar.recordShapeSquare"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                                <button class="shape-btn" data-shape="circle" data-tooltip="tooltips.toolbar.recordShapeCircle"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <button class="setting-btn" id="clickEffectBtn" data-setting="clickEffect" data-tooltip="tooltips.toolbar.recordClickEffect">
+                                <span class="icon icon-click-effect" aria-hidden="true"></span>
+                            </button>
+                            <button class="setting-btn" id="annotationBtn" data-setting="draw" data-tooltip="tooltips.toolbar.recordAnnotation">
+                                <span class="icon icon-annotation" aria-hidden="true"></span>
+                            </button>
+                            <div class="control-bar-setting">
+                                <span data-i18n="recordControlBarLabel">Thanh điều khiển</span>
+                                <label class="switch"><input type="checkbox" id="controlBarToggle" data-setting="showControls"><span class="slider round"></span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <div class="setting-label separator" data-i18n="recordQualityFormat">Chất lượng & Định dạng</div>
+                        <div class="custom-select-row">
+                             <div class="custom-select-wrapper" id="quality-selector">
+                                <div class="custom-select-trigger">
+                                    <span class="icon icon-quality" aria-hidden="true"></span>
+                                    <span class="selected-value">4K</span>
+                                </div>
+                                <ul class="custom-select-menu" data-setting="quality">
+                                    <li data-value="4k" data-i18n="recordQuality4K">4K (UHD)</li>
+                                    <li data-value="1440p" data-i18n="recordQuality1440p">1440p (QHD)</li>
+                                    <li data-value="1080p" data-i18n="recordQuality1080p">1080p (FHD)</li>
+                                    <li data-value="720p" data-i18n="recordQuality720p">720p (HD)</li>
+                                    <li data-value="480p" data-i18n="recordQuality480p">480p (SD)</li>
+                                </ul>
+                            </div>
+                            <div class="custom-select-wrapper" id="fps-selector">
+                                <div class="custom-select-trigger">
+                                    <span class="icon icon-fps" aria-hidden="true"></span>
+                                    <span class="selected-value">60 FPS</span>
+                                </div>
+                                <ul class="custom-select-menu" data-setting="frameRate"><li data-value="60">60 FPS</li><li data-value="30">30 FPS</li></ul>
+                            </div>
+                            <div class="custom-select-wrapper" id="format-selector">
+                                <div class="custom-select-trigger">
+                                    <span class="icon icon-format" aria-hidden="true"></span>
+                                    <span class="selected-value">WebM</span>
+                                </div>
+                                <ul class="custom-select-menu" data-setting="format"><li data-value="webm">WebM</li><li data-value="mp4">MP4</li></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button id="startRecordBtn" class="start-btn" data-i18n="recordStartButton">
+                        Bắt Đầu Ghi Hình
+                    </button>
+                </div>
+            </div>
+
+            <div id="capture-panel" class="tab-panel">
+                <div class="popup-body">
+                    <div class="setting-group">
+                        <div class="setting-label" data-i18n="captureTitle">Chọn loại ảnh chụp</div>
+                        <div class="capture-options">
+                            <button class="capture-btn" data-action="screenshot-visible">
+                                <img src="../../icons/svg/icon/Electronic, Devices/Monitor.svg" alt="Visible" class="icon">
+                                <div class="btn-text">
+                                    <span class="btn-title" data-i18n="captureVisibleTitle">Màn hình hiện tại</span>
+                                    <span class="btn-desc" data-i18n="captureVisibleDesc">Chụp lại những gì bạn thấy</span>
+                                </div>
+                            </button>
+                            <button class="capture-btn" data-action="screenshot-area">
+                                <img src="../../icons/svg/icon/Design, Tools/Crop.svg" alt="Area" class="icon">
+                                <div class="btn-text">
+                                    <span class="btn-title" data-i18n="captureAreaTitle">Vùng tùy chọn</span>
+                                    <span class="btn-desc" data-i18n="captureAreaDesc">Kéo thả để chọn vùng chụp</span>
+                                </div>
+                            </button>
+                            <button class="capture-btn" data-action="screenshot-scroll">
+                                 <img src="../../icons/svg/icon/Video, Audio, Sound/Full Screen.svg" alt="Full Page" class="icon">
+                                <div class="btn-text">
+                                    <span class="btn-title" data-i18n="captureScrollTitle">Toàn bộ trang</span>
+                                    <span class="btn-desc" data-i18n="captureScrollDesc">Chụp toàn bộ nội dung cuộn</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="popup-footer-info" class="popup-footer"></div>
+    </div>
+    
+    <script src="../../utils/tooltip-manager.js"></script>
+    <script src="menu-toolbar.js" type="module"></script>
+	<script src="/js/i18n.js"></script>
+</body>
+</html>

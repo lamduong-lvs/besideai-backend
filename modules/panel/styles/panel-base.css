@@ -1,0 +1,56 @@
+﻿/* panel.css */
+
+/* Base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Ensure layout sizing includes padding/borders to avoid overflow at min width */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.popup-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  background: var(--bg-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Main Content Wrapper */
+.main-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header Bar */
+.popup-header {
+  display: none; /* áº¨n header nhÆ°ng váº«n giá»¯ trong DOM Ä‘á»ƒ khÃ´ng áº£nh hÆ°á»Ÿng chá»©c nÄƒng táº¡o title */
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border-color);
+  height: 52px;
+  flex-shrink: 0;
+}
+.header-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+

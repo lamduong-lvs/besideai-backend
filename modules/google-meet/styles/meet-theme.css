@@ -1,0 +1,505 @@
+/**
+ * Google Meet Extension - Theme Styles
+ * Light and Dark mode support
+ */
+
+/* ========================================
+   Dark Mode Variables
+   ======================================== */
+
+[data-theme="dark"] {
+    /* Colors - Dark Mode */
+    --meet-primary: #8ab4f8;
+    --meet-primary-hover: #aecbfa;
+    --meet-secondary: #9aa0a6;
+    --meet-success: #81c995;
+    --meet-warning: #fdd663;
+    --meet-error: #f28b82;
+    
+    /* Background */
+    --meet-bg-primary: #292a2d;
+    --meet-bg-secondary: #35363a;
+    --meet-bg-tertiary: #3c4043;
+    --meet-bg-overlay: rgba(0, 0, 0, 0.8);
+    
+    /* Text */
+    --meet-text-primary: #e8eaed;
+    --meet-text-secondary: #9aa0a6;
+    --meet-text-tertiary: #5f6368;
+    
+    /* Borders */
+    --meet-border-color: #5f6368;
+    --meet-border-light: #3c4043;
+    --meet-border-dark: #9aa0a6;
+    
+    /* Shadows */
+    --meet-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --meet-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --meet-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --meet-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* ========================================
+   Auto Theme Detection
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+        /* Colors - Dark Mode */
+        --meet-primary: #8ab4f8;
+        --meet-primary-hover: #aecbfa;
+        --meet-secondary: #9aa0a6;
+        --meet-success: #81c995;
+        --meet-warning: #fdd663;
+        --meet-error: #f28b82;
+        
+        /* Background */
+        --meet-bg-primary: #292a2d;
+        --meet-bg-secondary: #35363a;
+        --meet-bg-tertiary: #3c4043;
+        --meet-bg-overlay: rgba(0, 0, 0, 0.8);
+        
+        /* Text */
+        --meet-text-primary: #e8eaed;
+        --meet-text-secondary: #9aa0a6;
+        --meet-text-tertiary: #5f6368;
+        
+        /* Borders */
+        --meet-border-color: #5f6368;
+        --meet-border-light: #3c4043;
+        --meet-border-dark: #9aa0a6;
+        
+        /* Shadows */
+        --meet-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --meet-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --meet-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+        --meet-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+    }
+}
+
+/* ========================================
+   Theme Specific Overrides
+   ======================================== */
+
+/* Dark Mode Button Adjustments */
+[data-theme="dark"] .meet-ext-btn-primary,
+[data-theme="auto"] .meet-ext-btn-primary {
+    background: var(--meet-primary);
+    color: #202124;
+}
+
+[data-theme="dark"] .meet-ext-btn-primary:hover:not(:disabled),
+[data-theme="auto"] .meet-ext-btn-primary:hover:not(:disabled) {
+    background: var(--meet-primary-hover);
+}
+
+[data-theme="dark"] .meet-ext-btn-secondary,
+[data-theme="auto"] .meet-ext-btn-secondary {
+    color: var(--meet-primary);
+    border-color: var(--meet-border-color);
+}
+
+[data-theme="dark"] .meet-ext-btn-secondary:hover:not(:disabled),
+[data-theme="auto"] .meet-ext-btn-secondary:hover:not(:disabled) {
+    background: rgba(138, 180, 248, 0.08);
+}
+
+[data-theme="dark"] .meet-ext-btn-ghost:hover:not(:disabled),
+[data-theme="auto"] .meet-ext-btn-ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Dark Mode Input Adjustments */
+[data-theme="dark"] .meet-ext-input,
+[data-theme="auto"] .meet-ext-input {
+    background: var(--meet-bg-tertiary);
+    border-color: var(--meet-border-color);
+    color: var(--meet-text-primary);
+}
+
+[data-theme="dark"] .meet-ext-input:focus,
+[data-theme="auto"] .meet-ext-input:focus {
+    border-color: var(--meet-primary);
+    box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.2);
+}
+
+[data-theme="dark"] .meet-ext-input:disabled,
+[data-theme="auto"] .meet-ext-input:disabled {
+    background: var(--meet-bg-secondary);
+}
+
+/* Dark Mode Card Adjustments */
+[data-theme="dark"] .meet-ext-card,
+[data-theme="auto"] .meet-ext-card {
+    background: var(--meet-bg-primary);
+}
+
+[data-theme="dark"] .meet-ext-card-header,
+[data-theme="auto"] .meet-ext-card-header {
+    border-bottom-color: var(--meet-border-light);
+}
+
+[data-theme="dark"] .meet-ext-card-footer,
+[data-theme="auto"] .meet-ext-card-footer {
+    border-top-color: var(--meet-border-light);
+}
+
+/* Dark Mode Scrollbar */
+[data-theme="dark"] .meet-ext-scrollbar::-webkit-scrollbar-thumb,
+[data-theme="auto"] .meet-ext-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .meet-ext-scrollbar::-webkit-scrollbar-thumb:hover,
+[data-theme="auto"] .meet-ext-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   Control Bar Theme
+   ======================================== */
+
+/* Control Bar - Dark Mode */
+#meetExtensionControlBar[data-theme="dark"] {
+    background: rgba(32, 33, 36, 0.98);
+    color: var(--meet-text-primary);
+}
+
+#meetExtensionControlBar[data-theme="dark"] .control-btn {
+    color: var(--meet-secondary);
+}
+
+#meetExtensionControlBar[data-theme="dark"] .control-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--meet-text-primary);
+}
+
+#meetExtensionControlBar[data-theme="dark"] .control-btn.active {
+    background: rgba(138, 180, 248, 0.2);
+    color: var(--meet-primary);
+}
+
+#meetExtensionControlBar[data-theme="dark"] .control-separator {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#meetExtensionControlBar[data-theme="dark"] .control-bar-status {
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   PiP Window Theme
+   ======================================== */
+
+/* PiP Window - Dark Mode */
+.translation-pip[data-theme="dark"] {
+    background: rgba(32, 33, 36, 0.98);
+    color: var(--meet-text-primary);
+}
+
+.translation-pip[data-theme="dark"] .pip-header {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.translation-pip[data-theme="dark"] .pip-title {
+    color: var(--meet-text-primary);
+}
+
+.translation-pip[data-theme="dark"] .pip-btn {
+    color: var(--meet-secondary);
+}
+
+.translation-pip[data-theme="dark"] .pip-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--meet-text-primary);
+}
+
+.translation-pip[data-theme="dark"] .caption-label {
+    color: var(--meet-secondary);
+}
+
+.translation-pip[data-theme="dark"] .speaker-name,
+.translation-pip[data-theme="dark"] .target-language {
+    background: rgba(138, 180, 248, 0.2);
+    color: var(--meet-primary);
+}
+
+.translation-pip[data-theme="dark"] .caption-text {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--meet-text-primary);
+}
+
+.translation-pip[data-theme="dark"] .caption-text.translated-text {
+    background: rgba(138, 180, 248, 0.1);
+}
+
+.translation-pip[data-theme="dark"] .pip-footer {
+    background: rgba(255, 255, 255, 0.02);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.translation-pip[data-theme="dark"] .status-info,
+.translation-pip[data-theme="dark"] .caption-count {
+    color: var(--meet-secondary);
+}
+
+.translation-pip[data-theme="dark"] .pip-resize-handle {
+    background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1) 50%);
+}
+
+/* ========================================
+   Settings Panel Theme
+   ======================================== */
+
+/* Settings Panel - Dark Mode */
+.meet-settings-panel[data-theme="dark"],
+.pip-settings-panel[data-theme="dark"] {
+    background: var(--meet-bg-primary);
+    color: var(--meet-text-primary);
+}
+
+.meet-settings-panel[data-theme="dark"] .settings-panel-header,
+.pip-settings-panel[data-theme="dark"] .settings-panel-header {
+    border-bottom-color: var(--meet-border-light);
+}
+
+.meet-settings-panel[data-theme="dark"] .settings-panel-header h3,
+.meet-settings-panel[data-theme="dark"] .settings-panel-header h4,
+.pip-settings-panel[data-theme="dark"] .settings-panel-header h4 {
+    color: var(--meet-text-primary);
+}
+
+.meet-settings-panel[data-theme="dark"] .settings-section h4 {
+    color: var(--meet-text-primary);
+}
+
+.meet-settings-panel[data-theme="dark"] .setting-item label,
+.pip-settings-panel[data-theme="dark"] .setting-item label {
+    color: var(--meet-secondary);
+}
+
+.meet-settings-panel[data-theme="dark"] .setting-item select,
+.pip-settings-panel[data-theme="dark"] .setting-item select {
+    background: var(--meet-bg-tertiary);
+    border-color: var(--meet-border-color);
+    color: var(--meet-text-primary);
+}
+
+.meet-settings-panel[data-theme="dark"] .settings-panel-footer,
+.pip-settings-panel[data-theme="dark"] .settings-panel-footer {
+    border-top-color: var(--meet-border-light);
+}
+
+/* ========================================
+   Guidance Popup Theme
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .guidance-content {
+        background: var(--meet-bg-primary);
+    }
+
+    .guidance-header {
+        border-bottom-color: var(--meet-border-light);
+    }
+
+    .guidance-header h2 {
+        color: var(--meet-text-primary);
+    }
+
+    .close-btn {
+        color: var(--meet-secondary);
+    }
+
+    .close-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--meet-text-primary);
+    }
+
+    .guidance-description {
+        color: var(--meet-secondary);
+    }
+
+    .guidance-description strong {
+        color: var(--meet-text-primary);
+    }
+
+    .step-content h4 {
+        color: var(--meet-text-primary);
+    }
+
+    .step-content p {
+        color: var(--meet-secondary);
+    }
+
+    .step-content kbd {
+        background: var(--meet-bg-tertiary);
+        border-color: var(--meet-border-color);
+        color: var(--meet-text-primary);
+    }
+
+    .visual-guide {
+        background: var(--meet-bg-tertiary);
+    }
+
+    .guide-caption {
+        color: var(--meet-secondary);
+    }
+
+    .info-box {
+        background: rgba(138, 180, 248, 0.1);
+        border-left-color: var(--meet-primary);
+    }
+
+    .info-text {
+        color: var(--meet-secondary);
+    }
+
+    .info-text strong {
+        color: var(--meet-text-primary);
+    }
+
+    .guidance-footer {
+        border-top-color: var(--meet-border-light);
+    }
+
+    .btn-secondary {
+        color: var(--meet-primary);
+        border-color: var(--meet-border-color);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(138, 180, 248, 0.08);
+    }
+}
+
+/* ========================================
+   Theme Toggle Animation
+   ======================================== */
+
+[data-theme] {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease;
+}
+
+[data-theme] * {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease;
+}
+
+/* ========================================
+   Theme Specific Utilities
+   ======================================== */
+
+/* Show only in light mode */
+.meet-ext-light-only {
+    display: initial;
+}
+
+[data-theme="dark"] .meet-ext-light-only,
+[data-theme="auto"] .meet-ext-light-only {
+    display: none !important;
+}
+
+/* Show only in dark mode */
+.meet-ext-dark-only {
+    display: none;
+}
+
+[data-theme="dark"] .meet-ext-dark-only,
+[data-theme="auto"] .meet-ext-dark-only {
+    display: initial !important;
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-theme] *,
+    [data-theme] {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================
+   High Contrast Mode
+   ======================================== */
+
+@media (prefers-contrast: high) {
+    :root {
+        --meet-border-color: #000000;
+        --meet-border-light: #000000;
+    }
+
+    [data-theme="dark"] {
+        --meet-border-color: #ffffff;
+        --meet-border-light: #ffffff;
+    }
+
+    .meet-ext-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ========================================
+   Force Dark Mode (for testing)
+   ======================================== */
+
+.meet-ext-force-dark {
+    /* Colors - Dark Mode */
+    --meet-primary: #8ab4f8 !important;
+    --meet-primary-hover: #aecbfa !important;
+    --meet-secondary: #9aa0a6 !important;
+    --meet-success: #81c995 !important;
+    --meet-warning: #fdd663 !important;
+    --meet-error: #f28b82 !important;
+    
+    /* Background */
+    --meet-bg-primary: #292a2d !important;
+    --meet-bg-secondary: #35363a !important;
+    --meet-bg-tertiary: #3c4043 !important;
+    --meet-bg-overlay: rgba(0, 0, 0, 0.8) !important;
+    
+    /* Text */
+    --meet-text-primary: #e8eaed !important;
+    --meet-text-secondary: #9aa0a6 !important;
+    --meet-text-tertiary: #5f6368 !important;
+    
+    /* Borders */
+    --meet-border-color: #5f6368 !important;
+    --meet-border-light: #3c4043 !important;
+    --meet-border-dark: #9aa0a6 !important;
+}
+
+/* Force Light Mode (for testing) */
+.meet-ext-force-light {
+    /* Colors - Light Mode */
+    --meet-primary: #f86a01 !important;
+    --meet-primary-hover: #1765cc !important;
+    --meet-secondary: #5f6368 !important;
+    --meet-success: #34a853 !important;
+    --meet-warning: #fbbc04 !important;
+    --meet-error: #ea4335 !important;
+    
+    /* Background */
+    --meet-bg-primary: #ffffff !important;
+    --meet-bg-secondary: #f8f9fa !important;
+    --meet-bg-tertiary: #f1f3f4 !important;
+    --meet-bg-overlay: rgba(0, 0, 0, 0.6) !important;
+    
+    /* Text */
+    --meet-text-primary: #202124 !important;
+    --meet-text-secondary: #5f6368 !important;
+    --meet-text-tertiary: #9aa0a6 !important;
+    
+    /* Borders */
+    --meet-border-color: #dadce0 !important;
+    --meet-border-light: #e8eaed !important;
+    --meet-border-dark: #bdc1c6 !important;
+}

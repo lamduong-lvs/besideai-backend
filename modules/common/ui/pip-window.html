@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation PiP</title>
+    <!-- Design System -->
+    <link rel="stylesheet" href="../../../styles/global.css">
+    <link rel="stylesheet" href="../../../styles/variables.css">
+    <link rel="stylesheet" href="../../../styles/theme-light.css">
+    <link rel="stylesheet" href="../../../styles/theme-dark.css">
+    <link rel="stylesheet" href="../../../styles/components.css">
+    <link rel="stylesheet" href="../../../styles/icons.css">
+    <link rel="stylesheet" href="css/pip-window.css">
+</head>
+<body>
+    <div id="meetTranslationPiP" class="translation-pip" data-theme="light">
+        <!-- Header với Control Bar -->
+        <div class="pip-header">
+            <div id="pip-extension-name" class="pip-title">
+            </div>
+
+            <div class="pip-controls">
+    <!-- Close Button ONLY -->
+    <button id="closePiP" class="control-btn close-btn" title="Đóng">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="pip-tabs">
+            <button class="tab-btn active" data-tab="translation">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 2h12v12H2z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M5 6h6M5 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Dịch
+            </button>
+            <button class="tab-btn" data-tab="history">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 14A6 6 0 1 0 8 2M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Lịch sử
+            </button>
+            <button class="tab-btn" data-tab="summary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Tóm tắt
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 2v2m0 8v2M14 8h-2M4 8H2m10.36-4.36l-1.41 1.41M5.05 10.95l-1.41 1.41m8.72 0l-1.41-1.41M5.05 5.05L3.64 3.64" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Cài đặt
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="pip-body">
+            <!-- Tab 1: Translation (Live) -->
+            <div id="translationTab" class="tab-content active">
+                <div class="translation-display">
+                    <!-- Live Buffer -->
+                    <div id="liveTranslation" class="translation-item live">
+                        <div class="translation-section">
+                            <div class="section-label">Gốc:</div>
+                            <div class="speaker-name" id="liveSpeaker">Đang chờ...</div>
+                            <div class="original-text" id="liveOriginal">
+                                <span class="placeholder">Nội dung đang được phiên dịch...</span>
+                            </div>
+                        </div>
+                        <div class="translation-section">
+                            <div class="section-label">Dịch:</div>
+                            <div class="speaker-name" id="liveTranslatedSpeaker">Đang chờ...</div>
+                            <div class="translated-text" id="liveTranslated">
+                                <span class="placeholder">Bản dịch sẽ xuất hiện ở đây...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: History -->
+            <div id="historyTab" class="tab-content">
+                <div class="history-container">
+                    <div class="history-header">
+                        <h3>Lịch sử hội thoại</h3>
+                        
+                        <div class="history-actions">
+                             <div class="history-stats">
+                                <span id="entryCount">0 mục</span>
+                                <span id="totalWords">0 từ</span>
+                            </div>
+                            <button id="exportHistoryBtn" class="btn btn-secondary">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M8 12V2m0 10l-4-4m4 4l4-4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                                Xuất file
+                            </button>
+                        </div>
+                    </div>
+                    <div id="historyList" class="history-list">
+                        <div class="history-empty">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                <circle cx="32" cy="32" r="24" stroke="currentColor" stroke-width="2"/>
+                                <path d="M32 16v16l12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <p>Chưa có lịch sử</p>
+                            <p class="text-small">Lịch sử sẽ được lưu tự động trong cuộc họp</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Summary -->
+            <div id="summaryTab" class="tab-content">
+                <!-- Summary content will be rendered by SummaryRenderer.js -->
+            </div>
+
+            <!-- Tab 4: Settings -->
+            <div id="settingsTab" class="tab-content">
+                <div class="settings-container">
+                    <h3>Cài đặt</h3>
+
+                    <!-- Translation Settings -->
+                    <div class="settings-group">
+                        <h4>Dịch thuật</h4>
+                        <div class="setting-item">
+                            <label for="targetLang">Ngôn ngữ đích:</label>
+                            <select id="targetLang">
+                                <option value="vi">Tiếng Việt</option>
+                                <option value="en">English</option>
+                                <option value="zh">中文</option>
+                                <option value="ja">日本語</option>
+                                <option value="ko">한국어</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- History Settings -->
+                    <div class="settings-group">
+                        <h4>Lịch sử</h4>
+                        <div class="setting-item">
+                            <label for="maxBufferAge">Tuổi buffer tối đa (ms):</label>
+                            <input type="number" id="maxBufferAge" value="10000" min="5000" step="1000">
+                        </div>
+                        <div class="setting-item checkbox">
+                            <input type="checkbox" id="autosaveHistory" checked>
+                            <label for="autosaveHistory">Tự động lưu lịch sử</label>
+                        </div>
+                    </div>
+
+                    <!-- Display Settings -->
+                    <div class="settings-group">
+                        <h4>Hiển thị</h4>
+                        <div class="setting-item">
+                            <label for="fontSize">Cỡ chữ:</label>
+                            <select id="fontSize">
+                                <option value="small">Nhỏ</option>
+                                <option value="medium" selected>Trung bình</option>
+                                <option value="large">Lớn</option>
+                            </select>
+                        </div>
+                        <div class="setting-item checkbox">
+                            <input type="checkbox" id="showTimestamps" checked>
+                            <label for="showTimestamps">Hiển thị thời gian</label>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="settings-actions">
+                        <button id="saveSettings" class="btn btn-primary">Lưu cài đặt</button>
+                        <button id="resetSettings" class="btn btn-secondary">Đặt lại mặc định</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="pip-status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="statusText">Đã sẵn sàng</span>
+            <span id="modelWinnerDisplay" class="model-winner-display"></span>
+            <div class="pip-resize-handle"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+	<script src="/js/i18n.js"></script>
+    <script src="modules/google-meet/ui/historymanager.js"></script>
+    <script src="modules/google-meet/ui/summaryrenderer.js"></script>
+    <script src="modules/google-meet/ui/pip-window.js"></script>
+</body>
+</html>

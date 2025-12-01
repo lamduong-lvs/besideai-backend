@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="editorProTitle">Screenshot Editor Pro</title>
+    <link rel="stylesheet" href="../../styles/tooltip-system.css">
+    <script src="../../js/fabric.min.js"></script>
+    <script type="module" src="../../utils/tooltip-manager.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow: hidden;
+    padding-top: 0; /* Toolbar sẽ tự động tạo khoảng trống */
+}
+
+        .toolbar {
+    position: fixed; /* Thay đổi từ relative sang fixed */
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 100;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+        .toolbar button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toolbar button:hover:not(:disabled) {
+            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .toolbar button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .toolbar button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%) !important; }
+        .btn-secondary { background: linear-gradient(135deg, #666 0%, #444 100%) !important; }
+        .btn-tool { background: linear-gradient(135deg, #555 0%, #333 100%) !important; }
+        .btn-tool.active { 
+            background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%) !important;
+            box-shadow: 0 0 0 2px #4a9eff40;
+        }
+
+        .separator {
+            width: 1px;
+            height: 28px;
+            background: linear-gradient(to bottom, transparent, #555, transparent);
+            margin: 0 8px;
+        }
+
+        .tool-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .dropdown.show {
+            display: flex;
+        }
+
+        .dropdown button {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-item:hover {
+            background: #3a3a3a;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d2d2d;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .color-picker-wrapper label {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        #colorPicker {
+            width: 50px;
+            height: 36px;
+            border: 2px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d2d2d;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .slider-wrapper label {
+            color: #aaa;
+            font-size: 12px;
+            min-width: 60px;
+        }
+
+        input[type="range"] {
+            width: 100px;
+            height: 6px;
+            background: #444;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4a9eff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            color: #4a9eff;
+            font-weight: 600;
+            min-width: 30px;
+            font-size: 12px;
+        }
+
+        .info {
+            color: #aaa;
+            font-size: 12px;
+            margin-left: auto;
+            padding: 6px 12px;
+            background: #2d2d2d;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
+
+        .canvas-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto; /* Thay hidden thành auto để có thể scroll */
+    background: repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 50% / 20px 20px;
+    position: relative;
+}
+
+.canvas-container {
+    position: relative;
+    box-shadow: none;
+    transform-origin: center center;
+    transition: transform 0.1s ease-out; /* Smooth zoom */
+}
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #333;
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(45, 45, 45, 0.95);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            backdrop-filter: blur(10px);
+        }
+
+        .zoom-controls button {
+            padding: 6px 10px;
+            font-size: 16px;
+        }
+
+        #zoomSlider {
+            width: 120px;
+        }
+
+        .text-input-overlay {
+            position: absolute;
+            display: none;
+            z-index: 1000;
+        }
+
+        .text-input-box {
+            background: white;
+            border: 2px solid #4a9eff;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .text-input-box textarea {
+            border: none;
+            outline: none;
+            font-family: Arial, sans-serif;
+            resize: none;
+            min-width: 200px;
+            min-height: 40px;
+        }
+
+        .text-input-controls {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .text-input-controls button {
+            flex: 1;
+            padding: 6px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-confirm {
+            background: #4a9eff;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #666;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="downloadBtn" class="btn-primary" data-tooltip="tooltips.editor.downloadBtn" title="Ctrl+S">
+            <span>💾</span>
+            <span data-i18n="download">Tải về</span>
+        </button>
+        <button id="copyBtn" class="btn-secondary" data-tooltip="tooltips.editor.copyBtn" title="Copy">
+            <span>📋</span>
+            <span data-i18n="copyBtnText">Copy</span>
+        </button>
+        
+        <div class="separator"></div>
+        
+        <button id="selectBtn" class="btn-tool" data-tooltip="tooltips.editor.selectBtn" title="Select (V)">
+            <span>↖️</span>
+            <span data-i18n="selectBtnText">Select</span>
+        </button>
+        
+        <div class="separator"></div>
+        
+        <div class="tool-group">
+            <button id="drawBtn" class="btn-tool" data-tooltip="tooltips.editor.drawBtn" title="Draw (D)">
+                <span>✏️</span>
+                <span data-i18n="drawBtnText">Vẽ ▾</span>
+            </button>
+            <div class="dropdown" id="drawDropdown">
+                <div class="dropdown-item" data-tool="pencil" data-i18n="drawPencil">✏️ Bút chì</div>
+                <div class="dropdown-item" data-tool="brush" data-i18n="drawBrush">🖌️ Bút lông</div>
+                <div class="dropdown-item" data-tool="marker" data-i18n="drawMarker">🖊️ Marker</div>
+                <div class="dropdown-item" data-tool="spray" data-i18n="drawSpray">💨 Xịt</div>
+            </div>
+        </div>
+        
+        <div class="tool-group">
+            <button id="shapeBtn" class="btn-tool" data-tooltip="tooltips.editor.shapeBtn" title="Shape (S)">
+                <span>⬜</span>
+                <span data-i18n="shapeBtnText">Shape ▾</span>
+            </button>
+            <div class="dropdown" id="shapeDropdown">
+                <div class="dropdown-item" data-shape="rect" data-i18n="shapeRect">▭ Hình chữ nhật</div>
+                <div class="dropdown-item" data-shape="circle" data-i18n="shapeCircle">⭕ Hình tròn</div>
+                <div class="dropdown-item" data-shape="triangle" data-i18n="shapeTriangle">△ Tam giác</div>
+                <div class="dropdown-item" data-shape="line" data-i18n="shapeLine">─ Đường thẳng</div>
+            </div>
+        </div>
+        
+        <div class="tool-group">
+            <button id="arrowBtn" class="btn-tool" data-tooltip="tooltips.editor.arrowBtn" title="Arrow (A)">
+                <span>➡️</span>
+                <span data-i18n="arrowBtnText">Arrow ▾</span>
+            </button>
+            <div class="dropdown" id="arrowDropdown">
+                <div class="dropdown-item" data-arrow="solid" data-i18n="arrowSolid">━━▶ Liền</div>
+                <div class="dropdown-item" data-arrow="dashed" data-i18n="arrowDashed">- - ▶ Đứt</div>
+                <div class="dropdown-item" data-arrow="dotted" data-i18n="arrowDotted">· · ▶ Chấm</div>
+                <div class="dropdown-item" data-arrow="double" data-i18n="arrowDouble">◀━━▶ 2 đầu</div>
+            </div>
+        </div>
+        
+        <button id="textBtn" class="btn-tool" data-tooltip="tooltips.editor.textBtn" title="Text (T)">
+            <span>T</span>
+            <span data-i18n="textBtnText">Text</span>
+        </button>
+        
+        <button id="cropBtn" class="btn-tool" data-tooltip="tooltips.editor.cropBtn" title="Crop (C)">
+            <span>✂️</span>
+            <span data-i18n="cropBtnText">Crop</span>
+        </button>
+        
+        <div class="separator"></div>
+        
+        <button id="undoBtn" class="btn-secondary" data-tooltip="tooltips.editor.undoBtn" disabled title="Ctrl+Z">
+            <span>↶</span>
+            <span data-i18n="undoBtnText">Undo</span>
+        </button>
+        <button id="redoBtn" class="btn-secondary" data-tooltip="tooltips.editor.redoBtn" disabled title="Ctrl+Y">
+            <span>↷</span>
+            <span data-i18n="redoBtnText">Redo</span>
+        </button>
+        
+        <div class="separator"></div>
+        
+        <div class="color-picker-wrapper">
+            <label data-i18n="colorLabel">Màu:</label>
+            <input type="color" id="colorPicker" value="#ff0000">
+        </div>
+        
+        <div class="slider-wrapper">
+            <label data-i18n="lineWidthLabel">Độ dày:</label>
+            <input type="range" id="lineWidth" min="1" max="30" value="3">
+            <span class="slider-value" id="lineWidthValue">3</span>
+        </div>
+        
+        <div class="separator"></div>
+        
+        <button id="deleteBtn" class="btn-secondary" data-tooltip="tooltips.editor.deleteBtn" title="Delete">
+            <span>🗑️</span>
+            <span data-i18n="deleteBtnText">Xóa</span>
+        </button>
+        
+        <button id="closeBtn" class="btn-secondary" data-tooltip="tooltips.editor.closeBtn" title="Esc">
+            <span>✕</span>
+            <span data-i18n="closeBtnText">Đóng</span>
+        </button>
+        
+        <span class="info" id="info" data-i18n="infoLoading">Đang tải...</span>
+    </div>
+    
+    <div class="canvas-wrapper">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div data-i18n="loadingImage">Đang tải ảnh...</div>
+        </div>
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="canvas"></canvas>
+        </div>
+        
+        <div class="zoom-controls">
+            <button id="zoomOutBtn" data-tooltip="tooltips.editor.zoomOutBtn">−</button>
+            <input type="range" id="zoomSlider" min="10" max="200" value="100">
+            <span class="slider-value" id="zoomValue">100%</span>
+            <button id="zoomInBtn" data-tooltip="tooltips.editor.zoomInBtn">+</button>
+            <button id="zoomFitBtn" data-tooltip="tooltips.editor.zoomFitBtn" data-i18n="zoomFitBtn">Vừa màn</button>
+        </div>
+    </div>
+    
+    <div class="text-input-overlay" id="textInputOverlay">
+        <div class="text-input-box">
+            <textarea id="textInput" data-i18n-placeholder="textInputPlaceholder"></textarea>
+            <div class="text-input-controls">
+                <button class="btn-confirm" id="textConfirm" data-i18n="textConfirm">✓ OK</button>
+                <button class="btn-cancel" id="textCancel" data-i18n="textCancel">✕ Hủy</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./viewer-pro.js"></script>
+</body>
+</html>

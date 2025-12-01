@@ -1,0 +1,27 @@
+/* Aggregated panel styles */
+@import url('./panel.chat.css');
+@import url('./panel.sidebar.css');
+@import url('./panel.history.css');
+@import url('./panel.settings.css');
+@import url('./panel.record.css');
+@import url('../../translate/translate-panel.css');
+
+/* Error Display */
+.error-display {
+  padding: var(--spacing-lg-xl);
+  color: var(--color-error);
+  font-family: var(--font-family, Arial);
+}
+
+.error-stack {
+  background: var(--bg-code);
+  padding: var(--spacing-md);
+  overflow: auto;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+

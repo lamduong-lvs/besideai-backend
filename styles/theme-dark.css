@@ -1,0 +1,131 @@
+/* theme-dark.css - Dark Theme Variables */
+/* Note: Base variables are defined in global.css */
+/* This file only contains theme-specific overrides */
+
+[data-theme="dark"] {
+  /* ═══════════════════════════════════════
+     BACKGROUNDS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --bg-primary: #1E1E1E;
+  --bg-secondary: #2D2D2D;
+  --bg-header: #252525;
+  --bg-footer: #252525;
+  --bg-message: #222222;
+  --bg-ai-message: #22303A;
+  --bg-input: #2D2D2D;
+  --bg-hover: #3A3A3A;
+  --bg-active: rgba(248, 106, 1, 0.15);
+  --bg-disabled: #3A3A3A;
+  --bg-icon: #2D2D2D;
+  --bg-icon-hover: #3A3A3A;
+  --bg-context-menu: rgba(44, 44, 46, 0.85);
+  --bg-popup: #1E1E1E;
+  --bg-code: #2D2D2D;
+  --bg-code-block: #252525;
+  --bg-info: #1A3A4A;
+  --bg-edit: #252525;
+  
+  /* ═══════════════════════════════════════
+     TEXT COLORS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-placeholder: #707070;
+  
+  /* ═══════════════════════════════════════
+     BORDERS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --border-color: #404040;
+  --border-light: #505050;
+  --border-focus: #f86a01;
+  --border-hover: rgba(248, 106, 1, 0.3);
+  
+  /* ═══════════════════════════════════════
+     SCROLLBAR (Dark Theme)
+     ═══════════════════════════════════════ */
+  --scrollbar-thumb: #505050;
+  --scrollbar-thumb-hover: #606060;
+  
+  /* ═══════════════════════════════════════
+     LINKS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --color-link: #f86a01;
+  --text-link: #f86a01;
+  --text-link-hover: #ff8a2e;
+  
+  /* ═══════════════════════════════════════
+     STATUS COLORS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --color-success: #66BB6A;
+  --color-error: #EF5350;
+  --color-warning: #FFA726;
+  --color-info: #42A5F5;
+  
+  /* ═══════════════════════════════════════
+     DELETE COLORS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --color-delete: #EF5350;
+  --color-delete-hover: #F28B82;
+  
+  /* ═══════════════════════════════════════
+     CODE COLORS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --text-code: #f48fb1;
+  --text-code-block: #d4d4d4;
+  
+  /* ═══════════════════════════════════════
+     ICON FILTERS (Dark Theme)
+     ═══════════════════════════════════════ */
+  --icon-filter: brightness(0) invert(1);
+  --icon-shadow-color: rgba(255, 255, 255, 0.1);
+  
+  /* ═══════════════════════════════════════
+     INPUT MODULE (Dark Theme)
+     ═══════════════════════════════════════ */
+  --input-bg: #2D2D2D;
+  --input-wrapper-bg: transparent;
+  --input-border-radius: 8px;
+  --input-wrapper-border-radius: 20px;
+  --input-padding: 12px;
+  --input-transition-duration: 200ms;
+  
+  --textarea-text-color: #FFFFFF;
+  --textarea-placeholder-color: #707070;
+  --textarea-max-height: 120px;
+  
+  --toolbar-padding: 6px 10px;
+  --toolbar-gap: 8px;
+  --toolbar-button-gap: 4px;
+  --toolbar-hover-bg: #3A3A3A;
+  --model-icon-color: #f86a01;
+  --model-name-color: #FFFFFF;
+  --dropdown-arrow-color: #B0B0B0;
+  
+  --action-btn-bg: #2D2D2D;
+  --action-btn-border: #404040;
+  --action-btn-text: #FFFFFF;
+  --action-btn-hover-bg: #3A3A3A;
+  --action-btn-hover-border: #505050;
+  --action-btn-active-bg: #f86a01;
+  --action-btn-active-border: #f86a01;
+  --action-btn-active-text: #FFFFFF;
+  
+  --mic-send-btn-bg: #f86a01;
+  --mic-send-btn-color: #FFFFFF;
+  --mic-send-btn-hover-bg: #d45a01;
+  
+  --footer-padding: 8px 12px;
+  --footer-text-color: #B0B0B0;
+  --footer-value-color: #FFFFFF;
+  --footer-icon-color: #B0B0B0;
+  --footer-icon-hover-bg: #3A3A3A;
+  --upgrade-text-color: #f86a01;
+  
+  --token-display-bg: rgba(248, 106, 1, 0.15);
+  --token-display-border: rgba(248, 106, 1, 0.3);
+  --token-display-hover-bg: rgba(248, 106, 1, 0.2);
+  --token-display-hover-border: rgba(248, 106, 1, 0.4);
+  
+  --attachments-border-color: #404040;
+  --attachment-border: #404040;
+}

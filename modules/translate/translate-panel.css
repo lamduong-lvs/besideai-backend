@@ -1,0 +1,528 @@
+/* Fix Layout Shift & Tooltip Issues */
+.translate-view * {
+  box-sizing: border-box;
+}
+
+.translate-view {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--spacing-2xl) var(--spacing-sm) var(--spacing-md);
+}
+
+.translate-entry-card {
+  background: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-2xl);
+  padding: 0;
+  box-shadow: var(--shadow-lg-light);
+  overflow: visible;
+  position: relative;
+}
+
+.language-select {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  transition: border-color var(--transition-normal);
+}
+
+.language-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* SWAP BUTTON */
+.language-swap-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color) !important;
+  border-width: 1px !important;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color var(--transition-normal), color var(--transition-normal), background var(--transition-normal);
+  color: var(--text-primary);
+  position: relative !important;
+  margin: 0 !important;
+  transform: none !important;
+  padding: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.language-swap-btn:hover,
+.language-swap-btn:focus,
+.language-swap-btn:active {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  border-color: var(--color-primary) !important;
+  border-width: 1px !important;
+  color: var(--color-primary);
+  margin: 0 !important;
+  transform: none !important;
+  padding: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.language-swap-btn img {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  display: block !important;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.translate-card-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--spacing-md-lg);
+  padding: var(--spacing-md-sm) var(--spacing-lg) var(--spacing-xs);
+  background: transparent;
+}
+
+.translate-card-body {
+  padding: var(--spacing-sm-md) var(--spacing-lg) var(--spacing-xs);
+  background: transparent;
+  position: relative;
+}
+
+.translate-card-footer {
+  padding: var(--spacing-sm-md) var(--spacing-lg) var(--spacing-md-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md-lg);
+  background: transparent;
+  /* Đảm bảo layout không bị thay đổi */
+  min-height: fit-content;
+  flex-wrap: nowrap;
+}
+
+.translate-input {
+  width: 100%;
+  min-height: 160px;
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
+  resize: none; /* Tắt resize mặc định */
+  font-size: var(--font-lg);
+  line-height: var(--leading-normal);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: box-shadow var(--transition-normal);
+  overflow-y: auto;
+}
+
+/* Ẩn nút resize mặc định */
+.translate-input::-webkit-resizer {
+  display: none;
+}
+
+.translate-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 var(--border-width-medium) var(--color-primary-alpha);
+  background: var(--bg-primary);
+}
+
+.translate-hint {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.translate-footer-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md-sm);
+}
+
+/* TOGGLE BUTTONS (CLIPBOARD, ADVANCED) */
+.translate-toggle-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm-md) var(--spacing-md-lg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-width: 1px !important;
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-normal), color var(--transition-normal), background var(--transition-normal);
+  position: relative;
+  margin: 0 !important;
+  transform: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  flex-shrink: 0 !important;
+}
+
+.translate-toggle-btn:hover,
+.translate-toggle-btn:focus,
+.translate-toggle-btn:active {
+  transform: none !important;
+  border-width: 1px !important;
+  padding: var(--spacing-sm-md) var(--spacing-md-lg) !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.translate-toggle-btn span {
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.translate-toggle-btn img,
+.translate-toggle-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+  opacity: 0.6;
+  pointer-events: none;
+  flex-shrink: 0;
+  display: block;
+}
+
+.translate-toggle-btn[data-active="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.translate-toggle-btn[data-active="true"] img,
+.translate-toggle-btn[data-active="true"] svg {
+  opacity: 1;
+}
+
+.translate-toggle-btn[data-mode="standard"][data-active="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.translate-toggle-btn[data-mode="terminology"][data-active="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.translate-toggle-btn[data-mode="standard"][data-active="false"],
+.translate-toggle-btn[data-mode="terminology"][data-active="false"] {
+  color: var(--text-secondary);
+}
+
+.translate-terminology-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.translate-terminology-title {
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm-md);
+  color: var(--text-primary);
+}
+
+.translate-terminology-content {
+  margin: 0;
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+.translate-terminology-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.translate-terminology-bullet {
+  position: relative;
+  padding-left: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.translate-terminology-bullet::before {
+  content: '-';
+  position: absolute;
+  left: 0;
+  color: var(--text-secondary);
+}
+
+.translate-advanced-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.translate-advanced-menu {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  min-width: 160px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg-light);
+  padding: var(--spacing-sm-md);
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.translate-advanced-group.open .translate-advanced-menu {
+  display: flex;
+}
+
+.advanced-option {
+  border: none;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-md-sm);
+  border-radius: var(--radius-md);
+  text-align: left;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-normal), color var(--transition-normal);
+  position: relative;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.advanced-option:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: none !important;
+}
+
+.advanced-option.active {
+  background: var(--color-primary-alpha);
+  color: var(--color-primary);
+}
+
+/* SEND BUTTON */
+.translate-send-btn {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent !important; /* Thêm border transparent để giữ box model */
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-normal), background var(--transition-normal);
+  position: relative !important;
+  padding: 0 !important; /* Reset padding */
+  flex-shrink: 0 !important; /* Không bị co lại */
+  margin: 0 !important;
+  transform: none !important;
+  outline: none !important; /* Loại bỏ outline mặc định */
+  box-shadow: none !important; /* Loại bỏ box-shadow */
+}
+
+.translate-send-btn:hover,
+.translate-send-btn:focus,
+.translate-send-btn:active {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  opacity: 0.9; /* Hiệu ứng hover nhẹ không làm thay đổi vị trí */
+  background: var(--color-primary);
+  transform: none !important; /* Ngăn chặn mọi transform */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.translate-send-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: #ffffff; /* Màu trắng cố định thay vì currentColor */
+  fill: none;
+  pointer-events: none; /* Đảm bảo SVG không bị ảnh hưởng bởi hover events */
+  visibility: visible !important; /* Đảm bảo luôn visible */
+  display: block !important; /* Đảm bảo không bị ẩn */
+  
+  /* ABSOLUTE POSITIONING FOR ICON */
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+.translate-send-btn:hover svg {
+  stroke: #ffffff; /* Giữ màu trắng khi hover */
+  visibility: visible !important;
+}
+
+.translate-send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.translate-send-btn:disabled svg {
+  stroke: currentColor; /* Giữ màu icon khi disabled */
+}
+
+.translate-result-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+}
+
+.translate-result-placeholder {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  text-align: center;
+  width: 100%;
+  padding: var(--spacing-2xl) 0;
+}
+
+/* Nút resize tùy chỉnh ở chính giữa cạnh dưới của translate-entry-card */
+.translate-resize-handle {
+  position: absolute;
+  bottom: -4px; /* Vị trí cố định - không thay đổi khi hover */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: var(--radius-xs);
+  cursor: ns-resize;
+  transition: background var(--transition-normal), height var(--transition-normal);
+  z-index: 10;
+}
+
+.translate-resize-handle:hover {
+  background: var(--color-primary);
+  height: 8px;
+  /* Không thay đổi bottom để giữ vị trí cố định */
+}
+
+.translate-resize-handle:active {
+  background: var(--color-primary);
+  height: 8px;
+  /* Không thay đổi bottom để giữ vị trí cố định */
+}
+
+/* 
+   DISABLE TOOLTIPS FOR TRANSLATE BUTTONS - TRIỆT ĐỂ
+   Vô hiệu hóa HOÀN TOÀN tooltip từ tooltip-system.css và mọi nguồn khác
+   Rule này phải có specificity cao nhất và load sau cùng
+*/
+/* Base rule - vô hiệu hóa mọi ::after và ::before */
+.language-swap-btn::after,
+.language-swap-btn::before,
+.translate-toggle-btn::after,
+.translate-toggle-btn::before,
+.translate-send-btn::after,
+.translate-send-btn::before,
+.advanced-option::after,
+.advanced-option::before,
+/* Override cho mọi attribute selector từ tooltip-system.css */
+.language-swap-btn[data-tooltip]::after,
+.language-swap-btn[data-tooltip-text]::after,
+.language-swap-btn[data-tooltip]::before,
+.language-swap-btn[data-tooltip-text]::before,
+.translate-toggle-btn[data-tooltip]::after,
+.translate-toggle-btn[data-tooltip-text]::after,
+.translate-toggle-btn[data-tooltip]::before,
+.translate-toggle-btn[data-tooltip-text]::before,
+.translate-send-btn[data-tooltip]::after,
+.translate-send-btn[data-tooltip-text]::after,
+.translate-send-btn[data-tooltip]::before,
+.translate-send-btn[data-tooltip-text]::before,
+.advanced-option[data-tooltip]::after,
+.advanced-option[data-tooltip-text]::after,
+.advanced-option[data-tooltip]::before,
+.advanced-option[data-tooltip-text]::before,
+/* Override cho hover state */
+.language-swap-btn:hover::after,
+.language-swap-btn:hover::before,
+.language-swap-btn:focus::after,
+.language-swap-btn:focus::before,
+.language-swap-btn[data-tooltip]:hover::after,
+.language-swap-btn[data-tooltip-text]:hover::after,
+.language-swap-btn[data-tooltip]:focus::after,
+.language-swap-btn[data-tooltip-text]:focus::after,
+.translate-toggle-btn:hover::after,
+.translate-toggle-btn:hover::before,
+.translate-toggle-btn:focus::after,
+.translate-toggle-btn:focus::before,
+.translate-toggle-btn[data-tooltip]:hover::after,
+.translate-toggle-btn[data-tooltip-text]:hover::after,
+.translate-toggle-btn[data-tooltip]:focus::after,
+.translate-toggle-btn[data-tooltip-text]:focus::after,
+.translate-send-btn:hover::after,
+.translate-send-btn:hover::before,
+.translate-send-btn:focus::after,
+.translate-send-btn:focus::before,
+.translate-send-btn[data-tooltip]:hover::after,
+.translate-send-btn[data-tooltip-text]:hover::after,
+.translate-send-btn[data-tooltip]:focus::after,
+.translate-send-btn[data-tooltip-text]:focus::after,
+.advanced-option:hover::after,
+.advanced-option:hover::before,
+.advanced-option:focus::after,
+.advanced-option:focus::before,
+.advanced-option[data-tooltip]:hover::after,
+.advanced-option[data-tooltip-text]:hover::after,
+.advanced-option[data-tooltip]:focus::after,
+.advanced-option[data-tooltip-text]:focus::after,
+/* Copy button trong translate result */
+.copy-btn::after,
+.copy-btn::before,
+.copy-btn[data-tooltip-text]::after,
+.copy-btn[data-tooltip-text]::before,
+.copy-btn:hover::after,
+.copy-btn:focus::after {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  z-index: -1 !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+}

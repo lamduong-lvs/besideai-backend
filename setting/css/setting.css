@@ -1,0 +1,17 @@
+/* Planned Features */
+.feature-planned {
+    opacity: 0.6;
+    border: 1px dashed var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-planned .card-body,
+.feature-planned .card-header {
+    pointer-events: none;
+}
+
+.nav-item-planned {
+    opacity: 0.6;
+    pointer-events: none; /* Make it unclickable for now */
+}

@@ -1,0 +1,644 @@
+/* content.css - FIXED ICONS & THEME SYNC */
+
+/* ========================================
+   ACTION POPUP IFRAME CONTAINER
+   ======================================== */
+.ai-action-popup-iframe-container {
+  position: fixed;
+  width: 450px;
+  height: 550px;
+  z-index: 2147483646;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity var(--transition-normal, 0.2s ease), transform var(--transition-normal, 0.2s ease);
+}
+
+.ai-action-popup-iframe-container.popup-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.ai-action-popup-iframe-container.popup-hidden {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.ai-action-popup-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary, #ffffff);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ai-action-popup-iframe-container {
+    box-shadow: var(--shadow-xl-dark);
+  }
+  .ai-action-popup-iframe {
+    background: var(--bg-primary, #1e1e1e);
+  }
+}
+
+/* ========================================
+   DRAG OVERLAY
+   ======================================== */
+#ai-drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  cursor: move;
+  background: transparent;
+}
+
+/* ========================================
+   SIDE PANEL
+   ======================================== */
+.ai-side-panel-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100vh;
+  z-index: 2147483645;
+  background: var(--bg-primary, #ffffff);
+  box-shadow: none;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Transition mượt mà cho body khi panel mở/đóng */
+body.ai-panel-open {
+  transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.ai-panel-open {
+  transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-side-panel-container.visible {
+  width: 535px;
+}
+
+.ai-side-panel-resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.ai-side-panel-resize-handle:hover {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+.ai-side-panel-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: var(--bg-primary, #ffffff);
+  box-shadow: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ai-side-panel-container {
+    background: var(--bg-primary, #1e1e1e);
+    box-shadow: none;
+  }
+  .ai-side-panel-iframe {
+    background: var(--bg-primary, #1e1e1e);
+  }
+}
+
+/* ========================================
+   FLOATING ICON
+   ======================================== */
+.ai-floating-icon {
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  z-index: 2147483644;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  user-select: none;
+}
+
+.ai-floating-icon:hover {
+  transform: scale(1.05);
+}
+
+.ai-floating-icon.dragging {
+  transform: scale(1.1);
+  cursor: grabbing;
+}
+
+.ai-floating-icon.docked {
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.ai-floating-icon-inner {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-full, 9999px);
+  border: none;
+  box-shadow: var(--shadow-sm-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  margin: 0;
+}
+
+/* Dark theme support using data-theme attribute */
+[data-theme="dark"] .ai-floating-icon-inner {
+  background: var(--bg-secondary, #2d2d2d);
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-floating-icon-inner img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+}
+
+/* Pill shape when docked to left */
+.ai-floating-icon.docked-left .ai-floating-icon-inner {
+  border-radius: 0 var(--radius-3xl, 24px) var(--radius-3xl, 24px) 0;
+}
+
+/* Pill shape when docked to right */
+.ai-floating-icon.docked-right .ai-floating-icon-inner {
+  border-radius: var(--radius-3xl, 24px) 0 0 var(--radius-3xl, 24px);
+}
+
+/* Full circle when dragging - must override docked states */
+.ai-floating-icon.dragging {
+  transform: none !important;
+}
+
+.ai-floating-icon.dragging .ai-floating-icon-inner {
+  border-radius: 50% !important;
+}
+
+/* Ensure full circle when dragging even if docked */
+.ai-floating-icon.dragging.docked-left .ai-floating-icon-inner,
+.ai-floating-icon.dragging.docked-right .ai-floating-icon-inner {
+  border-radius: 50% !important;
+}
+
+.ai-floating-icon:hover .ai-floating-icon-inner {
+  box-shadow: var(--shadow-md-dark);
+}
+
+[data-theme="dark"] .ai-floating-icon:hover .ai-floating-icon-inner {
+  box-shadow: var(--shadow-md-dark);
+}
+
+/* ========================================
+   CONTEXT MENU - FIXED THEME SYNC
+   ======================================== */
+.ai-context-menu {
+  position: fixed !important;
+  z-index: 2147483643 !important;
+  background: var(--bg-primary, #ffffff) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--spacing-sm) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-5px) scale(0.95) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-sizing: border-box !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  line-height: normal !important;
+  margin: 0 !important;
+  min-width: auto !important;
+  max-width: none !important;
+}
+
+.ai-context-menu.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.ai-context-menu-icons {
+  display: flex !important;
+  gap: var(--spacing-sm-md) !important;
+  align-items: center !important;
+  flex-direction: row !important;
+  margin: 0 !important;
+}
+
+/* Context menu success state */
+.context-menu-success {
+  background: var(--bg-success) !important;
+  color: var(--color-success) !important;
+}
+
+.context-menu-success svg {
+  stroke: currentColor !important;
+}
+
+/* ✅ FIXED: Icon alignment */
+.ai-context-icon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: var(--bg-icon-default, rgba(0, 0, 0, 0.03)) !important;
+  border-radius: var(--radius-md) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  font-family: inherit !important;
+  line-height: 1 !important;
+  position: relative !important;
+}
+
+/* ✅ CSS Tooltip cho icon - Loại bỏ tooltip mặc định */
+.ai-context-icon[data-tooltip] {
+  pointer-events: auto !important;
+}
+
+/* ✅ CSS Tooltip cho icon */
+.ai-context-icon[data-tooltip]::before {
+  content: attr(data-tooltip) !important;
+  position: absolute !important;
+  bottom: calc(100% + 8px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: #ffffff !important;
+  padding: 8px 12px !important; /* Tăng padding để text không dính với viền, đặc biệt ở các góc bo tròn */
+  border-radius: var(--radius-sm-md, 6px) !important;
+  font-size: var(--font-sm) !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
+  z-index: 2147483647 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  max-width: 200px !important;
+  word-wrap: break-word !important;
+  text-align: center !important;
+  line-height: 1.4 !important;
+}
+
+/* Arrow cho tooltip */
+.ai-context-icon[data-tooltip]::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: calc(100% + 2px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  border: 4px solid transparent !important;
+  border-top-color: rgba(0, 0, 0, 0.85) !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
+  z-index: 2147483647 !important;
+}
+
+/* Hiển thị tooltip khi hover */
+.ai-context-icon[data-tooltip]:hover::before,
+.ai-context-icon[data-tooltip]:hover::after {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Tooltip cho dropdown icons (hiển thị bên phải) */
+.ai-screenshot-dropdown .ai-context-icon[data-tooltip]::before {
+  bottom: auto !important;
+  left: calc(100% + 8px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) translateX(0) !important;
+  white-space: nowrap !important;
+}
+
+.ai-screenshot-dropdown .ai-context-icon[data-tooltip]::after {
+  bottom: auto !important;
+  left: calc(100% + 2px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) translateX(0) !important;
+  border-top-color: transparent !important;
+  border-right-color: rgba(0, 0, 0, 0.9) !important;
+  border-left-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+/* XÓA HOÀN TOÀN tooltip mặc định của trình duyệt */
+/* JavaScript sẽ xóa title attribute, CSS chỉ là backup để ẩn tooltip nếu vẫn hiển thị */
+
+/* Ngăn tooltip mặc định từ title attribute - ẩn tooltip nếu vẫn hiển thị */
+.ai-context-icon[title],
+.ai-context-icon[title=""] {
+  position: relative !important;
+}
+
+/* Ngăn tooltip mặc định từ img alt */
+.ai-context-icon img {
+  pointer-events: none !important;
+}
+
+.ai-context-icon img[alt],
+.ai-context-icon img[alt=""] {
+  pointer-events: none !important;
+}
+
+/* Ẩn tooltip mặc định của trình duyệt bằng cách override */
+.ai-context-icon[data-tooltip] * {
+  pointer-events: none !important;
+}
+
+.ai-context-icon[data-tooltip] {
+  pointer-events: auto !important;
+}
+
+.ai-context-icon:hover {
+  background: var(--bg-hover, rgba(59, 130, 246, 0.15)) !important;
+  transform: scale(1.05) !important;
+}
+
+.ai-context-icon:active {
+  transform: scale(0.95) !important;
+}
+
+.ai-context-icon svg,
+.ai-context-icon img {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  display: block !important;
+  margin: auto !important;
+  box-sizing: border-box !important;
+}
+
+.ai-context-icon svg {
+  stroke: var(--text-primary, #374151) !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+}
+
+.ai-context-icon img {
+  object-fit: contain !important;
+  filter: var(--icon-filter, none) !important;
+  vertical-align: middle !important;
+}
+
+.ai-context-icon:hover svg {
+  stroke: var(--color-primary, #3b82f6) !important;
+}
+
+.ai-context-icon:hover img {
+  opacity: 0.8 !important;
+}
+
+/* ========================================
+   SCREENSHOT DROPDOWN - FIXED ALIGNMENT
+   ======================================== */
+.ai-context-icon-wrapper {
+  position: relative !important;
+}
+
+.ai-screenshot-dropdown {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: var(--bg-primary, #ffffff) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--spacing-sm-md) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  display: none !important;
+  flex-direction: column !important;
+  gap: var(--spacing-xs) !important;
+  z-index: 10 !important;
+  min-width: 44px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.ai-screenshot-dropdown.show {
+  display: flex !important;
+}
+
+/* ✅ FIXED: Dropdown icon alignment */
+.ai-screenshot-dropdown .ai-context-icon {
+  width: 44px !important;
+  height: 36px !important;
+  min-width: 44px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+}
+
+.ai-screenshot-dropdown .ai-context-icon svg,
+.ai-screenshot-dropdown .ai-context-icon img {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  margin: auto !important;
+}
+
+/* ========================================
+   THEME SYNC - Dark Mode
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+  .ai-context-menu {
+    background: var(--bg-secondary, #2d2d2d) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  .ai-context-icon {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  .ai-context-icon svg {
+    stroke: var(--text-primary, #e5e7eb) !important;
+  }
+  
+  .ai-context-icon:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+  }
+  
+  .ai-context-icon:hover svg {
+    stroke: var(--color-primary, #60a5fa) !important;
+  }
+  
+  .ai-screenshot-dropdown {
+    background: var(--bg-secondary, #2d2d2d) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* ✅ Force theme sync with extension settings */
+[data-theme="light"] .ai-context-menu {
+  background: var(--bg-primary, #ffffff) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .ai-context-icon {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .ai-context-icon svg {
+  stroke: var(--text-primary, #374151) !important;
+}
+
+[data-theme="light"] .ai-context-icon:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="light"] .ai-screenshot-dropdown {
+  background: var(--bg-primary, #ffffff) !important;
+}
+
+[data-theme="dark"] .ai-context-menu {
+  background: var(--bg-secondary, #2d2d2d) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .ai-context-icon {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .ai-context-icon svg {
+  stroke: var(--text-primary, #e5e7eb) !important;
+}
+
+[data-theme="dark"] .ai-context-icon:hover {
+  background: rgba(59, 130, 246, 0.2) !important;
+}
+
+[data-theme="dark"] .ai-screenshot-dropdown {
+  background: var(--bg-secondary, #2d2d2d) !important;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .ai-action-popup-iframe-container {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    left: 0 !important;
+    top: 0 !important;
+  }
+  
+  .ai-side-panel-container.visible {
+    width: 100%;
+  }
+  
+  .ai-context-menu-icons {
+    gap: var(--spacing-xs) !important;
+  }
+  
+  .ai-context-icon {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+  
+  .ai-context-icon svg,
+  .ai-context-icon img {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+.ai-context-icon:focus-visible,
+.ai-floating-icon:focus-visible {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   PERFORMANCE
+   ======================================== */
+.ai-floating-icon,
+.ai-context-menu,
+.ai-action-popup-iframe-container,
+.ai-side-panel-container {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-floating-icon,
+  .ai-context-menu,
+  .ai-action-popup-iframe-container,
+  .ai-side-panel-container,
+  .ai-context-icon {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Additional styles for floating icon positioning */
+.ai-floating-icon.using-pixel-position {
+  transform: none;
+}
+
+.ai-floating-icon.floating {
+  transition: none !important;
+}
+
+/* Full circle when floating (being dragged) - must override docked states */
+.ai-floating-icon.floating .ai-floating-icon-inner {
+  border-radius: 50% !important;
+}
+
+.ai-floating-icon.floating.docked-left .ai-floating-icon-inner,
+.ai-floating-icon.floating.docked-right .ai-floating-icon-inner {
+  border-radius: 50% !important;
+}
+
+.ai-floating-icon.resizing {
+  transition: none !important;
+}
+

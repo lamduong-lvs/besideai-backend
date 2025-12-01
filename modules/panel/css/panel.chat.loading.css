@@ -1,0 +1,127 @@
+/* panel.chat.loading.css - Loading states and animations */
+
+/* Loading State */
+/* Loading message styles */
+.message.loading-message {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 12px;
+  max-width: 100%;
+  width: 100%;
+  align-items: flex-start;
+  align-self: flex-start;
+}
+
+.message.loading-message .message-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message.loading-message .message-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.message.loading-message .message-content {
+  padding: 8px 12px !important;
+  background: var(--bg-ai-message, rgba(59, 130, 246, 0.1)) !important;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary, #333);
+  word-wrap: break-word;
+  min-height: auto;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.loading-content {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+.message.loading-message .loading-text {
+  color: var(--text-primary, #333) !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  white-space: nowrap;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  font-weight: normal;
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.loading-dots .dot {
+  display: inline-block;
+  animation: loadingDot 1.4s infinite;
+  opacity: 0;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingDot {
+  0%, 60%, 100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

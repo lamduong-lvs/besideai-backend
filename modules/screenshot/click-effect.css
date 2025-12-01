@@ -1,0 +1,138 @@
+/* screenshot/click-effect.css - FIXED VERSION */
+
+/* ✅ PROTECTION: Prevent website CSS from affecting click effects */
+/* ⚠️ DO NOT USE "all: initial" - it resets inline styles! */
+.recorder-click-effect {
+    /* Position & Layout */
+    position: fixed !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    
+    /* Pointer events */
+    pointer-events: none !important;
+    
+    /* Z-index */
+    z-index: 999997 !important;
+    
+    /* Size & Spacing */
+    width: 50px !important;
+    height: 50px !important;
+    margin-left: -25px !important;
+    margin-top: -25px !important;
+    padding: 0 !important;
+    
+    /* Visual */
+    border-radius: 50% !important;
+    background: transparent !important;
+    
+    /* Animation */
+    animation: clickRipple 0.6s ease-out forwards !important;
+    
+    /* Reset potentially conflicting properties */
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+}
+
+/* Left Click - Yellow */
+.recorder-click-effect.left {
+    border: 3px solid #ffd700 !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6),
+                0 0 20px rgba(255, 215, 0, 0.4),
+                inset 0 0 10px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Right Click - Red */
+.recorder-click-effect.right {
+    border: 3px solid #ff4444 !important;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.6),
+                0 0 20px rgba(255, 68, 68, 0.4),
+                inset 0 0 10px rgba(255, 68, 68, 0.2) !important;
+}
+
+/* Ripple Animation */
+@keyframes clickRipple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Inner Dot */
+.recorder-click-effect::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    animation: dotPulse 0.6s ease-out forwards !important;
+}
+
+.recorder-click-effect.left::before {
+    background: #ffd700 !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
+}
+
+.recorder-click-effect.right::before {
+    background: #ff4444 !important;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.8) !important;
+}
+
+@keyframes dotPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Outer Ring */
+.recorder-click-effect::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    animation: ringExpand 0.6s ease-out forwards !important;
+}
+
+.recorder-click-effect.left::after {
+    border: 2px solid #ffd700 !important;
+}
+
+.recorder-click-effect.right::after {
+    border: 2px solid #ff4444 !important;
+}
+
+@keyframes ringExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}

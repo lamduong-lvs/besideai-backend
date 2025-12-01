@@ -1,0 +1,1064 @@
+/**
+ * pip-window.css
+ * Complete stylesheet for PiP window with theme support
+ * Version: 2.1.0 - FIXED FOR GOOGLE MEET OVERLAY
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   ROOT VARIABLES
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Light Theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
+    
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
+    
+    --accent-primary: #0d6efd;
+    --accent-hover: #0b5ed7;
+    --accent-light: #e7f1ff;
+    
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
+    --transition: 0.2s ease;
+}
+
+[data-theme="dark"] {
+    /* Dark Theme */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3d3d3d;
+    
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    
+    --border-color: #495057;
+    --border-light: #3d3d3d;
+    
+    --accent-primary: #4dabf7;
+    --accent-hover: #339af0;
+    --accent-light: #1c2841;
+    
+    --success: #51cf66;
+    --warning: #ffd43b;
+    --danger: #ff6b6b;
+    --info: #22b8cf;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════════════ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN CONTAINER
+   ═══════════════════════════════════════════════════════════════ */
+
+/* CRITICAL: PiP Overlay injected into Google Meet page */
+#meetTranslationPiP {
+    position: fixed !important;
+    top: 80px !important;
+    right: 20px !important;
+    width: 450px !important;
+    max-width: 450px !important;
+    height: auto !important;
+    max-height: calc(100vh - 120px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--bg-primary) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-lg) !important;
+    z-index: 9999999 !important;
+    overflow: hidden !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: var(--text-primary) !important;
+    transition: background var(--transition) !important;
+}
+
+/* Standalone window - For pip-window.html popup (not used currently) */
+.translation-pip {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-primary);
+    transition: background var(--transition);
+}
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .pip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    gap: 12px;
+}
+
+#meetTranslationPiP .pip-title {
+    flex: 1; /* Cho phép nó chiếm không gian còn lại */
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    
+    /* Các thuộc tính để kéo thả (kế thừa từ .pip-header) */
+    cursor: move; 
+    
+    /* Đề phòng tên quá dài */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 4px; /* Thêm một chút đệm bên trái */
+}
+
+#meetTranslationPiP .pip-controls {
+    display: flex;
+    gap: 8px;
+}
+
+#meetTranslationPiP .control-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+#meetTranslationPiP .control-btn svg {
+    color: inherit;
+}
+
+#meetTranslationPiP .control-btn:hover svg {
+    color: var(--text-primary);
+}
+
+#meetTranslationPiP .control-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+#meetTranslationPiP .control-btn.close-btn:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Close button specific styling */
+#meetTranslationPiP .control-btn.close-btn {
+    color: var(--text-secondary);
+	top: 5px;
+    right: 7px;
+}
+
+#meetTranslationPiP .control-btn.close-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+#meetTranslationPiP .control-btn.close-btn:hover {
+    background: var(--danger) !important;
+    color: white !important;
+}
+
+#meetTranslationPiP .control-btn.close-btn:hover svg,
+#meetTranslationPiP .control-btn.close-btn:hover svg path {
+    stroke: white !important;
+    color: white !important;
+}
+
+/* Theme Toggle Icons */
+[data-theme="dark"] .icon-light {
+    display: none;
+}
+
+[data-theme="dark"] .icon-dark {
+    display: block !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .pip-tabs {
+    display: flex;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 16px;
+    gap: 4px;
+}
+
+#meetTranslationPiP .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all var(--transition);
+}
+
+#meetTranslationPiP .tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
+#meetTranslationPiP .tab-btn.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+#meetTranslationPiP .tab-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB CONTENT
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .pip-body {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+#meetTranslationPiP .tab-content {
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+}
+
+#meetTranslationPiP .tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 1: TRANSLATION (LIVE)
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .translation-display {
+    padding: 16px;
+}
+
+#meetTranslationPiP .translation-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+#meetTranslationPiP .translation-item.live {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--accent-light);
+}
+
+#meetTranslationPiP .translation-section {
+    margin-bottom: 16px;
+}
+
+#meetTranslationPiP .translation-section:last-child {
+    margin-bottom: 0;
+}
+
+#meetTranslationPiP .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+#meetTranslationPiP .speaker-name {
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.original-text,
+#meetTranslationPiP .translated-text {
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+#meetTranslationPiP .placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 2: HISTORY
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .history-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#meetTranslationPiP .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+#meetTranslationPiP .history-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+#meetTranslationPiP .history-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* THÊM MỚI: Căn chỉnh nhóm nút và stats bên phải */
+#meetTranslationPiP .history-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Khoảng cách giữa stats và nút */
+}
+
+#meetTranslationPiP .history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+#meetTranslationPiP .history-entry {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all var(--transition);
+}
+
+#meetTranslationPiP .history-entry:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+#meetTranslationPiP .history-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+#meetTranslationPiP .history-speaker {
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+#meetTranslationPiP .history-timestamp {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+#meetTranslationPiP .history-content {
+    display: grid;
+    gap: 12px;
+}
+
+.history-original,
+#meetTranslationPiP .history-translated {
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-sm);
+}
+
+#meetTranslationPiP .history-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+#meetTranslationPiP .history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+#meetTranslationPiP .history-empty svg {
+    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+
+#meetTranslationPiP .history-empty p {
+    margin: 4px 0;
+}
+
+#meetTranslationPiP .text-small {
+    font-size: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 3: SUMMARY
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .summary-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#meetTranslationPiP .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+#meetTranslationPiP .summary-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+#meetTranslationPiP .summary-actions {
+    display: flex;
+    gap: 8px;
+}
+
+#meetTranslationPiP .summary-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+#meetTranslationPiP .summary-result {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#meetTranslationPiP .summary-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
+#meetTranslationPiP .summary-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.summary-section p,
+#meetTranslationPiP .summary-section ul {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+#meetTranslationPiP .summary-section ul {
+    padding-left: 24px;
+}
+
+#meetTranslationPiP .summary-section li {
+    margin-bottom: 8px;
+}
+
+#meetTranslationPiP .action-items li {
+    background: var(--bg-primary);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    list-style: none;
+}
+
+#meetTranslationPiP .action-items strong {
+    color: var(--accent-primary);
+}
+
+#meetTranslationPiP .deadline {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: 8px;
+}
+
+#meetTranslationPiP .summary-meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+#meetTranslationPiP .summary-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+#meetTranslationPiP .summary-empty svg {
+    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+
+#meetTranslationPiP .summary-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+#meetTranslationPiP .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+#meetTranslationPiP .status-indicator.status-loading {
+    background: var(--info);
+}
+
+#meetTranslationPiP .status-indicator.status-success {
+    background: var(--success);
+}
+
+#meetTranslationPiP .status-indicator.status-error {
+    background: var(--danger);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 4: SETTINGS
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .settings-container {
+    padding: 16px;
+    max-width: 600px;
+}
+
+#meetTranslationPiP .settings-container h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+#meetTranslationPiP .settings-group {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+#meetTranslationPiP .settings-group:last-of-type {
+    border-bottom: none;
+}
+
+#meetTranslationPiP .settings-group h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+#meetTranslationPiP .setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+#meetTranslationPiP .setting-item label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.setting-item select,
+#meetTranslationPiP .setting-item input[type="number"] {
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 13px;
+    min-width: 150px;
+}
+
+#meetTranslationPiP .setting-item.checkbox {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+#meetTranslationPiP .setting-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+#meetTranslationPiP .settings-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+#meetTranslationPiP .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#meetTranslationPiP .btn-primary {
+    background: var(--accent-primary);
+    color: white;
+}
+
+#meetTranslationPiP .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+#meetTranslationPiP .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+#meetTranslationPiP .btn-secondary:hover:not(:disabled) {
+    background: var(--bg-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATUS BAR
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .pip-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+#meetTranslationPiP .pip-status .status-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORMAT DIALOG
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .format-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+#meetTranslationPiP .dialog-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#meetTranslationPiP .dialog-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    min-width: 300px;
+    box-shadow: var(--shadow-lg);
+}
+
+#meetTranslationPiP .dialog-content h4 {
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+#meetTranslationPiP .format-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+#meetTranslationPiP .format-option {
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+#meetTranslationPiP .format-option:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+}
+
+#meetTranslationPiP .btn-cancel {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+    #meetTranslationPiP .pip-header {
+        padding: 8px 12px;
+    }
+    
+    #meetTranslationPiP .pip-tabs {
+        padding: 0 12px;
+    }
+    
+    #meetTranslationPiP .tab-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    #meetTranslationPiP .tab-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .hidden {
+    display: none !important;
+}
+
+#meetTranslationPiP .text-center {
+    text-align: center;
+}
+
+#meetTranslationPiP .text-muted {
+    color: var(--text-muted);
+}
+
+#meetTranslationPiP .mt-1 { margin-top: 8px; }
+#meetTranslationPiP .mt-2 { margin-top: 16px; }
+#meetTranslationPiP .mb-1 { margin-bottom: 8px; }
+#meetTranslationPiP .mb-2 { margin-bottom: 16px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SVG ICON FIX (CRITICAL)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Force SVG visibility and proper rendering */
+#meetTranslationPiP .pip-controls svg,
+#meetTranslationPiP .pip-drag-handle svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+/* Ensure SVG elements inherit color properly */
+#meetTranslationPiP .control-btn svg path,
+#meetTranslationPiP .control-btn svg circle,
+#meetTranslationPiP .control-btn svg line,
+#meetTranslationPiP .control-btn svg polyline {
+    vector-effect: non-scaling-stroke;
+}
+
+/* Force stroke color inheritance */
+#meetTranslationPiP .control-btn svg[fill="none"] path,
+#meetTranslationPiP .control-btn svg[fill="none"] circle,
+#meetTranslationPiP .control-btn svg[fill="none"] line,
+#meetTranslationPiP .control-btn svg[fill="none"] polyline {
+    stroke: currentColor !important;
+}
+
+/* Force fill color for filled SVGs */
+#meetTranslationPiP .control-btn svg[fill="currentColor"],
+#meetTranslationPiP .control-btn svg[fill="currentColor"] path,
+#meetTranslationPiP .control-btn svg[fill="currentColor"] circle {
+    fill: currentColor !important;
+    stroke: none !important;
+}
+
+/* Dark mode icon toggle */
+#meetTranslationPiP[data-theme="light"] .icon-dark {
+    display: none !important;
+}
+
+#meetTranslationPiP[data-theme="dark"] .icon-light {
+    display: none !important;
+}
+
+#meetTranslationPiP[data-theme="dark"] .icon-dark {
+    display: block !important;
+}
+
+/* Ensure visibility on hover */
+#meetTranslationPiP .control-btn:hover svg {
+    opacity: 1 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESIZE HANDLE (NEW)
+   ═══════════════════════════════════════════════════════════════ */
+
+#meetTranslationPiP .pip-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    z-index: 10;
+    
+    /* Biểu tượng 3 gạch chéo */
+    background: linear-gradient(
+        to left top,
+        transparent 45%,
+        var(--text-muted) 45%,
+        var(--text-muted) 55%,
+        transparent 55%,
+        transparent 65%,
+        var(--text-muted) 65%,
+        var(--text-muted) 75%,
+        transparent 75%
+    );
+    opacity: 0.5;
+    transition: opacity var(--transition);
+}
+
+#meetTranslationPiP .pip-resize-handle:hover {
+    opacity: 1;
+}
+
+#historyList {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+}
+
+/* Link Popup */
+.link-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.popup-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: popupSlideIn 0.3s ease;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-content h4 {
+    margin: 0 0 16px 0;
+    color: #f86a01;
+    font-size: 18px;
+}
+
+.link-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.link-container input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: monospace;
+    background: #f5f5f5;
+}
+
+.link-container input:focus {
+    outline: none;
+    border-color: #f86a01;
+    background: white;
+}
+
+.link-container .btn {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.popup-actions .btn {
+    padding: 10px 20px;
+}

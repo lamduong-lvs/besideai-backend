@@ -1,0 +1,114 @@
+/* theme-light.css - Light Theme Variables */
+/* Note: Base variables are defined in global.css */
+/* This file only contains theme-specific overrides */
+
+[data-theme="light"],
+:root {
+  /* ═══════════════════════════════════════
+     BACKGROUNDS (Light Theme)
+     ═══════════════════════════════════════ */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FAFAFA;
+  --bg-tertiary: #F5F5F5;
+  --bg-header: #FFFFFF;
+  --bg-footer: #FFFFFF;
+  --bg-message: #FEFEFE;
+  --bg-ai-message: #F8FAFC;
+  --bg-input: #FFFFFF;
+  --bg-hover: #FFF5ED;
+  --bg-active: #FFE8D6;
+  --bg-disabled: #F0F0F0;
+  --bg-icon: #F5F7FA;
+  --bg-icon-hover: #FFF5ED;
+  --bg-context-menu: rgba(248, 249, 250, 0.85);
+  --bg-popup: #FFFFFF;
+  --bg-code: #F5F5F5;
+  --bg-code-block: #2D2D2D;
+  --bg-info: #E3F2FD;
+  --bg-edit: #FAFAFA;
+  
+  /* ═══════════════════════════════════════
+     TEXT COLORS (Light Theme)
+     ═══════════════════════════════════════ */
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-placeholder: #808080;
+  --text-link: #f86a01;
+  --text-link-hover: #d45a01;
+  
+  /* ═══════════════════════════════════════
+     BORDERS (Light Theme)
+     ═══════════════════════════════════════ */
+  --border-color: #E5E5E5;
+  --border-light: #F0F0F0;
+  --border-focus: #f86a01;
+  --border-hover: #FFE8D6;
+  
+  /* ═══════════════════════════════════════
+     SCROLLBAR (Light Theme)
+     ═══════════════════════════════════════ */
+  --scrollbar-thumb: #C0C0C0;
+  --scrollbar-thumb-hover: #A0A0A0;
+  
+  /* ═══════════════════════════════════════
+     CODE COLORS (Light Theme)
+     ═══════════════════════════════════════ */
+  --text-code: #e83e8c;
+  --text-code-block: #d4d4d4;
+  
+  /* ═══════════════════════════════════════
+     ICON FILTERS (Light Theme)
+     ═══════════════════════════════════════ */
+  --icon-filter: none;
+  --icon-shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* ═══════════════════════════════════════
+     INPUT MODULE (Light Theme)
+     ═══════════════════════════════════════ */
+  --input-bg: #FFFFFF;
+  --input-wrapper-bg: transparent;
+  --input-border-radius: 8px;
+  --input-wrapper-border-radius: 20px;
+  --input-padding: 12px;
+  --input-transition-duration: 200ms;
+  
+  --textarea-text-color: #1f2937;
+  --textarea-placeholder-color: #9ca3af;
+  --textarea-max-height: 120px;
+  
+  --toolbar-padding: 6px 10px;
+  --toolbar-gap: 8px;
+  --toolbar-button-gap: 4px;
+  --toolbar-hover-bg: #f5f5f5;
+  --model-icon-color: #6366f1;
+  --model-name-color: #1f2937;
+  --dropdown-arrow-color: #6b7280;
+  
+  --action-btn-bg: #FFFFFF;
+  --action-btn-border: #e0e0e0;
+  --action-btn-text: #1f2937;
+  --action-btn-hover-bg: #f5f5f5;
+  --action-btn-hover-border: #d0d0d0;
+  --action-btn-active-bg: #f86a01;
+  --action-btn-active-border: #f86a01;
+  --action-btn-active-text: #FFFFFF;
+  
+  --mic-send-btn-bg: #f86a01;
+  --mic-send-btn-color: #FFFFFF;
+  --mic-send-btn-hover-bg: #d45a01;
+  
+  --footer-padding: 8px 12px;
+  --footer-text-color: #6b7280;
+  --footer-value-color: #1f2937;
+  --footer-icon-color: #6b7280;
+  --footer-icon-hover-bg: #f5f5f5;
+  --upgrade-text-color: #6366f1;
+  
+  --token-display-bg: rgba(99, 102, 241, 0.08);
+  --token-display-border: rgba(99, 102, 241, 0.15);
+  --token-display-hover-bg: rgba(99, 102, 241, 0.12);
+  --token-display-hover-border: rgba(99, 102, 241, 0.25);
+  
+  --attachments-border-color: #e0e0e0;
+  --attachment-border: #e0e0e0;
+}

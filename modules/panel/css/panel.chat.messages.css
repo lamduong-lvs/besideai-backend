@@ -1,0 +1,322 @@
+/* panel.chat.messages.css - Message bubbles and content */
+
+/* Message Bubbles - AVATAR AT TOP */
+.message {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 12px;
+  width: fit-content;
+  align-items: flex-start;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  max-width: 95%;
+}
+
+.message.assistant {
+  align-self: flex-start;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.message-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Avatar từ Gmail (ảnh thật) cần object-fit: cover và bo tròn */
+.message-avatar img.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+[data-theme="dark"] .message-avatar {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.message-body { 
+  flex: 1; 
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.message-content, .markdown-content {
+  padding: 8px 12px;
+  background: var(--bg-message);
+  border-radius: 12px;
+  font-size: var(--font-base-md);
+  line-height: 1.65;
+  color: var(--text-primary);
+  word-wrap: break-word;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+/* When message has attachments, align content to right */
+.message.user .message-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.message.user .attached-files-container {
+  align-self: flex-end;
+  width: 100%;
+}
+
+.message.user .message-content.has-attachments {
+  align-self: flex-end;
+  margin-left: auto;
+  max-width: calc(100% - 50px);
+  width: fit-content;
+}
+
+.message.user .message-content {
+  background: var(--bg-message);
+  color: var(--text-primary);
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+.message.user .message-content a {
+  color: var(--color-link);
+}
+
+.message.assistant .message-content { 
+  background: var(--bg-ai-message); 
+  color: var(--text-primary);
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+/* Hide background when content is empty or only has cursor */
+.message.assistant .message-content:empty {
+  background: transparent !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide background when only cursor exists (using class-based approach) */
+.message.assistant .message-content.has-cursor-only {
+  background: transparent !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Show background when there's actual content */
+.message.assistant .message-content.has-content {
+  background: var(--bg-ai-message) !important;
+}
+
+.message-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 4px;
+  gap: 8px;
+}
+
+.timestamp { 
+  font-size: var(--font-xxs);
+  opacity: 0.4;
+  color: var(--text-secondary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Streaming cursor - circular, black, fast blinking */
+.streaming-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #000000;
+  border-radius: 50%;
+  animation: cursorPulse 0.5s ease-in-out infinite;
+  margin-left: 3px;
+  vertical-align: middle;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Remove any duplicate cursors */
+.streaming-cursor + .streaming-cursor {
+  display: none !important;
+}
+
+@keyframes cursorPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+}
+
+/* Dark theme - cursor stays black for visibility */
+[data-theme="dark"] .streaming-cursor {
+  background: #000000;
+}
+
+/* Ensure cursor doesn't create line breaks */
+.message-content .streaming-cursor,
+.thinking-content .streaming-cursor {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ========================================
+   THINKING CONTAINER - Hiển thị phần suy nghĩ của AI
+   ======================================== */
+.thinking-container {
+  display: none;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--bg-thinking, rgba(59, 130, 246, 0.08));
+  border: 1px solid var(--border-thinking, rgba(59, 130, 246, 0.2));
+  border-radius: 12px;
+  animation: thinkingFadeIn 0.3s ease-in;
+  transition: background 0.2s ease, border 0.2s ease, padding 0.2s ease;
+}
+
+/* Khi thinking đã completed và content bị ẩn - bỏ nền và border */
+.thinking-container.collapsed {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+/* Khi collapsed, header không cần margin-bottom */
+.thinking-container.collapsed .thinking-header {
+  margin-bottom: 0;
+}
+
+@keyframes thinkingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thinking-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: var(--font-base-md);
+  font-weight: 500;
+  color: var(--text-thinking, rgba(59, 130, 246, 0.9));
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+.thinking-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  animation: thinkingPulse 2s ease-in-out infinite;
+}
+
+.thinking-icon.thinking-icon-paused {
+  animation: none;
+}
+
+@keyframes thinkingPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.thinking-label {
+  font-weight: 500;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+.thinking-label.clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.thinking-label.clickable:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.thinking-content {
+  font-size: var(--font-base-md);
+  line-height: 1.6;
+  color: var(--text-thinking-content, var(--text-primary));
+  padding-left: 24px;
+  opacity: 0.85;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+.thinking-content p {
+  margin: 0.5em 0;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+.thinking-content p:first-child {
+  margin-top: 0;
+}
+
+.thinking-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .thinking-container {
+  background: var(--bg-thinking, rgba(59, 130, 246, 0.12));
+  border-color: var(--border-thinking, rgba(59, 130, 246, 0.3));
+}
+
+[data-theme="dark"] .thinking-header {
+  color: var(--text-thinking, rgba(147, 197, 253, 0.9));
+}
+
+[data-theme="dark"] .thinking-content {
+  color: var(--text-thinking-content, rgba(255, 255, 255, 0.85));
+}
+

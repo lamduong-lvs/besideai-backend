@@ -1,0 +1,323 @@
+/* ========================================
+   GLOBAL DESIGN SYSTEM
+   Single Source of Truth cho toàn bộ Extension
+   ======================================== */
+
+:root {
+  /* ═══════════════════════════════════════
+     PRIMARY COLORS
+     ═══════════════════════════════════════ */
+  --color-primary: #f86a01;
+  --color-primary-dark: #d45a01;
+  --color-primary-darker: #b84a01;
+  --color-primary-hover: #d45a01;
+  --color-primary-light: #ff8a2e;
+  --color-primary-lighter: #ffaa5c;
+  --color-primary-alpha: rgba(248, 106, 1, 0.1);
+  --color-primary-alpha-light: rgba(248, 106, 1, 0.05);
+  --color-primary-alpha-medium: rgba(248, 106, 1, 0.15);
+  
+  /* Status Colors */
+  --color-success: #4CAF50;
+  --color-error: #F44336;
+  --color-warning: #FF9800;
+  --color-info: #2196F3;
+  
+  /* Status Background Colors */
+  --bg-success: rgba(76, 175, 80, 0.1);
+  --bg-error: rgba(244, 67, 54, 0.1);
+  --bg-warning: rgba(255, 152, 0, 0.1);
+  --bg-info: rgba(33, 150, 243, 0.1);
+  
+  /* Delete/Danger Colors */
+  --color-delete: #F44336;
+  --color-delete-hover: #D32F2F;
+  
+  /* Links */
+  --color-link: #f86a01;
+  --color-link-hover: #d45a01;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #f86a01 0%, #d45a01 100%);
+  --gradient-primary-light: linear-gradient(135deg, #ff8a2e 0%, #f86a01 100%);
+  --gradient-primary-vertical: linear-gradient(to bottom, #f86a01 0%, #d45a01 100%);
+  --gradient-secondary: linear-gradient(to right, #f093fb, #f5576c);
+  --gradient-warning: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  --gradient-success-primary: linear-gradient(to right, var(--color-success), var(--color-primary));
+  
+  /* Overlay Colors */
+  --color-overlay-dark: rgba(0, 0, 0, 0.6);
+  --bg-overlay-light: rgba(255, 255, 255, 0.8);
+  
+  /* Text on colored backgrounds */
+  --color-text-on-primary: #ffffff;
+  --color-text-on-tooltip: #ffffff;
+  --color-tooltip-bg: rgba(32, 33, 36, 0.95);
+  
+  /* Shadow colors for specific states */
+  --shadow-primary-sm: 0 2px 4px rgba(248, 106, 1, 0.1);
+  --shadow-primary-md: 0 4px 12px rgba(248, 106, 1, 0.15);
+  --shadow-primary-lg: 0 8px 24px rgba(248, 106, 1, 0.2);
+  --shadow-primary-xl: 0 16px 48px rgba(248, 106, 1, 0.25);
+  --shadow-warning-sm: 0 2px 8px rgba(238, 90, 111, 0.3);
+  --shadow-warning-md: 0 4px 12px rgba(238, 90, 111, 0.5);
+  
+  /* ═══════════════════════════════════════
+     SPACING SYSTEM
+     ═══════════════════════════════════════ */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-sm-md: 6px;
+  --spacing-md-sm: 10px;
+  --spacing-md: 16px;
+  --spacing-md-lg: 12px;
+  --spacing-lg: 24px;
+  --spacing-lg-xl: 20px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* ═══════════════════════════════════════
+     BORDER RADIUS
+     ═══════════════════════════════════════ */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ═══════════════════════════════════════
+     SHADOWS
+     ═══════════════════════════════════════ */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-sm-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-md-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-md-dark: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --shadow-lg-light: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+  --shadow-xl-dark: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  /* ═══════════════════════════════════════
+     TRANSITIONS
+     ═══════════════════════════════════════ */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-slower: 0.5s ease;
+  
+  /* ═══════════════════════════════════════
+     TYPOGRAPHY
+     ═══════════════════════════════════════ */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-google: 'Google Sans', 'Roboto', Arial, sans-serif;
+  --font-family-mono: 'Courier New', 'Consolas', 'Monaco', monospace;
+  
+  /* Font Sizes */
+  --font-xxs: 10px;
+  --font-xs: 11px;
+  --font-sm: 12px;
+  --font-sm-md: 13px;
+  --font-base: 14px;
+  --font-base-md: 15px;
+  --font-lg: 16px;
+  --font-xl-md: 18px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-2xl-lg: 28px;
+  --font-3xl: 32px;
+  --font-4xl: 48px;
+  --font-5xl: 64px;
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  --leading-loose: 2;
+  
+  /* ═══════════════════════════════════════
+     BORDER WIDTH
+     ═══════════════════════════════════════ */
+  --border-width-thin: 1px;
+  --border-width-base: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  --border-width-thicker: 4px;
+  
+  /* ═══════════════════════════════════════
+     Z-INDEX LAYERS
+     ═══════════════════════════════════════ */
+  --z-floating-icon: 999999;
+  --z-context-menu: 999998;
+  --z-action-popup: 999997;
+  --z-settings: 1000000;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  
+  /* ═══════════════════════════════════════
+     TOOLTIP SYSTEM
+     ═══════════════════════════════════════ */
+  /* Base Styles */
+  --tooltip-bg: rgba(32, 33, 36, 0.95);
+  --tooltip-color: #ffffff;
+  --tooltip-padding: 8px 12px;
+  --tooltip-radius: var(--radius-md);
+  --tooltip-font-size: var(--font-sm);
+  --tooltip-font-weight: 400;
+  --tooltip-line-height: 1.4;
+  
+  /* Sizing */
+  --tooltip-max-width: 320px;
+  --tooltip-min-width: 60px;
+  
+  /* Positioning */
+  --tooltip-offset: 8px;
+  --tooltip-arrow-size: 6px;
+  
+  /* Effects */
+  --tooltip-shadow: var(--shadow-lg);
+  --tooltip-z-index: var(--z-tooltip);
+  
+  /* Animation */
+  --tooltip-transition-duration: 0.2s;
+  --tooltip-transition-timing: ease-out;
+  --tooltip-delay: 0.5s;
+  
+  /* ═══════════════════════════════════════
+     LAYOUT (Setting page specific)
+     ═══════════════════════════════════════ */
+  --sidebar-main-width: 240px;
+  --sidebar-sub-width: 240px;
+  --header-height: 64px;
+  
+  /* ═══════════════════════════════════════
+     ICON FILTERS
+     ═══════════════════════════════════════ */
+  --icon-filter: none;
+  --icon-shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ═══════════════════════════════════════
+   ALIASES FOR BACKWARD COMPATIBILITY
+   ═══════════════════════════════════════ */
+
+/* Google Meet module aliases */
+:root {
+  --meet-primary: var(--color-primary);
+  --meet-primary-hover: var(--color-primary-hover);
+  --meet-secondary: var(--text-secondary);
+  --meet-success: var(--color-success);
+  --meet-warning: var(--color-warning);
+  --meet-error: var(--color-error);
+  
+  --meet-bg-primary: var(--bg-primary);
+  --meet-bg-secondary: var(--bg-secondary);
+  --meet-bg-tertiary: var(--bg-secondary);
+  --meet-bg-overlay: rgba(0, 0, 0, 0.6);
+  
+  --meet-text-primary: var(--text-primary);
+  --meet-text-secondary: var(--text-secondary);
+  --meet-text-tertiary: var(--text-placeholder);
+  
+  --meet-border-color: var(--border-color);
+  --meet-border-light: var(--border-color);
+  --meet-border-dark: var(--border-color);
+  
+  --meet-shadow-xs: var(--shadow-xs);
+  --meet-shadow-sm: var(--shadow-sm);
+  --meet-shadow-sm-light: var(--shadow-sm-light);
+  --meet-shadow-md: var(--shadow-md);
+  --meet-shadow-md-light: var(--shadow-md-light);
+  --meet-shadow-md-dark: var(--shadow-md-dark);
+  --meet-shadow-lg: var(--shadow-lg);
+  --meet-shadow-lg-light: var(--shadow-lg-light);
+  --meet-shadow-xl: var(--shadow-xl);
+  --meet-shadow-xl-dark: var(--shadow-xl-dark);
+  
+  --meet-radius-xs: var(--radius-xs);
+  --meet-radius-sm: var(--radius-sm);
+  --meet-radius-md: var(--radius-md);
+  --meet-radius-lg: var(--radius-lg);
+  --meet-radius-xl: var(--radius-xl);
+  --meet-radius-2xl: var(--radius-2xl);
+  --meet-radius-3xl: var(--radius-3xl);
+  --meet-radius-full: var(--radius-full);
+  
+  --meet-space-xxs: var(--spacing-xxs);
+  --meet-space-xs: var(--spacing-xs);
+  --meet-space-sm: var(--spacing-sm);
+  --meet-space-sm-md: var(--spacing-sm-md);
+  --meet-space-md-sm: var(--spacing-md-sm);
+  --meet-space-md: var(--spacing-md);
+  --meet-space-md-lg: var(--spacing-md-lg);
+  --meet-space-lg: var(--spacing-lg);
+  --meet-space-lg-xl: var(--spacing-lg-xl);
+  --meet-space-xl: var(--spacing-xl);
+  --meet-space-2xl: var(--spacing-2xl);
+  
+  --meet-font-family: var(--font-family-google);
+  --meet-font-size-xs: var(--font-xs);
+  --meet-font-size-sm: var(--font-sm);
+  --meet-font-size-base: var(--font-base);
+  --meet-font-size-lg: var(--font-lg);
+  --meet-font-size-xl: var(--font-xl);
+  --meet-font-size-2xl: var(--font-2xl);
+  --meet-font-size-3xl: var(--font-3xl);
+  --meet-font-size-4xl: var(--font-4xl);
+  
+  --meet-leading-none: var(--leading-none);
+  --meet-leading-tight: var(--leading-tight);
+  --meet-leading-snug: var(--leading-snug);
+  --meet-leading-normal: var(--leading-normal);
+  --meet-leading-relaxed: var(--leading-relaxed);
+  --meet-leading-loose: var(--leading-loose);
+  
+  --meet-transition-fast: var(--transition-fast);
+  --meet-transition-base: var(--transition-base);
+  --meet-transition-slow: var(--transition-slow);
+  
+  --meet-z-dropdown: var(--z-dropdown);
+  --meet-z-sticky: var(--z-sticky);
+  --meet-z-fixed: var(--z-fixed);
+  --meet-z-modal-backdrop: var(--z-modal-backdrop);
+  --meet-z-modal: var(--z-modal);
+  --meet-z-popover: var(--z-popover);
+  --meet-z-tooltip: var(--z-tooltip);
+}
+
+/* PiP Window aliases */
+:root {
+  --accent-primary: var(--color-primary);
+  --accent-hover: var(--color-primary-hover);
+  --accent-light: var(--color-primary-light);
+  
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --danger: var(--color-error);
+  --info: var(--color-info);
+}
+
+/* Setting page aliases (for backward compatibility) */
+:root {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-on-primary: #ffffff;
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-hover: var(--bg-hover);
+  --color-border: var(--border-color);
+}
+

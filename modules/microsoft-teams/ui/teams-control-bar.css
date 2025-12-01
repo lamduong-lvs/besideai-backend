@@ -1,0 +1,110 @@
+/**
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │  TEAMS CONTROL BAR CSS - PHIÊN BẢN NÂNG CẤP (Phong cách Meet)   │
+ * │  Sử dụng gradient và hiệu ứng động từ control-bar.css (Meet)    │
+ * └─────────────────────────────────────────────────────────────────┘
+ */
+
+/* * ===== CÁC HIỆU ỨNG (ANIMATIONS) =====
+ * (Copy 100% từ file control-bar.css của Meet)
+ */
+
+/* Animation pulse cho trạng thái BẬT */
+@keyframes pulse-translate {
+    0%, 100% {
+        box-shadow: 0 6px 25px rgba(248, 106, 1, 0.6), 0 0 0 4px rgba(248, 106, 1, 0.2);
+    }
+    50% {
+        box-shadow: 0 6px 30px rgba(248, 106, 1, 0.8), 0 0 0 8px rgba(248, 106, 1, 0.3);
+    }
+}
+
+/* Animation glow khi di chuột (hover) */
+@keyframes glow-gradient {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(248, 106, 1, 0.5);
+    }
+    50% {
+        box-shadow: 0 6px 30px rgba(248, 106, 1, 0.8);
+    }
+}
+
+/* Animation cho icon (khi BẬT) */
+@keyframes icon-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+
+/* * ===== ÁP DỤNG STYLE VÀO NÚT CỦA TEAMS =====
+ */
+
+/* Lớp (class) chính cho nút */
+.teams-ext-control-btn {
+    /* Kích thước & Căn chỉnh (Giữ nguyên của Teams) */
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 4px;
+    
+    /* Giao diện (Style với màu chủ đạo - Trạng thái TẮT) */
+    background: linear-gradient(135deg, #f86a01 0%, #d45a01 100%) !important;
+    color: #ffffff; /* Màu icon trắng */
+    box-shadow: 0 4px 20px rgba(248, 106, 1, 0.5); /* Shadow với màu chủ đạo */
+
+    /* Hiệu ứng */
+    transition: all 0.3s ease;
+}
+
+/* Khi di chuột vào nút (trạng thái TẮT) */
+.teams-ext-control-btn:not([data-state="true"]):not(.active):hover {
+    /* Gradient hover với màu chủ đạo */
+    background: linear-gradient(135deg, #ff7a1a 0%, #f86a01 100%) !important;
+    /* Animation glow với màu chủ đạo */
+    animation: glow-gradient 2s ease-in-out infinite;
+}
+
+/* Trạng thái BẬT (active) */
+.teams-ext-control-btn[data-state="true"],
+.teams-ext-control-btn.active {
+    /* Gradient active với màu chủ đạo */
+    background: linear-gradient(135deg, #f86a01 0%, #d45a01 100%) !important;
+    color: #ffffff; /* Icon vẫn màu trắng */
+    
+    /* Animation pulse với màu chủ đạo */
+    animation: pulse-translate 2s ease-in-out infinite !important;
+}
+
+/* Khi di chuột vào nút (trạng thái BẬT) */
+/* (Chúng ta muốn nó tiếp tục pulse, không bị glow đè lên) */
+.teams-ext-control-btn[data-state="true"]:hover,
+.teams-ext-control-btn.active:hover {
+    background: linear-gradient(135deg, #f86a01 0%, #d45a01 100%) !important;
+    animation: pulse-translate 2s ease-in-out infinite !important;
+}
+
+/* Icon bên trong nút (img hoặc svg) */
+.teams-ext-control-btn svg,
+.teams-ext-control-btn img {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Animation cho icon (khi BẬT) */
+.teams-ext-control-btn[data-state="true"] svg,
+.teams-ext-control-btn.active svg,
+.teams-ext-control-btn[data-state="true"] img,
+.teams-ext-control-btn.active img {
+    animation: icon-pulse 1s ease-in-out infinite;
+}

@@ -1,0 +1,716 @@
+/* === NÚT "SOẠN AI" MỚI === */
+.ai-compose-trigger-button {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  
+  /* Đồng bộ với nút "Gửi" (Send) của Gmail */
+  height: 36px;
+  border-radius: 18px;
+  padding: 0 var(--spacing-md, 16px);
+  font-size: var(--font-base, 14px);
+  font-weight: 500;
+  
+  margin-right: var(--spacing-sm, 8px); /* Đặt bên trái nút "Gửi" */
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s) ease-in-out;
+  line-height: normal; 
+  display: flex; 
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+}
+
+.ai-compose-trigger-button img.icon {
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  filter: none;
+  vertical-align: middle;
+}
+
+.ai-compose-trigger-button:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.ai-compose-trigger-button:active {
+  transform: translateY(1px);
+  background: var(--bg-hover);
+}
+
+
+/* === CỬA SỔ MODAL (POPUP) === */
+.ai-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-overlay-dark, rgba(0, 0, 0, 0.6));
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.ai-modal-overlay.show {
+  opacity: 1;
+}
+
+.ai-modal-content {
+  position: fixed; 
+  background-color: var(--bg-primary, #fff);
+  padding: 0;
+  width: 700px; 
+  
+  /* SỬA LỖI CHIỀU CAO (từ lượt trước) */
+  height: 650px; /* Chiều cao mặc định khi có tóm tắt */
+  max-height: 90vh;
+  /* XÓA: min-height: 350px; */
+  
+  max-width: 95vw; 
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.15));
+  transition: opacity var(--transition-normal, 0.3s) ease; 
+  resize: none; 
+  min-width: 400px; 
+  overflow: hidden; 
+  display: none; 
+  
+  display: flex;
+  flex-direction: column;
+}
+.ai-modal-overlay.show .ai-modal-content {
+  opacity: 1;
+}
+
+
+/* === HEADER CỦA MODAL (ĐỂ KÉO THẢ) === */
+.ai-modal-header {
+  padding: var(--spacing-md, 16px) 20px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move; 
+  height: 55px;
+  box-sizing: border-box; 
+  flex-shrink: 0; /* Không co lại */
+}
+.ai-modal-title {
+  font-size: var(--font-base, 14px);
+  font-weight: 600;
+  color: var(--text-primary, #202124);
+}
+.ai-modal-close {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text-secondary, #5f6368);
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition-fast, 0.2s);
+}
+.ai-modal-close:hover {
+  color: var(--text-primary, #202124);
+}
+
+
+/* === BODY CỦA MODAL (NỘI DUNG CUỘN) === */
+.ai-modal-body {
+  padding: 0; 
+  overflow: hidden;
+  box-sizing: border-box;
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* === PHẦN TÓM TẮT (PHÍA TRÊN) === */
+#ai-summary-top-pane {
+  padding: 20px 20px 10px 20px;
+  overflow-y: auto;
+  flex-grow: 1; 
+  flex-shrink: 1;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch; 
+  min-height: 100px; 
+  /* (MỚI) Thêm flex để căn giữa wrapper tóm tắt */
+  display: flex;
+  flex-direction: column;
+}
+
+#ai-summary-result {
+  line-height: var(--leading-normal, 1.6);
+  color: var(--text-primary, #202124);
+  word-break: break-word; 
+  font-size: var(--font-base, 14px);
+  /* (MỚI) Thêm flex để chứa wrapper và metadata */
+  display: flex;
+  flex-direction: column;
+}
+
+/* === KHUNG SOẠN THẢO (PHÍA DƯỚI) === */
+#ai-summary-bottom-pane {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0; 
+  flex-shrink: 0;
+  padding: 15px 20px 15px 20px;
+  background-color: var(--bg-secondary, #f8f9fa);
+  box-sizing: border-box;
+  overflow: hidden;
+  max-height: 200px; 
+}
+
+/* === SỬA LỖI CHIỀU CAO LINH ĐỘNG (THÊM MỚI) === */
+/* Khi top-pane bị ẩn (chế độ soạn mới), 
+   bắt bottom-pane co giãn lấp đầy */
+#ai-summary-top-pane[style*="display: none"] + #ai-summary-bottom-pane {
+  flex-grow: 1; /* <-- Cho phép co giãn */
+  max-height: none; /* <-- Bỏ giới hạn chiều cao 200px */
+}
+
+/* Khi bottom-pane đang co giãn (soạn mới), 
+   bắt wrapper bên trong nó cũng co giãn */
+#ai-summary-top-pane[style*="display: none"] + #ai-summary-bottom-pane .ai-compose-input-wrapper {
+    flex-grow: 1; /* <-- Cho phép co giãn */
+}
+
+/* Khi bottom-pane đang co giãn (soạn mới), 
+   bắt input-prompt (text area) bên trong nó cũng co giãn */
+#ai-summary-top-pane[style*="display: none"] + #ai-summary-bottom-pane #ai-compose-prompt-input {
+    flex-grow: 1; /* <-- Cho phép co giãn */
+    /* *** SỬA LỖI 1: Sửa max-height: none; thành min-height: 0; *** */
+    /* để flex-grow hoạt động đúng với overflow: auto */
+    min-height: 0; 
+}
+
+
+.ai-compose-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color, #dadce0);
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--bg-primary, #fff);
+  transition: border-color var(--transition-fast, 0.2s), box-shadow var(--transition-fast, 0.2s);
+  min-height: 0; 
+}
+.ai-compose-input-wrapper:focus-within {
+  border-color: var(--color-primary, #f86a01);
+  box-shadow: 0 0 0 1px var(--color-primary, #f86a01);
+}
+
+#ai-compose-prompt-input {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius-md, 8px) var(--radius-md, 8px) 0 0;
+  padding: var(--spacing-md-sm, 12px);
+  font-size: var(--font-base, 14px);
+  line-height: var(--leading-normal, 1.6); 
+  box-sizing: border-box;
+  overflow-y: auto; 
+  min-height: 48px; 
+  /* *** SỬA LỖI 1: Tăng max-height cho chế độ "reply" *** */
+  max-height: 250px; /* <-- Tăng từ 80px lên 250px */
+  word-break: break-word;
+  white-space: pre-wrap; 
+}
+#ai-compose-prompt-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#ai-compose-prompt-input:empty:before {
+  content: attr(data-placeholder);
+  color: var(--text-placeholder, #999);
+  pointer-events: none;
+  display: block;
+}
+
+
+/* === THANH CONTROLS === */
+.ai-compose-controls {
+  position: relative; 
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  padding: var(--spacing-sm, 8px) 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-primary, #fff);
+  border-top: 1px solid var(--bg-hover, #f1f3f4); 
+  border-radius: 0 0 var(--radius-md, 8px) var(--radius-md, 8px);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+/* Wrapper chung cho control (để chứa icon + select) */
+.ai-control-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-sm, 6px) var(--spacing-sm, 8px);
+  transition: background-color var(--transition-fast, 0.2s);
+  position: relative; 
+  flex-shrink: 0;
+  cursor: pointer;
+  width: 100%;
+  min-width: fit-content;
+}
+.ai-control-wrapper:hover {
+  background-color: var(--bg-hover, #f1f3f4);
+}
+/* Đảm bảo hover hoạt động trên toàn bộ div, nhưng select vẫn có thể click */
+.ai-control-wrapper * {
+  pointer-events: none;
+}
+.ai-control-wrapper select,
+.ai-control-wrapper .ai-control-select {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+.ai-control-wrapper svg,
+.ai-control-wrapper img,
+.ai-control-wrapper img.icon,
+.ai-control-wrapper img.icon-sm,
+.ai-control-wrapper img.icon-md,
+.ai-control-wrapper .icon,
+.ai-control-wrapper .icon-sm,
+.ai-control-wrapper .icon-md {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  fill: var(--text-secondary, #5f6368);
+  flex-shrink: 0;
+  margin-right: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Thêm mũi tên tùy chỉnh cho wrapper */
+.ai-control-wrapper::after {
+  content: '▼';
+  font-size: 10px;
+  color: var(--text-secondary, #5f6368);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; 
+}
+
+
+/* Style cho <select> (Dropdown Ngôn ngữ) */
+.ai-control-select {
+  background-color: transparent;
+  border: none;
+  font-size: var(--font-sm-md, 13px);
+  color: var(--text-primary, #3c4043);
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 4px 20px 4px 4px;
+  margin: 0;
+  flex-shrink: 0;
+  min-width: 80px;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
+  line-height: 1.4;
+  border-radius: var(--radius-xs, 4px);
+  transition: background-color var(--transition-fast, 0.2s);
+}
+.ai-control-select:focus {
+  outline: none;
+  background-color: var(--bg-hover, #f1f3f4);
+}
+.ai-control-select:hover {
+  cursor: pointer;
+  background-color: var(--bg-hover, #f1f3f4);
+}
+/* Style cho option trong dropdown */
+.ai-control-select option {
+  padding: 8px 12px;
+  font-size: var(--font-sm-md, 13px);
+  color: var(--text-primary, #3c4043);
+  background-color: var(--bg-primary, #fff);
+}
+
+
+/* Style cho <button> (Nút Giọng điệu) */
+.ai-control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-sm, 6px) var(--spacing-sm, 8px);
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s);
+  font-size: var(--font-sm-md, 13px);
+  color: var(--text-primary, #3c4043);
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-left: 0;
+  min-width: fit-content;
+}
+.ai-control-btn:hover {
+  background-color: var(--bg-hover, #f1f3f4);
+}
+/* Style cho label bên trong button */
+#ai-compose-options-label {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+.ai-control-btn svg,
+.ai-control-btn img,
+.ai-control-btn img.icon,
+.ai-control-btn img.icon-sm,
+.ai-control-btn img.icon-md,
+.ai-control-btn .icon,
+.ai-control-btn .icon-sm,
+.ai-control-btn .icon-md {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  fill: var(--text-secondary, #5f6368);
+  flex-shrink: 0;
+  margin-right: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+/* Nút Tạo (đẩy sang phải) */
+#ai-compose-send-btn {
+  margin-left: auto; 
+  background-color: var(--color-primary, #f86a01);
+  color: var(--color-text-on-primary, white);
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  font-size: var(--font-base, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s);
+}
+#ai-compose-send-btn:hover {
+  background-color: var(--color-primary-dark, #d45a01);
+}
+#ai-compose-send-btn:disabled {
+  background-color: var(--bg-hover, #f1f3f4);
+  color: var(--text-placeholder, #a6a6a6);
+  cursor: not-allowed;
+}
+
+
+/* === FOOTER CỦA MODAL (CÁC NÚT HÀNH ĐỘNG) === */
+.ai-modal-footer {
+  height: 50px;
+  padding: 0 20px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  align-items: center;
+  box-sizing: border-box;
+  background-color: var(--bg-primary, #fff);
+  flex-shrink: 0; 
+  display: none; 
+}
+.ai-modal-footer.show {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ai-footer-left {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+#ai-refine-prompt-input {
+  width: 100%;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: var(--radius-sm, 6px);
+  padding: var(--spacing-sm, 6px) 10px;
+  font-size: var(--font-sm-md, 13px);
+  box-sizing: border-box;
+}
+#ai-refine-prompt-input:focus {
+  border-color: var(--color-primary, #0066FF);
+  outline: none;
+}
+
+.ai-footer-right {
+  display: flex;
+  gap: 8px;
+}
+.ai-footer-icon-btn {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all var(--transition-fast, 0.2s);
+}
+.ai-footer-icon-btn:hover {
+  background-color: var(--bg-hover, #e8eaed);
+  border-color: var(--bg-hover, #e8eaed);
+}
+.ai-footer-icon-btn svg {
+  width: 18px; 
+  height: 18px;
+  fill: var(--text-secondary, #777);
+}
+
+
+/* === POPUP TÙY CHỌN (Điều chỉnh vị trí) === */
+.ai-options-popup {
+  display: none;
+  position: fixed; 
+  width: 380px;
+  background-color: var(--bg-primary, #fff);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.15));
+  z-index: 10002;
+  padding: var(--spacing-md-sm, 12px);
+  box-sizing: border-box;
+}
+.ai-options-section {
+  margin-bottom: var(--spacing-md-sm, 12px);
+}
+.ai-options-section:last-child {
+  margin-bottom: 0;
+}
+.ai-options-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #5f6368);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm, 8px);
+  padding-left: var(--spacing-xs, 4px);
+}
+.ai-options-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm, 6px);
+}
+.ai-option-btn {
+  background-color: var(--bg-hover, #f1f3f4);
+  border: 1px solid var(--border-color, #dadce0);
+  color: var(--text-primary, #3c4043);
+  border-radius: var(--radius-xs, 4px);
+  padding: 5px 10px;
+  font-size: var(--font-sm-md, 13px);
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s);
+}
+.ai-option-btn:hover {
+  background-color: var(--bg-icon-hover, #e8eaed);
+}
+.ai-option-btn.selected {
+  background-color: var(--color-primary-alpha, rgba(248, 106, 1, 0.1));
+  border-color: var(--color-primary, #f86a01);
+  color: var(--color-primary-dark, #d45a01);
+  font-weight: 500;
+}
+
+
+/* === TRẠNG THÁI LOADING === */
+.ai-modal-loading {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-secondary, #5f6368);
+}
+.ai-modal-loading .spinner {
+  border: 3px solid var(--bg-hover, #f3f3f3);
+  border-top: 3px solid var(--color-primary, #f86a01);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md, 16px);
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === LỖI === */
+#ai-summary-error {
+  display: none;
+  background-color: var(--bg-error, rgba(244, 67, 54, 0.1));
+  border: 1px solid var(--color-error, #d93025);
+  color: var(--color-error, #d93025);
+  padding: var(--spacing-md-sm, 12px);
+  border-radius: var(--radius-xs, 4px);
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+/* === HANDLE RESIZE === */
+.ai-modal-resizer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 0%, transparent 50%, #aaa 50%, #aaa 55%, transparent 55%, transparent 65%, #aaa 65%, #aaa 70%, transparent 70%, transparent 80%, #aaa 80%, #aaa 85%, transparent 85%, transparent 100%);
+  opacity: 0.7;
+  z-index: 10001;
+}
+.ai-modal-resizer:hover { opacity: 1; }
+
+/* === BẢN VÁ KHOẢNG TRẮNG (GIỮ NGUYÊN) === */
+
+#ai-summary-result p, #ai-compose-prompt-input p {
+  margin-bottom: 8px;
+}
+#ai-summary-result ul, #ai-compose-prompt-input ul,
+#ai-summary-result ol, #ai-compose-prompt-input ol {
+  margin-top: 0; 
+  margin-bottom: 8px;
+  padding-left: 30px; 
+}
+#ai-summary-result li, #ai-compose-prompt-input li {
+  margin-bottom: 4px;
+}
+#ai-summary-result li p, #ai-compose-prompt-input li p {
+  margin-bottom: 0;
+}
+#ai-summary-result > :last-child, 
+#ai-compose-prompt-input > :last-child,
+#ai-summary-result > :last-child > :last-child,
+#ai-compose-prompt-input > :last-child > :last-child {
+   margin-bottom: 0;
+}
+#ai-summary-result table {
+  border-collapse: collapse; width: 100%; margin-bottom: var(--spacing-sm, 8px); border: 1px solid var(--border-color, #dadce0); font-size: var(--font-sm-md, 13px);
+}
+#ai-summary-result th,
+#ai-summary-result td {
+  border: 1px solid var(--border-color, #dadce0); padding: var(--spacing-sm, 6px) 10px; text-align: left;
+}
+#ai-summary-result th {
+  background-color: var(--bg-secondary, #f8f9fa); font-weight: 600;
+}
+#ai-summary-result strong, #ai-summary-result b {
+  font-weight: 600;
+}
+
+/* === (MỚI) STYLE CHO TÓM TẮT THU GỌN (MODAL) === */
+
+/* Wrapper cho tóm tắt ban đầu */
+#ai-summary-result .ai-summary-wrapper {
+  align-self: center; /* Yêu cầu: Căn giữa */
+  width: 95%; /* Yêu cầu: Mở rộng gần sát lề */
+  
+  /* Style bong bóng chat AI */
+  background-color: var(--bg-hover, #f1f3f4);
+  border-radius: 18px;
+  padding: 13px;
+  box-sizing: border-box;
+  line-height: var(--leading-normal, 1.5);
+  word-wrap: break-word;
+  
+  /* Style cho thu gọn */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Nội dung tóm tắt bên trong (để căn lề text) */
+.ai-summary-content {
+  text-align: left;
+}
+  
+/* === (MỚI) LOGIC NÚT THU GỌN === */
+
+.ai-collapse-btn {
+  display: none; /* Ẩn mặc định */
+  text-align: center;
+  padding: var(--spacing-sm, 8px) 0 5px 0;
+  color: var(--color-error, #d93025); /* Màu đỏ cho dễ phân biệt */
+  font-weight: 500;
+  cursor: pointer;
+  font-size: var(--font-sm-md, 13px);
+  background: var(--bg-hover, #f1f3f4); /* Nền giống wrapper */
+  /* Thêm viền mờ phía trên để tách biệt */
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Khi mở rộng (.expanded), ẨN nút "Xem thêm" */
+#ai-summary-result .ai-summary-wrapper.expanded .ai-read-more-btn {
+  display: none;
+}
+
+/* Khi mở rộng (.expanded), HIỆN nút "Thu gọn" */
+#ai-summary-result .ai-summary-wrapper.expanded .ai-collapse-btn {
+  display: block;
+}
+
+/* (Sửa lỗi) Khi mở rộng, bỏ con trỏ 'default' để cho phép thu gọn */
+#ai-summary-result .ai-summary-wrapper.expanded {
+  cursor: default;
+}
+/* (Sửa lỗi) Khi chưa mở rộng, con trỏ là 'pointer' */
+#ai-summary-result .ai-summary-wrapper:not(.expanded) {
+  cursor: pointer; 
+}
+
+/* === KÍCH THƯỚC ICON === */
+.icon-sm,
+img.icon-sm,
+.icon.icon-sm {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+}
+
+.icon-md,
+img.icon-md,
+.icon.icon-md {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+}
+
+/* Override icon-md trong control wrapper và button để nhỏ hơn */
+.ai-control-wrapper,
+.ai-control-wrapper img,
+.ai-control-btn .icon-md,
+.ai-control-btn img.icon-md {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+}
+
+.icon-lg,
+img.icon-lg,
+.icon.icon-lg {
+  width: 24px !important;
+  height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+}

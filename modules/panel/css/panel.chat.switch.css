@@ -1,0 +1,80 @@
+/* panel.chat.switch.css - Toggle switch styles */
+
+/* ========================================
+   STYLES FOR TOGGLE SWITCH (THÊM MỚI)
+   ======================================== */
+
+/* Container cho switch trong panel Cài đặt */
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.switch-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  /* Cho phép nhấn vào label "Chế độ tối" để toggle */
+  cursor: pointer; 
+}
+
+/* The switch - a container for the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;  /* Chiều rộng của nút gạt */
+  height: 28px; /* Chiều cao của nút gạt */
+  flex-shrink: 0; /* Ngăn nó bị co lại khi không đủ chỗ */
+}
+
+/* Ẩn checkbox HTML mặc định */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Thanh trượt (phần nền) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color); /* Màu khi tắt */
+  transition: .4s;
+}
+
+/* Núm trên (phần di chuyển) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px; /* Chiều cao núm */
+  width: 20px;  /* Chiều rộng núm */
+  left: 4px;    /* Căn lề trái */
+  bottom: 4px;  /* Căn lề dưới */
+  background-color: white;
+  transition: .4s;
+}
+
+/* Khi được check (bật) -> Đổi màu nền */
+input:checked + .slider {
+  background-color: var(--color-primary); /* Sử dụng biến màu primary */
+}
+
+/* Khi được check (bật) -> Di chuyển núm */
+input:checked + .slider:before {
+  /* 50px (width) - 20px (knob) - 8px (2*left) = 22px */
+  transform: translateX(22px); 
+}
+
+/* Kiểu bo tròn */
+.slider.round {
+  border-radius: 28px; /* Bo tròn bằng chiều cao */
+}
+
+.slider.round:before {
+  border-radius: 50%; /* Bo tròn núm */
+}
+

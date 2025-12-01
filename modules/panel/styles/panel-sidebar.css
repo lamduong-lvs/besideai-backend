@@ -1,0 +1,545 @@
+﻿/* Section Menu */
+.section-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 56px;
+  padding: 12px 0;
+  border-left: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 99998;
+}
+.section-menu-top, .section-menu-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.menu-icon, .settings-btn, .header-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Icon má»Ÿ rá»™ng nhá» hÆ¡n */
+.header-btn {
+  width: 28px;
+  height: 28px;
+  padding: 5px;
+}
+
+.user-btn {
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.menu-icon:hover, .settings-btn:hover, .header-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.1);
+}
+
+.user-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+}
+.menu-icon img, .settings-btn img, .header-btn img {
+  width: 100%;
+  height: 100%;
+  opacity: 1; /* MÃ u Ä‘áº­m hÆ¡n, khÃ´ng má» */
+  transition: opacity 0.2s;
+  filter: brightness(0) saturate(100%); /* MÃ u Ä‘en Ä‘áº­m */
+}
+
+.menu-icon:hover img, .settings-btn:hover img, .header-btn:hover img {
+  opacity: 1;
+}
+
+/* Avatar user: icon máº·c Ä‘á»‹nh váº«n má», nhÆ°ng avatar tá»« Gmail thÃ¬ sÃ¡ng rÃµ */
+.user-btn img {
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  filter: brightness(0.9);
+}
+
+.user-btn:hover img {
+  opacity: 0.65;
+}
+
+/* Avatar tá»« Gmail (cÃ³ class user-avatar-img) - sÃ¡ng rÃµ, khÃ´ng má» */
+.user-btn img.user-avatar-img {
+  opacity: 1;
+  filter: none;
+}
+
+.user-btn:hover img.user-avatar-img {
+  opacity: 1;
+}
+
+/* Icon má»Ÿ rá»™ng (SVG) - nÃ©t máº£nh vÃ  mÃ u Ä‘áº­m hÆ¡n */
+.header-btn svg {
+  stroke: var(--text-primary);
+  stroke-width: 1.5; /* NÃ©t máº£nh hÆ¡n */
+  fill: none;
+  opacity: 1; /* MÃ u Ä‘áº­m hÆ¡n */
+  transition: all 0.2s;
+}
+
+.header-btn:hover svg {
+  stroke: var(--text-primary);
+  opacity: 1;
+}
+
+/* Screenshot Dropdown in Sidebar */
+.menu-icon-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  gap: 4px;
+}
+
+.menu-icon-wrapper .menu-icon {
+  margin-bottom: 0;
+}
+
+.screenshot-dropdown,
+.rec-dropdown {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.screenshot-dropdown.show,
+.rec-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+/* ========================================
+   DROPDOWN ICONS - UNIFIED STYLING
+   ======================================== */
+
+/* Chung cho cáº£ SVG vÃ  IMG */
+.dropdown-item svg,
+.dropdown-item img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  object-fit: contain; /* Quan trá»ng cho IMG */
+}
+
+/* SVG styling */
+.dropdown-item svg {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.7;
+}
+
+/* IMG styling (cho Google Meet icon) */
+.dropdown-item img {
+  /* KhÃ´ng cáº§n thÃªm gÃ¬, kÃ­ch thÆ°á»›c Ä‘Ã£ Ä‘á»“ng bá»™ á»Ÿ trÃªn */
+}
+
+/* Hover effect */
+.dropdown-item:hover svg {
+  stroke: var(--color-primary);
+}
+
+.dropdown-item:hover img {
+  opacity: 0.8;
+}
+
+/* Dark theme adjustments (náº¿u cáº§n) */
+[data-theme="dark"] .dropdown-item img {
+  /* Náº¿u icon Google Meet cÃ³ mÃ u sÃ¡ng, giá»¯ nguyÃªn */
+  /* Náº¿u icon cÃ³ mÃ u tá»‘i, uncomment dÃ²ng dÆ°á»›i */
+  /* filter: brightness(0) invert(1); */
+}
+
+.dropdown-item:hover svg {
+  stroke: var(--color-primary);
+}
+
+.dropdown-item span {
+  flex: 1;
+  white-space: nowrap;
+}
+
+/* User Login Popup */
+.user-popup {
+  position: absolute;
+  right: calc(100% + 12px);
+  bottom: 48px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  min-width: 320px; /* TÄƒng tá»« 250px lÃªn 320px */
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.user-popup.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.user-popup-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.user-popup-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.user-popup-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+/* Settings Sidebar Menu */
+.settings-sidebar {
+  width: 200px;
+  border-right: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  overflow-y: auto;
+}
+
+.settings-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+  border-left: 3px solid transparent;
+}
+
+.settings-menu-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.settings-menu-item.active {
+  background: var(--bg-primary);
+  color: var(--color-primary);
+  border-left-color: var(--color-primary);
+}
+
+.settings-menu-item svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* Auth Widget Container - INSIDE USER POPUP */
+.user-popup .auth-widget-container {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  width: 100%;
+}
+
+/* Remove default popup button styling when auth widget is present */
+.user-popup:has(.auth-widget-container) {
+  padding: 12px;
+  min-width: 280px;
+}
+
+/* Make sure auth widget fits nicely in popup */
+.user-popup .auth-widget-container > * {
+  width: 100%;
+}
+
+/* Premium Feature Indicator */
+.premium-feature.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+}
+
+.premium-feature.disabled::after {
+  content: 'ðŸ”’';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 14px;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .auth-widget-container {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-btn img.user-avatar-img {
+  border-radius: 50%;
+  object-fit: cover; /* Äáº£m báº£o áº£nh vá»«a váº·n, khÃ´ng bá»‹ mÃ©o */
+}
+
+/**
+ * Sá»­a lá»—i auth-dropdown-menu bá»‹ má»Ÿ xuá»‘ng dÆ°á»›i vÃ  che máº¥t
+ * (khi nÃ³ náº±m bÃªn trong userPopup á»Ÿ cuá»‘i mÃ n hÃ¬nh)
+ */
+#userPopup .auth-dropdown-menu {
+  /* Há»§y quy táº¯c "top" (má»Ÿ xuá»‘ng) máº·c Ä‘á»‹nh */
+  top: auto; 
+  
+  /* Äáº·t mÃ©p dÆ°á»›i cá»§a menu con á»Ÿ mÃ©p trÃªn cá»§a nÃºt cha */
+  bottom: 100%; 
+  
+  /* ThÃªm khoáº£ng cÃ¡ch 8px (giá»‘ng nhÆ° quy táº¯c "top" cÅ©) */
+  margin-bottom: 8px;
+  
+  /* Äáº£m báº£o z-index cao Ä‘á»ƒ hiá»ƒn thá»‹ trÃªn cÃ¹ng */
+  z-index: 10001;
+  
+  /* Há»§y bá» animation trÆ°á»£t xuá»‘ng (náº¿u cÃ³) vÃ  Ä‘á»•i thÃ nh trÆ°á»£t lÃªn */
+  animation: authMenuSlideUp 0.2s ease;
+}
+
+/* Äá»‹nh nghÄ©a láº¡i animation Ä‘á»ƒ trÆ°á»£t lÃªn */
+@keyframes authMenuSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   STYLES FOR TOGGLE SWITCH (THÃŠM Má»šI)
+   ======================================== */
+
+/* Top Bar Controls */
+.top-bar-controls {
+  position: absolute;
+  top: 8px;
+  right: 60px;
+  display: flex;
+  gap: 4px;
+  z-index: 100;
+}
+
+.window-control-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.window-control-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Sidebar with Labels */
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+/* Active state cho sidebar buttons */
+.sidebar-item .menu-icon.active {
+  background: var(--bg-hover);
+  opacity: 1;
+}
+
+.sidebar-item .menu-icon.active img,
+.sidebar-item .menu-icon.active svg {
+  opacity: 1;
+  filter: brightness(0) saturate(100%);
+}
+
+.sidebar-item.compact {
+  margin-bottom: 4px;
+}
+
+.sidebar-icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sidebar-icon-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.1);
+}
+
+.sidebar-icon-btn svg,
+.sidebar-icon-btn img {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.sidebar-icon-btn:hover svg {
+  stroke: var(--color-primary);
+  opacity: 0.85;
+}
+
+.sidebar-icon-btn:hover img {
+  opacity: 0.85;
+}
+
+.sidebar-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.sidebar-item.compact .sidebar-label {
+  display: none;
+}
+
+.sidebar-item.bookmark .bookmark-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+}
+
+.sidebar-icon-btn .check-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  background: var(--bg-primary);
+  border-radius: 50%;
+  padding: 1px;
+}
+
+/* Prefer left of icon for sidebar/buttons when space allows */
+.menu-icon[data-tooltip-text].tooltip-left::after,
+.settings-btn[data-tooltip-text].tooltip-left::after {
+  top: 50%;
+  bottom: auto;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+

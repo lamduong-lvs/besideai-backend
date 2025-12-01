@@ -1,0 +1,22 @@
+/* styles/screenshot-area.css */
+
+#ai-screenshot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2147483645;
+    cursor: crosshair;
+}
+
+#ai-screenshot-selection {
+    position: fixed;
+    background: rgba(0, 102, 255, 0.3);
+    border: 1px dashed #0066FF;
+    z-index: 2147483646;
+    display: none;
+    box-sizing: border-box;
+    pointer-events: none;
+}

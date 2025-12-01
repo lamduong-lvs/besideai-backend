@@ -1,0 +1,14 @@
+/* panel.chat.css - Main chat styles (modular imports) */
+
+/* Import all chat CSS modules */
+@import url('./panel.chat.base.css');
+@import url('./panel.chat.messages.css');
+@import url('./panel.chat.markdown.css');
+@import url('./panel.chat.input.css');
+@import url('./panel.chat.attachments.css');
+@import url('./panel.chat.loading.css');
+@import url('./panel.chat.buttons.css');
+@import url('./panel.chat.tooltips.css');
+@import url('./panel.chat.greeting.css');
+@import url('./panel.chat.switch.css');
+@import url('./panel.chat.status.css');

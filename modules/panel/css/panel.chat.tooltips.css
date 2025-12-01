@@ -1,0 +1,163 @@
+/* panel.chat.tooltips.css - Tooltip styles */
+
+/* Tooltip cho nút scroll to bottom - REMOVED: Tooltip được xử lý bởi tooltip-system.js */
+/* Loại bỏ CSS tooltip để tránh duplicate với tooltip system mới */
+.scroll-to-bottom-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Tooltip cho các nút chức năng khác (trừ Translate panel) */
+.toolbar-action-btn,
+.mic-btn,
+.send-btn,
+.toolbar-icon-btn,
+.input-action-btn,
+.attach-btn {
+  position: relative;
+}
+
+/* Ẩn tooltip mặc định của browser */
+.toolbar-action-btn[title],
+.mic-btn[title],
+.send-btn[title],
+.toolbar-icon-btn[title],
+.input-action-btn[title],
+.attach-btn[title] {
+  /* Giữ title attribute để CSS tooltip có thể đọc, nhưng ẩn tooltip mặc định */
+}
+
+/* Tooltip chung cho toolbar buttons */
+.toolbar-action-btn[data-tooltip-text]:not(#attachBtn)::after,
+.mic-btn[data-tooltip-text]::after,
+.send-btn[data-tooltip-text]::after,
+.toolbar-icon-btn[data-tooltip-text]::after,
+.input-action-btn[data-tooltip-text]::after,
+.attach-btn[data-tooltip-text]::after {
+  content: attr(data-tooltip-text);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  top: calc(100% + 8px);
+  bottom: auto;
+  min-width: 160px;
+  max-width: 320px;
+  text-align: left;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.toolbar-action-btn[data-tooltip-text]:not(#attachBtn):hover::after,
+.mic-btn[data-tooltip-text]:hover::after,
+.send-btn[data-tooltip-text]:hover::after,
+.toolbar-icon-btn[data-tooltip-text]:hover::after,
+.input-action-btn[data-tooltip-text]:hover::after,
+.attach-btn[data-tooltip-text]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.toolbar-action-btn[data-tooltip-text]:not(#attachBtn):hover,
+.mic-btn[data-tooltip-text]:hover,
+.send-btn[data-tooltip-text]:hover,
+.toolbar-icon-btn[data-tooltip-text]:hover,
+.input-action-btn[data-tooltip-text]:hover,
+.attach-btn[data-tooltip-text]:hover {
+  position: relative;
+}
+
+/* Smart positioning for tooltips (top/bottom) */
+.toolbar-action-btn[data-tooltip-text].tooltip-top::after,
+.mic-btn[data-tooltip-text].tooltip-top::after,
+.send-btn[data-tooltip-text].tooltip-top::after,
+.toolbar-icon-btn[data-tooltip-text].tooltip-top::after,
+.input-action-btn[data-tooltip-text].tooltip-top::after,
+.attach-btn[data-tooltip-text].tooltip-top::after {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+
+.toolbar-action-btn[data-tooltip-text].tooltip-bottom::after,
+.mic-btn[data-tooltip-text].tooltip-bottom::after,
+.send-btn[data-tooltip-text].tooltip-bottom::after,
+.toolbar-icon-btn[data-tooltip-text].tooltip-bottom::after,
+.input-action-btn[data-tooltip-text].tooltip-bottom::after,
+.attach-btn[data-tooltip-text].tooltip-bottom::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+/* Prefer left when requested via class */
+.toolbar-action-btn[data-tooltip-text].tooltip-left::after,
+.mic-btn[data-tooltip-text].tooltip-left::after,
+.send-btn[data-tooltip-text].tooltip-left::after,
+.toolbar-icon-btn[data-tooltip-text].tooltip-left::after,
+.input-action-btn[data-tooltip-text].tooltip-left::after,
+.attach-btn[data-tooltip-text].tooltip-left::after {
+  top: 50%;
+  bottom: auto;
+  left: auto;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+
+.toolbar-action-btn[data-tooltip-text].tooltip-right::after,
+.mic-btn[data-tooltip-text].tooltip-right::after,
+.send-btn[data-tooltip-text].tooltip-right::after,
+.toolbar-icon-btn[data-tooltip-text].tooltip-right::after,
+.input-action-btn[data-tooltip-text].tooltip-right::after,
+.attach-btn[data-tooltip-text].tooltip-right::after {
+  top: 50%;
+  bottom: auto;
+  left: calc(100% + 8px);
+  right: auto;
+  transform: translateY(-50%);
+}
+
+/* Tooltip đặc biệt cho attach button (có thể có nhiều dòng) */
+.toolbar-action-btn#attachBtn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  min-width: 300px;
+  max-width: 400px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.toolbar-action-btn#attachBtn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}

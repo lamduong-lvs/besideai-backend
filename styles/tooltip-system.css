@@ -1,0 +1,433 @@
+/* ═══════════════════════════════════════════════════════════════════
+   UNIFIED TOOLTIP SYSTEM
+   Single source of truth for all tooltips across the extension
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════
+   BASE TOOLTIP STYLES
+   ═══════════════════════════════════════ */
+
+/* Tooltip wrapper - makes parent position:relative */
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Base tooltip element */
+.tooltip {
+  position: absolute;
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: var(--tooltip-padding);
+  border-radius: var(--tooltip-radius);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--tooltip-font-weight);
+  line-height: var(--tooltip-line-height);
+  font-family: var(--font-family);
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: var(--tooltip-max-width);
+  min-width: var(--tooltip-min-width);
+  z-index: var(--tooltip-z-index);
+  pointer-events: none;
+  box-shadow: var(--tooltip-shadow);
+  
+  /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  
+  /* Smooth animation */
+  transition: 
+    opacity var(--tooltip-transition-duration) var(--tooltip-transition-timing),
+    visibility var(--tooltip-transition-duration) var(--tooltip-transition-timing),
+    transform var(--tooltip-transition-duration) var(--tooltip-transition-timing);
+}
+
+/* Show state */
+.tooltip.show,
+.tooltip.tooltip-show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ═══════════════════════════════════════
+   POSITION VARIANTS
+   ═══════════════════════════════════════ */
+
+/* Top Position */
+.tooltip-top {
+  bottom: calc(100% + var(--tooltip-offset));
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.tooltip-top.show,
+.tooltip-top.tooltip-show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Bottom Position */
+.tooltip-bottom {
+  top: calc(100% + var(--tooltip-offset));
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.tooltip-bottom.show,
+.tooltip-bottom.tooltip-show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Left Position */
+.tooltip-left {
+  right: calc(100% + var(--tooltip-offset));
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+}
+
+.tooltip-left.show,
+.tooltip-left.tooltip-show {
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Right Position */
+.tooltip-right {
+  left: calc(100% + var(--tooltip-offset));
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.tooltip-right.show,
+.tooltip-right.tooltip-show {
+  transform: translateY(-50%) translateX(0);
+}
+
+/* ═══════════════════════════════════════
+   ARROW INDICATORS (Optional)
+   ═══════════════════════════════════════ */
+
+.tooltip.with-arrow::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Top arrow */
+.tooltip-top.with-arrow::before {
+  bottom: calc(var(--tooltip-arrow-size) * -1);
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size);
+  border-color: var(--tooltip-bg) transparent transparent transparent;
+}
+
+/* Bottom arrow */
+.tooltip-bottom.with-arrow::before {
+  top: calc(var(--tooltip-arrow-size) * -1);
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent var(--tooltip-bg) transparent;
+}
+
+/* Left arrow */
+.tooltip-left.with-arrow::before {
+  right: calc(var(--tooltip-arrow-size) * -1);
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent transparent var(--tooltip-bg);
+}
+
+/* Right arrow */
+.tooltip-right.with-arrow::before {
+  left: calc(var(--tooltip-arrow-size) * -1);
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0;
+  border-color: transparent var(--tooltip-bg) transparent transparent;
+}
+
+/* ═══════════════════════════════════════
+   THEME SUPPORT
+   ═══════════════════════════════════════ */
+
+/* Light theme */
+[data-theme="light"] .tooltip {
+  --tooltip-bg: rgba(32, 33, 36, 0.95);
+  --tooltip-color: #ffffff;
+}
+
+/* Dark theme */
+[data-theme="dark"] .tooltip {
+  --tooltip-bg: rgba(60, 64, 67, 0.95);
+  --tooltip-color: #e8eaed;
+}
+
+/* ═══════════════════════════════════════
+   ACCESSIBILITY
+   ═══════════════════════════════════════ */
+
+/* Show tooltip on focus for keyboard navigation */
+*:focus-visible + .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tooltip {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SIZE VARIANTS
+   ═══════════════════════════════════════ */
+
+.tooltip-sm {
+  font-size: var(--font-xs);
+  padding: 6px 10px;
+  max-width: 200px;
+}
+
+.tooltip-md {
+  /* Default size, already defined */
+}
+
+.tooltip-lg {
+  font-size: var(--font-base);
+  padding: 10px 14px;
+  max-width: 400px;
+}
+
+/* ═══════════════════════════════════════
+   SPECIAL VARIANTS
+   ═══════════════════════════════════════ */
+
+/* Rich content tooltip */
+.tooltip-rich {
+  text-align: left;
+  white-space: normal;
+}
+
+.tooltip-rich strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tooltip-rich p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Keyboard shortcut tooltip */
+.tooltip-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tooltip-shortcut kbd {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Warning/Error tooltip */
+.tooltip-warning {
+  --tooltip-bg: rgba(255, 152, 0, 0.95);
+  --tooltip-color: #ffffff;
+}
+
+.tooltip-error {
+  --tooltip-bg: rgba(244, 67, 54, 0.95);
+  --tooltip-color: #ffffff;
+}
+
+/* Success tooltip */
+.tooltip-success {
+  --tooltip-bg: rgba(76, 175, 80, 0.95);
+  --tooltip-color: #ffffff;
+}
+
+/* ═══════════════════════════════════════
+   LEGACY COMPATIBILITY
+   Support for existing tooltip implementations
+   ═══════════════════════════════════════ */
+
+/* Support for data-tooltip-text attribute */
+[data-tooltip-text] {
+  position: relative;
+}
+
+/* Exclude scroll-to-bottom-btn from CSS tooltip (uses tooltip system instead) */
+[data-tooltip-text]:not(.scroll-to-bottom-btn)::after {
+  content: attr(data-tooltip-text);
+  position: absolute;
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: var(--tooltip-padding);
+  border-radius: var(--tooltip-radius);
+  font-size: var(--tooltip-font-size);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--tooltip-transition-duration), 
+              visibility var(--tooltip-transition-duration);
+  z-index: var(--tooltip-z-index);
+  box-shadow: var(--tooltip-shadow);
+  
+  /* Default to bottom */
+  top: calc(100% + var(--tooltip-offset));
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: var(--tooltip-max-width);
+  white-space: normal;
+}
+
+[data-tooltip-text]:not(.scroll-to-bottom-btn):hover::after,
+[data-tooltip-text]:not(.scroll-to-bottom-btn):focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: var(--tooltip-delay);
+}
+
+/* Disable CSS tooltip for scroll-to-bottom-btn (uses tooltip system instead) */
+.scroll-to-bottom-btn[data-tooltip-text]::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Support for tooltip positioning classes on data-tooltip-text */
+[data-tooltip-text]:not(.scroll-to-bottom-btn).tooltip-top::after {
+  bottom: calc(100% + var(--tooltip-offset));
+  top: auto;
+}
+
+[data-tooltip-text]:not(.scroll-to-bottom-btn).tooltip-left::after {
+  right: calc(100% + var(--tooltip-offset));
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+[data-tooltip-text]:not(.scroll-to-bottom-btn).tooltip-right::after {
+  left: calc(100% + var(--tooltip-offset));
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ═══════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════ */
+
+/* Disable tooltip */
+.no-tooltip {
+  pointer-events: none;
+}
+
+.no-tooltip .tooltip {
+  display: none;
+}
+
+/* Always show tooltip (for debugging) */
+.tooltip-always-show .tooltip {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE BEHAVIOR
+   ═══════════════════════════════════════ */
+
+/* On mobile/touch devices, don't show tooltips on hover */
+@media (hover: none) and (pointer: coarse) {
+  .tooltip:not(.tooltip-touch-enabled) {
+    display: none;
+  }
+  
+  [data-tooltip-text]:not(.tooltip-touch-enabled):not(.scroll-to-bottom-btn)::after {
+    display: none;
+  }
+}
+
+/* Adjust tooltip size on smaller screens */
+@media (max-width: 768px) {
+  .tooltip {
+    max-width: 250px;
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* ═══════════════════════════════════════
+   ANIMATION VARIANTS
+   ═══════════════════════════════════════ */
+
+/* Fade animation (default) */
+.tooltip-fade {
+  /* Already defined as default */
+}
+
+/* Scale animation */
+.tooltip-scale {
+  transition: 
+    opacity var(--tooltip-transition-duration) var(--tooltip-transition-timing),
+    visibility var(--tooltip-transition-duration) var(--tooltip-transition-timing),
+    transform var(--tooltip-transition-duration) var(--tooltip-transition-timing);
+}
+
+.tooltip-scale:not(.show) {
+  transform: scale(0.9);
+}
+
+.tooltip-scale.show {
+  transform: scale(1);
+}
+
+/* Slide animation */
+.tooltip-slide.tooltip-top:not(.show) {
+  transform: translateX(-50%) translateY(10px);
+}
+
+.tooltip-slide.tooltip-bottom:not(.show) {
+  transform: translateX(-50%) translateY(-10px);
+}
+
+.tooltip-slide.tooltip-left:not(.show) {
+  transform: translateY(-50%) translateX(10px);
+}
+
+.tooltip-slide.tooltip-right:not(.show) {
+  transform: translateY(-50%) translateX(-10px);
+}
+
+/* ═══════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════ */
+
+@media print {
+  .tooltip {
+    display: none !important;
+  }
+}
+

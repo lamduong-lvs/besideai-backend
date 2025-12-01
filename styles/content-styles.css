@@ -1,0 +1,321 @@
+/* content-styles.css - Context Menu & Floating Icon Styles with Theme Support */
+
+/* ========================================
+   THEME VARIABLES
+   ======================================== */
+:root[data-theme="light"] {
+  --context-bg: #ffffff;
+  --context-border: #e0e0e0;
+  --context-shadow: rgba(0, 0, 0, 0.15);
+  --context-icon-bg: #f5f5f5;
+  --context-icon-hover: #e8e8e8;
+  --context-icon-color: #333333;
+  --dropdown-bg: #ffffff;
+  --dropdown-item-hover: #f0f0f0;
+}
+
+:root[data-theme="dark"] {
+  --context-bg: #2d2d2d;
+  --context-border: #404040;
+  --context-shadow: rgba(0, 0, 0, 0.5);
+  --context-icon-bg: #3d3d3d;
+  --context-icon-hover: #4d4d4d;
+  --context-icon-color: #e0e0e0;
+  --dropdown-bg: #2d2d2d;
+  --dropdown-item-hover: #3d3d3d;
+}
+
+/* ========================================
+   CONTEXT MENU
+   ======================================== */
+.ai-context-menu {
+  position: fixed;
+  z-index: 2147483647;
+  background: var(--context-bg);
+  border: 1px solid var(--context-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--context-shadow);
+  padding: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ai-context-menu.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.ai-context-menu-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ai-context-icon-wrapper {
+  position: relative;
+}
+
+.ai-context-icon {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background: var(--context-icon-bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ai-context-icon:hover {
+  background: var(--context-icon-hover);
+  transform: scale(1.05);
+}
+
+.ai-context-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--context-icon-color);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Screenshot Dropdown */
+.ai-screenshot-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  margin: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dropdown-bg);
+  border: 1px solid var(--context-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--context-shadow);
+  padding: 4px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2147483648;
+}
+
+.ai-screenshot-dropdown.show {
+  display: flex;
+}
+
+.ai-screenshot-dropdown .ai-context-icon {
+  justify-content: center; /* <-- Sửa thành 'center' */
+  padding: 8px; /* <-- Sửa thành '8px' (giống icon gốc) */
+  border-radius: 6px;
+}
+
+.ai-screenshot-dropdown .ai-context-icon svg {
+  flex-shrink: 0;
+}
+
+/* ========================================
+   FLOATING ICON - Fixed với drag & snap
+   ======================================== */
+.ai-floating-icon {
+  position: fixed;
+  /* right/left được set bởi JavaScript */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  z-index: 2147483646;
+  cursor: pointer;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tắt transition khi đang resize để di chuyển tức thời */
+.ai-floating-icon.resizing {
+  transition: none !important;
+}
+
+.ai-floating-icon:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Khi dùng pixel positioning, hover chỉ scale không translateY */
+.ai-floating-icon.using-pixel-position:hover {
+  transform: scale(1.05);
+}
+
+/* Khi đang kéo và rời khỏi vị trí bám - tắt transition */
+.ai-floating-icon.floating {
+  transition: none !important;
+  cursor: grabbing;
+  opacity: 0.9;
+}
+
+/* Icon chuyển thành hình tròn khi floating */
+.ai-floating-icon.floating .ai-floating-icon-inner {
+  border-radius: 50% !important; /* Hình tròn hoàn toàn */
+}
+
+.ai-floating-icon-inner {
+  width: 48px;
+  height: 48px;
+  background: var(--context-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  margin: 0;
+  transition: border-radius 0.3s ease;
+}
+
+/* Pill shape - mép tròn theo hướng dock (trạng thái bám sát) */
+.ai-floating-icon.docked-left .ai-floating-icon-inner {
+  border-radius: 0 24px 24px 0; /* Tròn bên phải */
+}
+
+.ai-floating-icon.docked-right .ai-floating-icon-inner {
+  border-radius: 24px 0 0 24px; /* Tròn bên trái */
+}
+
+.ai-floating-icon-inner img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
+}
+
+/* ========================================
+   ACTION POPUP IFRAME
+   ======================================== */
+.ai-action-popup-iframe-container {
+  position: fixed;
+  width: 450px;
+  height: 550px;
+  z-index: 2147483645;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--context-shadow);
+  background: var(--context-bg);
+  border: 1px solid var(--context-border);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ai-action-popup-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+}
+
+/* ========================================
+   SIDE PANEL
+   ======================================== */
+.ai-side-panel-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100vh;
+  z-index: 2147483644;
+  background: var(--context-bg);
+  border-left: 1px solid var(--context-border);
+  box-shadow: -4px 0 20px var(--context-shadow);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.ai-side-panel-container.visible {
+  width: 535px;
+}
+
+.ai-side-panel-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+.ai-side-panel-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.2s ease;
+  z-index: 1;
+}
+
+.ai-side-panel-resize-handle:hover,
+.ai-side-panel-resize-handle:active {
+  background: var(--context-icon-hover);
+}
+
+/* ========================================
+   DRAG OVERLAY
+   ======================================== */
+#ai-drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  cursor: move;
+  background: transparent;
+}
+
+/* ========================================
+   QUOTE WRAPPER (for Chat popup)
+   ======================================== */
+.quote-wrapper {
+  position: relative;
+  background: var(--context-icon-bg);
+  border-left: 3px solid var(--context-icon-color);
+  padding: 12px 40px 12px 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--context-icon-color);
+  opacity: 0.9;
+}
+
+.quote-content {
+  font-style: italic;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.quote-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  color: var(--context-icon-color);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.quote-close:hover {
+  background: var(--context-icon-hover);
+}

@@ -1,0 +1,696 @@
+/* CSS Variables & Base Styles inherited from global.css */
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.app-container {
+    display: flex;
+    height: 100%;
+    padding-left: var(--spacing-xl);
+    gap: var(--spacing-xl);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    /* Removed background-color and border as requested */
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 0;
+    padding-top: var(--spacing-xl);
+    /* Removed border-bottom as requested */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    /* Removed margin-bottom to reduce spacing between name and version */
+}
+
+.logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    font-size: 24px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.version-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    margin-left: 42px; /* Align with logo + name */
+}
+
+/* Search Box */
+.sidebar-search {
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding-left: 46px !important;
+    padding-right: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--rounded-md);
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-color-light);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 0;
+    padding-top: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--rounded-md);
+    margin-bottom: var(--spacing-xs);
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    display: none; /* Hide emojis as requested */
+}
+
+.nav-icon-svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.nav-item:hover .nav-icon-svg,
+.nav-item.active .nav-icon-svg {
+    opacity: 1;
+}
+
+.nav-item-planned {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.sidebar-footer {
+    padding: var(--spacing-md) 0 var(--spacing-lg) 0;
+    margin-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.nav-item-sm {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-item-sm:hover {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.footer-link .nav-icon-svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+
+.footer-link:hover .nav-icon-svg {
+    opacity: 1;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-primary);
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.user-profile-mini {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Fix Header User Avatar Sizing */
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    overflow: hidden; /* Clip image */
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xl) 0;
+    padding-top: var(--spacing-xl);
+}
+
+/* Sections */
+.setting-section {
+    max-width: 680px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Components Specific to Settings */
+.provider-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.provider-item {
+    background-color: var(--bg-secondary);
+    transition: border-color 0.2s;
+}
+
+.provider-item:hover {
+    border-color: var(--border-color-dark);
+}
+
+.provider-icon {
+    font-size: 20px;
+    display: none; /* Hide emojis */
+}
+
+/* Fix Avatar Sizing - Issue #1 */
+.avatar-lg {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--bg-secondary);
+    overflow: hidden; /* Clip image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Prevent shrinking in flexbox */
+    border: 1px solid var(--border-color);
+}
+
+.avatar-lg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fix Dropdown Width - Issue #3 */
+select.input {
+    width: auto;
+    max-width: 200px; /* Limit max width */
+    min-width: 120px;
+    text-overflow: ellipsis;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-md);
+    /* Initially hidden, controlled by JS style.display */
+    display: none;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--bg-primary);
+    border-radius: var(--rounded-lg);
+    box-shadow: var(--shadow-xl);
+    animation: slideUp 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Feature Planned */
+.feature-planned {
+    opacity: 0.6;
+    border: 1px dashed var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-planned .card-body,
+.feature-planned .card-header {
+    pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Racing Mode Selectors */
+.model-selector-container {
+    background-color: var(--bg-secondary);
+    padding: var(--spacing-md);
+    border-radius: var(--rounded-md);
+    margin-top: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--rounded-md);
+    box-shadow: var(--shadow-lg);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.toast.success {
+    background-color: #4caf50;
+    color: white;
+    border-color: #4caf50;
+}
+
+.toast.error {
+    background-color: #f44336;
+    color: white;
+    border-color: #f44336;
+}
+
+.toast.info {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ===== LANGUAGE SELECTOR ===== */
+.setting-row .custom-select-wrapper {
+    position: relative;
+}
+
+/* Style cho phần trigger (bạn nhấp vào) */
+.setting-row .custom-select-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 5px 6px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--rounded-md);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: background-color 0.2s ease;
+    min-width: auto;
+}
+
+.setting-row .custom-select-trigger:hover {
+    background-color: var(--bg-hover);
+}
+
+.setting-row .custom-select-trigger .selected-value {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.setting-row .custom-select-trigger .chevron-right {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.5;
+    stroke: var(--text-secondary);
+    fill: none;
+    flex-shrink: 0;
+}
+
+/* Style cho menu dropdown */
+.setting-row .custom-select-menu {
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    right: 0; 
+    margin-top: 5px;
+    width: 250px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color); 
+    border-radius: var(--radius-lg); /* Tăng từ --rounded-md (8px) lên 12px */
+    box-shadow: var(--shadow-lg); 
+    z-index: 1001; /* Cao hơn overlay dimming (999) để menu luôn sáng */
+    list-style: none; 
+    padding: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    /* Đảm bảo menu không bị ảnh hưởng bởi overlay dimming */
+    isolation: isolate;
+    transform: translateZ(0); /* Tạo stacking context mới */
+}
+
+/* Class để mở dropdown lên trên */
+.setting-row .custom-select-menu.open-up {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+/* Đảm bảo menu có thể mở lên trên mà không bị che */
+.setting-row .custom-select-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+/* Khi dropdown mở, wrapper cần có z-index cao để menu không bị overlay che */
+.setting-row .custom-select-wrapper.open {
+    z-index: 1001;
+    /* Tạo stacking context riêng để menu không bị ảnh hưởng bởi overlay */
+    isolation: isolate;
+}
+
+/* Hiển thị menu khi 'open' */
+.setting-row .custom-select-wrapper.open .custom-select-menu {
+    display: grid;
+}
+
+/* Style cho các mục con li */
+.setting-row .custom-select-menu li { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px; 
+    border-radius: var(--rounded-sm); 
+    cursor: pointer; 
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+    overflow: hidden;
+}
+
+.setting-row .custom-select-menu li:hover { 
+    background-color: var(--bg-hover); 
+}
+
+.setting-row .custom-select-menu li.selected { 
+    background-color: var(--accent-color); 
+    color: white; 
+    font-weight: 500; 
+}
+
+
+/* Style cho icon cờ */
+.lang-flag-icon {
+    width: 35px;
+    height: 25px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+}
+
+.setting-row .custom-select-menu li.selected .lang-flag-icon {
+    border-color: white;
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+/* HIỆU ỨNG MỜ NỀN (DIMMING) */
+body:has(#setting-language-selector-wrapper.open)::before {
+    content: "";
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    pointer-events: none;
+}
+
+/* ===== THEME TOGGLE GROUP ===== */
+.theme-toggle-group {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px; /* Bo tròn nhỏ hơn, hiện đại hơn */
+    padding: 2px;
+    gap: 0;
+    min-width: 78px; /* 3 buttons x 24px + padding (2px x 2) */
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+.theme-toggle-group[data-theme="light"] .theme-toggle-slider {
+    transform: translateX(0);
+}
+
+.theme-toggle-group[data-theme="dark"] .theme-toggle-slider {
+    transform: translateX(24px); /* Mỗi button 24px */
+}
+
+.theme-toggle-group[data-theme="auto"] .theme-toggle-slider {
+    transform: translateX(48px); /* 2 buttons x 24px */
+}
+
+.theme-toggle-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background-color: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    background-color: var(--bg-hover);
+}
+
+.theme-toggle-btn.active {
+    z-index: 3;
+}
+
+.theme-icon {
+    width: 14px;
+    height: 14px;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Icon khi không active - màu đen/xám để tương phản với nền */
+.theme-toggle-btn:not(.active) .theme-icon {
+    filter: brightness(0) saturate(100%);
+    opacity: 0.6;
+}
+
+/* Icon khi hover - tăng opacity */
+.theme-toggle-btn:hover:not(.active) .theme-icon {
+    opacity: 0.9;
+}
+
+/* Icon khi active - màu trắng cho dark/auto, màu đen cho light */
+.theme-toggle-btn.active .theme-icon {
+    opacity: 1;
+}
+
+/* Light mode active: icon màu đen (không invert) để thấy rõ trên slider màu sáng */
+.theme-toggle-group[data-theme="light"] .theme-toggle-btn[data-theme="light"].active .theme-icon {
+    filter: brightness(0) saturate(100%);
+    opacity: 1;
+}
+
+/* Dark mode active: icon màu trắng (invert) để thấy rõ trên slider màu tối */
+.theme-toggle-group[data-theme="dark"] .theme-toggle-btn[data-theme="dark"].active .theme-icon {
+    filter: brightness(0) invert(1);
+    opacity: 1;
+}
+
+/* Auto mode active: icon màu trắng (invert) để thấy rõ trên slider màu tối */
+.theme-toggle-group[data-theme="auto"] .theme-toggle-btn[data-theme="auto"].active .theme-icon {
+    filter: brightness(0) invert(1);
+    opacity: 1;
+}

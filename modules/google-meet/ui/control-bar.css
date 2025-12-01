@@ -1,0 +1,103 @@
+/**
+ * Google Meet Translate Button - Gradient Style CSS
+ * Hiệu ứng gradient xanh tím hiện đại
+ */
+
+/* Animation pulse cho active state */
+@keyframes pulse-translate {
+    0%, 100% {
+        box-shadow: 0 6px 25px rgba(248, 106, 1, 0.6), 0 0 0 4px rgba(248, 106, 1, 0.2);
+    }
+    50% {
+        box-shadow: 0 6px 30px rgba(248, 106, 1, 0.8), 0 0 0 8px rgba(248, 106, 1, 0.3);
+    }
+}
+
+/* Glow effect animation */
+@keyframes glow-gradient {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(248, 106, 1, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(248, 106, 1, 0.8));
+    }
+}
+
+/* Base button style */
+#meetTranslateButton {
+    /* Style chính được apply qua JavaScript */
+    /* CSS này chỉ để backup và animation */
+}
+
+/* Hover state enhancement */
+#meetTranslateButton:hover {
+    animation: glow-gradient 2s ease-in-out infinite !important;
+}
+
+/* Active/Translating state */
+#meetTranslateButton[data-is-translate="true"] {
+    animation: pulse-translate 2s ease-in-out infinite !important;
+}
+
+/* Focus state cho accessibility */
+#meetTranslateButton:focus-visible {
+    outline: 2px solid rgba(248, 106, 1, 0.8) !important;
+    outline-offset: 2px !important;
+}
+
+/* Icon animation khi active */
+#meetTranslateButton[data-is-translate="true"] svg {
+    animation: icon-pulse 1s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Gradient background cho các trạng thái */
+.meet-translate-btn-inactive {
+    background: linear-gradient(135deg, #f86a01 0%, #d45a01 100%) !important;
+}
+
+.meet-translate-btn-hover {
+    background: linear-gradient(135deg, #ff7a1a 0%, #f86a01 100%) !important;
+}
+
+.meet-translate-btn-active {
+    background: linear-gradient(135deg, #f86a01 0%, #d45a01 100%) !important;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    #meetTranslateButton {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    
+    #meetTranslateButton svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+
+/* Dark mode support (tự động detect) */
+@media (prefers-color-scheme: dark) {
+    #meetTranslateButton {
+        box-shadow: 0 4px 20px rgba(248, 106, 1, 0.5), 0 0 0 0 rgba(248, 106, 1, 0.6) !important;
+    }
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #meetTranslateButton,
+    #meetTranslateButton *,
+    #meetTranslateButton[data-is-translate="true"] {
+        animation: none !important;
+        transition: none !important;
+    }
+}

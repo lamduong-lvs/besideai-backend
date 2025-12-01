@@ -1,0 +1,352 @@
+/* ========================================
+   ICON SYSTEM
+   Standardized icon styling and utilities
+   ======================================== */
+
+/* ═══════════════════════════════════════
+   ICON BASE STYLES
+   ═══════════════════════════════════════ */
+
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  transition: all var(--transition-normal);
+}
+
+/* Icon as SVG */
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  transition: inherit;
+}
+
+/* Icon as IMG */
+.icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: var(--icon-filter);
+  transition: inherit;
+}
+
+/* ═══════════════════════════════════════
+   ICON SIZES
+   ═══════════════════════════════════════ */
+
+.icon-xs {
+  width: 12px;
+  height: 12px;
+}
+
+.icon-sm {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-md {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-lg {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-xl {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-2xl {
+  width: 48px;
+  height: 48px;
+}
+
+/* ═══════════════════════════════════════
+   ICON STROKE WIDTH
+   ═══════════════════════════════════════ */
+
+.icon-thin svg {
+  stroke-width: 1;
+}
+
+.icon-normal svg {
+  stroke-width: 1.5;
+}
+
+.icon-bold svg {
+  stroke-width: 2;
+}
+
+.icon-thick svg {
+  stroke-width: 2.5;
+}
+
+/* Default stroke width */
+.icon svg {
+  stroke-width: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   ICON COLORS
+   ═══════════════════════════════════════ */
+
+.icon-primary {
+  color: var(--color-primary);
+}
+
+.icon-secondary {
+  color: var(--text-secondary);
+}
+
+.icon-success {
+  color: var(--color-success);
+}
+
+.icon-error {
+  color: var(--color-error);
+}
+
+.icon-warning {
+  color: var(--color-warning);
+}
+
+.icon-info {
+  color: var(--color-info);
+}
+
+.icon-muted {
+  color: var(--text-placeholder);
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════
+   ICON STATES
+   ═══════════════════════════════════════ */
+
+.icon-hoverable {
+  cursor: pointer;
+}
+
+.icon-hoverable:hover {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.icon-hoverable:active {
+  transform: scale(0.95);
+}
+
+.icon-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   ICON IN BUTTONS
+   ═══════════════════════════════════════ */
+
+.btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-sm .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-lg .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ═══════════════════════════════════════
+   ICON ANIMATIONS
+   ═══════════════════════════════════════ */
+
+.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon-pulse {
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.icon-bounce {
+  animation: icon-bounce 1s ease-in-out infinite;
+}
+
+@keyframes icon-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ═══════════════════════════════════════
+   ICON UTILITIES
+   ═══════════════════════════════════════ */
+
+/* Icon with background */
+.icon-bg {
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+}
+
+.icon-bg-primary {
+  background: var(--color-primary-alpha);
+  color: var(--color-primary);
+}
+
+.icon-bg-success {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--color-success);
+}
+
+.icon-bg-error {
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--color-error);
+}
+
+/* Icon in circle */
+.icon-circle {
+  border-radius: 50%;
+  padding: var(--spacing-xs);
+  background: var(--bg-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.icon-circle-primary svg {
+  stroke: white;
+}
+
+/* Icon with border */
+.icon-border {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs);
+}
+
+/* ═══════════════════════════════════════
+   EMOJI REPLACEMENT HELPERS
+   ═══════════════════════════════════════ */
+
+/* Helper class to hide emoji and show icon instead */
+.emoji-replace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.emoji-replace::before {
+  content: '';
+  display: none; /* Emoji sẽ được thay bằng SVG trong HTML */
+}
+
+/* Icon wrapper for emoji replacement */
+.emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+}
+
+.emoji-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   DARK MODE ICON ADJUSTMENTS
+   ═══════════════════════════════════════ */
+
+[data-theme="dark"] .icon img {
+  filter: var(--icon-filter);
+}
+
+[data-theme="dark"] .icon svg {
+  stroke: currentColor;
+}
+
+/* ═══════════════════════════════════════
+   ICON IN TEXT
+   ═══════════════════════════════════════ */
+
+.text-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.text-with-icon .icon {
+  flex-shrink: 0;
+}
+
+/* Icon before text */
+.icon-before::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: var(--spacing-xs);
+  vertical-align: middle;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Icon after text */
+.icon-after::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: var(--spacing-xs);
+  vertical-align: middle;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+

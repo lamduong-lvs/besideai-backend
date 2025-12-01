@@ -1,0 +1,92 @@
+/**
+ * Actions Styles
+ * Scoped trong .input-module-container để tránh conflict
+ */
+
+.input-module-container .input-module-actions-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.input-module-container .input-actions-left,
+.input-module-container .input-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.input-module-container .input-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--action-btn-border, #e0e0e0);
+  border-radius: 20px;
+  background: var(--action-btn-bg, #ffffff);
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-size: 13px;
+  color: var(--action-btn-text, #1f2937);
+  box-sizing: border-box;
+}
+
+.input-module-container .input-action-btn:hover {
+  background: var(--action-btn-hover-bg, #f5f5f5);
+  border-color: var(--action-btn-hover-border, #d0d0d0);
+}
+
+.input-module-container .input-action-btn.active {
+  background: var(--action-btn-active-bg, var(--color-primary, #f86a01));
+  border-color: var(--action-btn-active-border, var(--color-primary, #f86a01));
+  color: var(--action-btn-active-text, #ffffff);
+}
+
+.input-module-container .input-action-btn .icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.input-module-container .mic-btn,
+.input-module-container .send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; /* Tăng thêm 35% (từ 18px: 18 * 1.35 = 24.3px, làm tròn 24px) */
+  height: 24px; /* Tăng thêm 35% (từ 18px: 18 * 1.35 = 24.3px, làm tròn 24px) */
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--mic-send-btn-bg, var(--color-primary, #f86a01));
+  color: var(--mic-send-btn-color, #ffffff);
+  cursor: pointer;
+  transition: all 200ms ease;
+  box-sizing: border-box;
+}
+
+.input-module-container .mic-btn:hover,
+.input-module-container .send-btn:hover {
+  background: var(--mic-send-btn-hover-bg, var(--color-primary-dark, #d45a01));
+  transform: scale(1.05);
+}
+
+.input-module-container .mic-btn:active,
+.input-module-container .send-btn:active {
+  transform: scale(0.95);
+}
+
+.input-module-container .mic-btn svg,
+.input-module-container .send-btn svg {
+  width: 14px; /* Tăng thêm 35% (từ 10px: 10 * 1.35 = 13.5px, làm tròn 14px) */
+  height: 14px; /* Tăng thêm 35% (từ 10px: 10 * 1.35 = 13.5px, làm tròn 14px) */
+}
+
+.input-module-container .send-btn .icon {
+  width: 14px; /* Tăng thêm 35% (từ 10px: 10 * 1.35 = 13.5px, làm tròn 14px) */
+  height: 14px; /* Tăng thêm 35% (từ 10px: 10 * 1.35 = 13.5px, làm tròn 14px) */
+  filter: brightness(0) invert(1);
+}

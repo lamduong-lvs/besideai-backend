@@ -1,0 +1,1550 @@
+﻿/* Messages Container Wrapper */
+.messages-container-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Messages Container */
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px 16px 24px 16px;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  border-bottom: none;
+  box-sizing: border-box;
+}
+
+/* Message Bubbles - AVATAR AT TOP */
+.message {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 12px;
+  width: fit-content;
+  align-items: flex-start;
+}
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  max-width: 95%;
+}
+.message.assistant {
+  align-self: flex-start;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.message-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Avatar tá»« Gmail (áº£nh tháº­t) cáº§n object-fit: cover vÃ  bo trÃ²n */
+.message-avatar img.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+[data-theme="dark"] .message-avatar {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.message-body { 
+  flex: 1; 
+  min-width: 0;
+  max-width: 100%;
+}
+.message-content, .markdown-content {
+  padding: 8px 12px;
+  background: var(--bg-message);
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+.message.user .message-content {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+.message.user .message-content a {
+  color: #FFFFFF;
+}
+.message.assistant .message-content { 
+  background: var(--bg-ai-message); 
+  color: var(--text-primary);
+}
+
+.message-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 4px;
+  gap: 8px;
+}
+
+.timestamp { 
+  font-size: 10px;
+  opacity: 0.4;
+  color: var(--text-secondary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.message:hover .action-buttons {
+  opacity: 1;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.action-btn:hover {
+  opacity: 0.8;
+  background: var(--bg-hover, rgba(0, 0, 0, 0.05));
+  transform: scale(1.05);
+}
+.action-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.action-btn img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  filter: brightness(0) saturate(100%);
+  transition: opacity 0.2s, transform 0.2s;
+  object-fit: contain;
+}
+
+.action-btn:hover img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Đảm bảo tất cả buttons có cùng kích thước */
+.action-buttons .action-btn.copy-btn,
+.action-buttons .action-btn.edit-btn,
+.action-buttons .action-btn.regenerate-btn {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  border: none;
+  background: none;
+  border-radius: 4px;
+}
+
+.action-buttons .action-btn.edit-btn img,
+.action-buttons .action-btn.regenerate-btn img {
+  width: 14px;
+  height: 14px;
+}
+
+.action-buttons .action-btn.edit-btn svg,
+.action-buttons .action-btn.regenerate-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.5;
+}
+
+/* XÓA HOÀN TOÀN TẤT CẢ TOOLTIP CHO ACTION BUTTONS */
+.action-buttons .action-btn::before,
+.action-buttons .action-btn::after,
+.action-buttons .action-btn[data-tooltip-text]::before,
+.action-buttons .action-btn[data-tooltip-text]::after,
+.action-buttons .action-btn[title]::before,
+.action-buttons .action-btn[title]::after,
+.action-buttons .action-btn.copy-btn::before,
+.action-buttons .action-btn.copy-btn::after,
+.action-buttons .action-btn.edit-btn::before,
+.action-buttons .action-btn.edit-btn::after,
+.action-buttons .action-btn.regenerate-btn::before,
+.action-buttons .action-btn.regenerate-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+  color: transparent !important;
+}
+
+/* Edit Container */
+.edit-container {
+  margin-top: 8px;
+}
+.edit-textarea {
+  width: 100%;
+  border: 1px solid var(--border-focus);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+  box-sizing: border-box;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.edit-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+.edit-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+}
+.edit-btn.save-btn {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.edit-btn.save-btn:hover {
+  background: var(--color-primary-dark);
+}
+.edit-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+.edit-btn.save-btn svg {
+  stroke: white;
+}
+
+/* Tooltip cho edit button trong edit container - KHÔNG áp dụng cho action buttons */
+.edit-container .edit-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+}
+.edit-container .edit-btn:hover::after {
+  opacity: 1;
+}
+
+/* Ẩn tooltip cũ cho edit button trong action-buttons */
+.action-buttons .action-btn.edit-btn::after {
+  /* Tooltip được định nghĩa bởi .action-btn[data-tooltip-text]::after */
+  /* Không dùng tooltip cũ này */
+}
+
+/* Loading State */
+/* Loading message styles */
+.loading-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loading-text {
+  color: var(--text-primary);
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.loading-dots .dot {
+  display: inline-block;
+  animation: loadingDot 1.4s infinite;
+  opacity: 0;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingDot {
+  0%, 60%, 100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scrollbar styles - giá»¯ chiá»u rá»™ng á»•n Ä‘á»‹nh, chá»‰ Ä‘á»•i mÃ u */
+.messages-container { scrollbar-gutter: stable both-edges; }
+.messages-container::-webkit-scrollbar { width: 8px; background: transparent; }
+.messages-container::-webkit-scrollbar-track { background: transparent !important; }
+.messages-container::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+.messages-container:hover::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); }
+.messages-container:hover::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+.messages-container.scrolling::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb) !important; }
+
+/* Footer Input Bar */
+.footer-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px 8px 12px;
+  border-top: none;
+  background: var(--bg-footer);
+  flex-shrink: 0;
+}
+
+/* Scroll to Bottom Button - Refactored */
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+  transform: scale(0.9);
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+.scroll-to-bottom-btn.visible {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1);
+}
+
+.scroll-to-bottom-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--border-color);
+}
+
+.scroll-to-bottom-btn:focus {
+  outline: none;
+  border-color: var(--border-color);
+}
+
+.scroll-to-bottom-btn img,
+.scroll-to-bottom-btn svg {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) saturate(100%);
+  opacity: 0.8;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.scroll-to-bottom-btn:hover img,
+.scroll-to-bottom-btn:hover svg {
+  opacity: 1;
+}
+
+/* Tooltip cho nút scroll to bottom - REMOVED: Tooltip được xử lý bởi tooltip-system.js */
+/* Loại bỏ CSS tooltip để tránh duplicate với tooltip system mới */
+.scroll-to-bottom-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+/* REMOVED: Old .input-wrapper styles - now handled by modules/input/styles/input.css */
+/* Input module sử dụng .input-module-container .input-wrapper để cô lập CSS */
+
+/* Xóa các định nghĩa CSS cũ cho input đã được chuyển sang module input mới */
+/* Các định nghĩa sau đã được chuyển sang modules/input/styles/input.css */
+
+.send-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.send-btn:hover {
+  background: var(--color-primary-dark);
+  transform: scale(1.05);
+}
+.send-btn img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+}
+
+/* Markdown content styling */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.markdown-content h1 { font-size: 1.5em; }
+.markdown-content h2 { font-size: 1.3em; }
+.markdown-content h3 { font-size: 1.1em; }
+
+.markdown-content p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.markdown-content code {
+  background: var(--bg-code);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.markdown-content pre {
+  background: var(--bg-code-block);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: #e3e3e3;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.markdown-content li {
+  margin: 4px 0;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 12px;
+  margin: 12px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 12px 0;
+  table-layout: auto;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 300px; /* Limit max width of cells */
+}
+
+.markdown-content th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+/* Footer Controls */
+.footer-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.model-selector-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.model-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 32px;
+  white-space: nowrap;
+}
+
+.model-selector-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+.model-selector-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-alpha);
+}
+
+.model-icon {
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  fill: none;
+  flex-shrink: 0;
+}
+
+.model-name {
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.model-selector-btn.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Model Dropdown */
+.model-dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  max-width: 350px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  max-height: 400px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.model-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.dropdown-items {
+  overflow-y: auto;
+  max-height: 320px;
+  flex: 1;
+}
+
+.model-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.model-item:last-child {
+  border-bottom: none;
+}
+
+.model-item:hover {
+  background: var(--bg-hover);
+}
+
+.model-item.active {
+  background: var(--color-primary-alpha);
+  border-left: 3px solid var(--color-primary);
+}
+
+.model-item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.model-item.active .model-item-name {
+  color: var(--color-primary);
+}
+
+.model-item-provider {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.model-item-status {
+  font-size: 10px;
+  color: var(--color-primary);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.dropdown-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Footer Buttons */
+.footer-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.footer-btn:active {
+  transform: scale(0.95);
+}
+
+.footer-btn img {
+  width: 18px;
+  height: 18px;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  filter: brightness(0.9);
+}
+
+.footer-btn:hover img {
+  opacity: 0.65;
+}
+
+/* Greeting Section */
+.greeting-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px 24px;
+  max-width: 800px;
+}
+
+.greeting-section.hidden {
+  display: none;
+}
+
+.greeting-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #4A90E2; /* MÃ u xanh cho lá»i chÃ o */
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.greeting-subtitle {
+  font-size: 16px;
+  color: #4A90E2; /* MÃ u xanh cho lá»i chÃ o */
+  margin: 0 0 32px 0;
+}
+
+/* Suggested Actions */
+.suggested-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.suggested-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.suggested-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.suggested-btn.primary {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+.suggested-btn.primary:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.suggested-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.suggested-btn.primary svg {
+  stroke: white;
+}
+
+/* Input Toolbar */
+.input-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 12px;
+  border-bottom: none;
+  gap: 6px;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-left .toolbar-action-btn:first-of-type {
+  margin-left: 0;
+}
+
+.toolbar-left .toolbar-action-btn#cropImageBtn {
+  margin-left: 0;
+}
+
+.toolbar-left .toolbar-action-btn#attachBtn {
+  margin-left: 2px; /* Giáº£m khoáº£ng cÃ¡ch giá»¯a icon cáº¯t hÃ¬nh vÃ  Ä‘Ã­nh kÃ¨m */
+}
+
+.toolbar-action-btn {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-action-btn:hover {
+  background: var(--bg-hover);
+}
+
+.toolbar-action-btn img,
+.toolbar-action-btn svg {
+  width: 16px;
+  height: 16px;
+  opacity: 1; /* MÃ u Ä‘áº­m hÆ¡n, khÃ´ng má» */
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%); /* MÃ u Ä‘en Ä‘áº­m */
+}
+
+.toolbar-action-btn svg {
+  stroke: var(--text-primary);
+  stroke-width: 1.5; /* NÃ©t máº£nh hÆ¡n */
+  fill: none;
+}
+
+.toolbar-action-btn:hover img,
+.toolbar-action-btn:hover svg {
+  opacity: 1;
+}
+
+.toolbar-action-btn:hover svg {
+  stroke: var(--color-primary);
+}
+
+/* Xoay icon cáº¯t hÃ¬nh ngÆ°á»£c chiá»u kim Ä‘á»“ng há»“ 90 Ä‘á»™ */
+.toolbar-action-btn#cropImageBtn img {
+  transform: rotate(-90deg);
+}
+
+/* Tooltip cho táº¥t cáº£ cÃ¡c nÃºt chá»©c nÄƒng */
+.toolbar-action-btn,
+.mic-btn,
+.send-btn,
+.menu-icon,
+.settings-btn,
+.header-btn,
+.user-btn {
+  position: relative;
+}
+
+/* áº¨n tooltip máº·c Ä‘á»‹nh cá»§a browser */
+.toolbar-action-btn[title],
+.mic-btn[title],
+.send-btn[title],
+.menu-icon[title],
+.settings-btn[title],
+.header-btn[title],
+.user-btn[title] {
+  /* Giá»¯ title attribute Ä‘á»ƒ CSS tooltip cÃ³ thá»ƒ Ä‘á»c, nhÆ°ng áº©n tooltip máº·c Ä‘á»‹nh */
+}
+
+/* Tooltip chung cho toolbar buttons */
+.toolbar-action-btn[data-tooltip-text]:not(#attachBtn)::after,
+.mic-btn[data-tooltip-text]::after,
+.send-btn[data-tooltip-text]::after,
+.header-btn[data-tooltip-text]::after,
+.user-btn[data-tooltip-text]::after {
+  content: attr(data-tooltip-text);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  /* Default placement: bottom */
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+.toolbar-action-btn[data-tooltip-text]:not(#attachBtn):hover::after,
+.mic-btn[data-tooltip-text]:hover::after,
+.send-btn[data-tooltip-text]:hover::after,
+.header-btn[data-tooltip-text]:hover::after,
+.user-btn[data-tooltip-text]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Smart positioning for tooltips (top/bottom) */
+.toolbar-action-btn[data-tooltip-text].tooltip-top::after,
+.mic-btn[data-tooltip-text].tooltip-top::after,
+.send-btn[data-tooltip-text].tooltip-top::after,
+.header-btn[data-tooltip-text].tooltip-top::after,
+.user-btn[data-tooltip-text].tooltip-top::after {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+.toolbar-action-btn[data-tooltip-text].tooltip-bottom::after,
+.mic-btn[data-tooltip-text].tooltip-bottom::after,
+.send-btn[data-tooltip-text].tooltip-bottom::after,
+.header-btn[data-tooltip-text].tooltip-bottom::after,
+.user-btn[data-tooltip-text].tooltip-bottom::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+/* Prefer left when requested via class */
+.toolbar-action-btn[data-tooltip-text].tooltip-left::after,
+.mic-btn[data-tooltip-text].tooltip-left::after,
+.send-btn[data-tooltip-text].tooltip-left::after,
+.header-btn[data-tooltip-text].tooltip-left::after,
+.user-btn[data-tooltip-text].tooltip-left::after {
+  top: 50%;
+  bottom: auto;
+  left: auto;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+
+/* Tooltip cho sidebar buttons (menu-icon, settings-btn) - hiá»ƒn thá»‹ bÃªn trÃ¡i */
+.menu-icon[data-tooltip-text]::after,
+.settings-btn[data-tooltip-text]::after {
+  content: attr(data-tooltip-text);
+  position: absolute;
+  right: 0;
+  transform: translateX(0);
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  /* Default placement: bottom */
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+.menu-icon[data-tooltip-text]:hover::after,
+.settings-btn[data-tooltip-text]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Smart positioning for sidebar tooltips */
+.menu-icon[data-tooltip-text].tooltip-top::after,
+.settings-btn[data-tooltip-text].tooltip-top::after {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+.menu-icon[data-tooltip-text].tooltip-bottom::after,
+.settings-btn[data-tooltip-text].tooltip-bottom::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+/* Tooltip Ä‘áº·c biá»‡t cho attach button (cÃ³ thá»ƒ cÃ³ nhiá»u dÃ²ng) */
+.toolbar-action-btn#attachBtn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  min-width: 300px;
+  max-width: 400px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.toolbar-action-btn#attachBtn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* REMOVED: Old model-selector styles - now handled by modules/input/styles/input-toolbar.css */
+/* These styles were conflicting with the new input module styles */
+
+.toolbar-icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.toolbar-icon-btn:hover {
+  background: var(--bg-hover);
+}
+
+.toolbar-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.toolbar-icon-btn:hover svg {
+  stroke: var(--text-primary);
+  opacity: 0.85;
+}
+
+.toolbar-icon-btn.notification .notification-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 1px solid var(--bg-primary);
+}
+
+/* Input Actions Left */
+.input-actions-left {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  /* Không đặt flex-direction ở đây để sử dụng giá trị từ input.css */
+}
+
+.input-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  opacity: 0.4;
+}
+
+.input-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--color-primary);
+  opacity: 0.65;
+}
+
+.input-action-btn.active {
+  opacity: 1;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--color-primary);
+}
+
+.input-action-btn img,
+.input-action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%);
+  transition: opacity 0.2s;
+}
+
+.input-action-btn:not(.active) img,
+.input-action-btn:not(.active) svg {
+  opacity: 0.4;
+}
+
+.input-action-btn.active img,
+.input-action-btn.active svg {
+  opacity: 1;
+}
+
+.input-action-btn svg {
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Mic Button */
+.mic-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mic-btn:hover {
+  background: var(--bg-hover);
+}
+
+.mic-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  fill: none;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.mic-btn:hover svg {
+  stroke: var(--color-primary);
+  opacity: 0.65;
+}
+
+.mic-btn.is-listening {
+  background: var(--color-primary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.mic-btn.is-listening svg {
+  stroke: white;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  color: white;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.upgrade-text {
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rocket-icon {
+  width: 14px;
+  height: 14px;
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-icon-btn {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon-btn:hover {
+  background: var(--bg-hover);
+}
+
+.status-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.status-icon-btn:hover svg {
+  stroke: var(--text-primary);
+  opacity: 0.85;
+}
+
+/* REMOVED: Old .input-container styles - now handled by modules/input/styles/input.css */
+/* Input module sử dụng .input-module-container để cô lập CSS */
+
+/* Äáº£m báº£o khÃ´ng cÃ³ border khi scroll */
+.messages-container-wrapper {
+  border: none !important;
+  border-bottom: none !important;
+  outline: none !important;
+}
+.messages-container.scrolling {
+  border: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+}
+.messages-container-wrapper ~ .footer-input {
+  border-top: none !important;
+  border-bottom: none !important;
+  outline: none !important;
+}
+/* REMOVED: Old .input-container styles - now handled by modules/input/styles/input.css */
+/* Äáº£m báº£o nÃºt scroll khÃ´ng táº¡o border */
+.scroll-to-bottom-btn.visible {
+  border: 1px solid var(--border-color) !important;
+  outline: none !important;
+}
+
+/* Resize Handle */
+.resize-handle {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 2px;
+  cursor: ns-resize;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover {
+  background: var(--color-primary);
+}
+
+.resize-handle:active {
+  background: var(--color-primary-dark);
+}
+
+/* REMOVED: Old input styles - now handled by modules/input/styles/input.css */
+/* Input module sử dụng .input-module-container để cô lập CSS */
+
+/* Attach Button */
+.attach-btn {
+  position: absolute;
+  left: 8px;
+  bottom: 4px;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.attach-btn:hover {
+  background: var(--bg-hover);
+}
+
+.attach-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  fill: none;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.attach-btn:hover svg {
+  stroke: var(--color-primary);
+  opacity: 0.65;
+}
+
+/* Hide greeting when messages exist */
+.messages-container .greeting-section.hidden {
+  display: none;
+}
+
+/* Image Preview Container */
+.image-preview-container {
+  padding: 8px 12px;
+  border-top: none;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  min-height: 80px;
+}
+
+/* Preview File Item */
+.preview-file-item {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  width: 80px;
+  box-sizing: border-box;
+}
+
+/* Preview Remove Button */
+.preview-remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: var(--color-error);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 20;
+  pointer-events: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.preview-file-item:hover .preview-remove-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.preview-remove-btn:hover {
+  background: var(--color-error);
+  transform: scale(1.1);
+}
+
+.preview-remove-btn img {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+

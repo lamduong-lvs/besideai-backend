@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title-tag">Settings</title>
+    
+    <!-- Design System Imports -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/variables.css">
+    <link rel="stylesheet" href="../styles/theme-light.css">
+    <link rel="stylesheet" href="../styles/theme-dark.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/icons.css">
+    <link rel="stylesheet" href="../styles/tooltip-system.css">
+    <link rel="stylesheet" href="setting.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img id="app-logo" src="" alt="Logo" class="logo-img">
+                    <h1 class="logo-text" id="app-name">Loading...</h1>
+                </div>
+                <p class="version-text" id="app-version">Loading...</p>
+            </div>
+
+            <!-- Search Box -->
+            <div class="sidebar-search">
+                <div class="search-input-wrapper">
+                    <img src="../icons/svg/icon/Search/Magnifer.svg" alt="" class="search-icon">
+                    <input type="text" id="settings-search-input" class="search-input" placeholder="Tìm kiếm cài đặt..." data-i18n-placeholder="searchPlaceholder">
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <!-- General -->
+                <a href="#general" class="nav-item active" data-target="general">
+                    <img src="../icons/svg/icon/Settings, Fine Tuning/Settings.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_general">Cấu hình chung</span>
+                </a>
+
+                <!-- Sidebar Settings -->
+                <a href="#sidebar" class="nav-item" data-target="sidebar">
+                    <img src="../icons/svg/icon/List/List.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_sidebar">Thanh bên</span>
+                </a>
+
+                <!-- Context Menu -->
+                <a href="#context-menu" class="nav-item" data-target="context-menu">
+                    <img src="../icons/svg/icon/Essentional, UI/Menu Dots.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_context_menu">Menu ngữ cảnh</span>
+                </a>
+
+                <!-- Translate -->
+                <a href="#translate" class="nav-item" data-target="translate">
+                    <img src="../icons/svg/icon/Text Formatting/Text.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_translate">Dịch thuật</span>
+                </a>
+
+                <!-- Web Assistant -->
+                <a href="#web-assistant" class="nav-item" data-target="web-assistant">
+                    <img src="../icons/svg/icon/Electronic, Devices/Server.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_web_assistant">Trợ lý Web</span>
+                </a>
+
+                <!-- Shortcuts -->
+                <a href="#shortcuts" class="nav-item" data-target="shortcuts">
+                    <img src="../icons/svg/icon/Electronic, Devices/Keyboard.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_shortcuts">Phím tắt</span>
+                </a>
+            </nav>
+
+            <!-- Footer Links (moved below Shortcuts) -->
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item-sm footer-link">
+                    <img src="../icons/svg/icon/Messages, Conversation/Letter.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_contact">Liên hệ chúng tôi</span>
+                </a>
+                <a href="#" class="nav-item-sm footer-link">
+                    <img src="../icons/svg/icon/Essentional, UI/Help.svg" alt="" class="nav-icon-svg">
+                    <span data-i18n="settings_nav_help">Trung tâm trợ giúp</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-scrollable" id="content-container">
+                <!-- Sections will be injected here -->
+                
+                <!-- General Section (Default) -->
+                <section id="section-general" class="setting-section active">
+                    <!-- Account Card -->
+                    <div class="card mb-lg">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_account_title">Tài khoản</h3>
+                            <button class="btn btn-sm btn-secondary" id="btn-logout" data-i18n="settings_account_logout" data-tooltip="tooltips.settings.logout">Đăng xuất</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-center gap-md">
+                                <div class="avatar-lg" id="profile-avatar"></div>
+                                <div>
+                                    <h4 class="text-lg font-semibold mb-xs" id="profile-name">...</h4>
+                                    <p class="text-sm text-muted" id="profile-email">...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Access Card -->
+                    <div class="card mb-lg">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_ai_title">Truy cập AI</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Provider List -->
+                            <h4 class="text-base font-medium mb-sm">Nhà cung cấp (Providers)</h4>
+                            <div class="provider-list mb-md">
+                                <!-- Cerebras -->
+                                <div class="provider-item d-flex justify-between align-center p-sm border rounded-md mb-sm">
+                                    <div class="d-flex align-center gap-sm">
+                                        <span class="font-medium">Cerebras</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" data-action="config-provider" data-provider="cerebras" data-i18n="settings_btn_setup" data-tooltip="tooltips.settings.setupProvider">Thiết lập</button>
+                                </div>
+                                <!-- OpenAI -->
+                                <div class="provider-item d-flex justify-between align-center p-sm border rounded-md mb-sm">
+                                    <div class="d-flex align-center gap-sm">
+                                        <span class="font-medium">OpenAI</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" data-action="config-provider" data-provider="openai" data-i18n="settings_btn_setup" data-tooltip="tooltips.settings.setupProvider">Thiết lập</button>
+                                </div>
+                                <!-- Gemini -->
+                                <div class="provider-item d-flex justify-between align-center p-sm border rounded-md mb-sm">
+                                    <div class="d-flex align-center gap-sm">
+                                        <span class="font-medium">Google Gemini</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" data-action="config-provider" data-provider="googleai" data-i18n="settings_btn_setup" data-tooltip="tooltips.settings.setupProvider">Thiết lập</button>
+                                </div>
+                                <!-- Claude -->
+                                <div class="provider-item d-flex justify-between align-center p-sm border rounded-md mb-sm">
+                                    <div class="d-flex align-center gap-sm">
+                                        <span class="font-medium">Anthropic (Claude)</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" data-action="config-provider" data-provider="anthropic" data-i18n="settings_btn_setup" data-tooltip="tooltips.settings.setupProvider">Thiết lập</button>
+                                </div>
+                                <!-- Groq -->
+                                <div class="provider-item d-flex justify-between align-center p-sm border rounded-md">
+                                    <div class="d-flex align-center gap-sm">
+                                        <span class="font-medium">Groq</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" data-action="config-provider" data-provider="groq" data-i18n="settings_btn_setup" data-tooltip="tooltips.settings.setupProvider">Thiết lập</button>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <!-- Single Mode (Default Model) -->
+                            <div class="setting-row mb-md">
+                                <div class="d-flex justify-between align-center mb-xs">
+                                    <h4 class="text-base font-medium" data-i18n="defaultModelLabel">Model Mặc Định</h4>
+                                </div>
+                                <p class="text-sm text-muted mb-sm" data-i18n="defaultModelDesc">Model này sẽ được sử dụng nếu "Chế độ Nhanh" bị tắt.</p>
+                                <select class="input w-full" id="select-default-model">
+                                    <option value="" disabled selected data-i18n="defaultModelPlaceholder">Vui lòng thêm model ở các trang cấu hình...</option>
+                                </select>
+                            </div>
+
+                            <!-- PDF Chat Model -->
+                            <div class="setting-row mb-md">
+                                <div class="d-flex justify-between align-center mb-xs">
+                                    <h4 class="text-base font-medium" data-i18n="pdfChatModelLabel">Model cho PDF Chat</h4>
+                                </div>
+                                <p class="text-sm text-muted mb-sm" data-i18n="pdfChatModelDesc">Chọn model Gemini để phân tích và chat với PDF (cần Gemini API Key).</p>
+                                <select class="input w-full" id="select-pdfchat-model">
+                                    <option value="" disabled selected>Vui lòng thêm model Gemini trong phần cấu hình...</option>
+                                </select>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <!-- Racing Mode -->
+                            <div class="setting-row">
+                                <div class="d-flex justify-between align-center">
+                                    <div>
+                                        <h4 class="text-base font-medium mb-xxs" data-i18n="settings_racing_title">Chế độ Nhanh (Racing Mode)</h4>
+                                        <p class="text-sm text-muted" data-i18n="settings_racing_desc">Gửi yêu cầu đến nhiều model cùng lúc.</p>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label class="switch">
+                                            <input type="checkbox" id="toggle-racing-mode">
+                                            <span class="switch-slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Racing Models Selector (Shown when enabled) -->
+                                <div id="racing-config-container" class="model-selector-container d-none">
+                                    <label class="text-sm font-medium mb-sm d-block" data-i18n="raceModelSelectLabel">Chọn Model Tham gia "Racing"</label>
+                                    <div class="checkbox-list" id="racing-models-list">
+                                        <!-- Checkboxes will be injected here -->
+                                        <p class="text-sm text-muted italic" data-i18n="raceModelErrorNone">Vui lòng thêm và cấu hình API Key cho ít nhất 2 model.</p>
+                                    </div>
+                                    <div class="mt-md">
+                                        <button class="btn btn-sm btn-secondary w-full" id="btn-test-racing" data-i18n="testServerConnection">Test Racing</button>
+                                    </div>
+                                    <div id="racing-test-results" class="mt-sm text-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interface Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-i18n="settings_interface_title">Giao diện</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Theme -->
+                            <div class="setting-row d-flex justify-between align-center mb-md">
+                                <label class="text-base font-medium" data-i18n="settings_interface_theme">Chế độ hiển thị</label>
+                                <div class="theme-toggle-group">
+                                    <div class="theme-toggle-slider" id="theme-toggle-slider"></div>
+                                    <button class="theme-toggle-btn" data-theme="light" aria-label="Sáng" data-tooltip="settings_theme_light">
+                                        <img src="../icons/svg/icon-theme-light.svg" alt="Sáng" class="theme-icon">
+                                    </button>
+                                    <button class="theme-toggle-btn" data-theme="dark" aria-label="Tối" data-tooltip="settings_theme_dark">
+                                        <img src="../icons/svg/icon-theme-dark.svg" alt="Tối" class="theme-icon">
+                                    </button>
+                                    <button class="theme-toggle-btn" data-theme="auto" aria-label="Tự động" data-tooltip="settings_theme_auto">
+                                        <img src="../icons/svg/icon-theme-auto.svg" alt="Tự động" class="theme-icon">
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Language -->
+                            <div class="setting-row d-flex justify-between align-center">
+                                <label class="text-base font-medium" data-i18n="settings_interface_lang">Ngôn ngữ hiển thị</label>
+                                <div class="custom-select-wrapper" id="setting-language-selector-wrapper">
+                                    <div class="custom-select-trigger" id="setting-language-selector-trigger">
+                                        <span id="setting-language-selected-value" class="selected-value"></span>
+                                        <svg class="icon chevron-right" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </div>
+                                    <ul class="custom-select-menu" id="setting-language-selector-menu" data-setting="language">
+                                        <!-- Language options will be injected here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Other sections placeholders -->
+                <section id="section-sidebar" class="setting-section d-none">
+                    <div class="card mb-lg feature-planned">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_sidebar_chat_title">Cài đặt Chat</h3>
+                            <span class="badge badge-warning" data-i18n="common_coming_soon">Sắp ra mắt</span>
+                        </div>
+                        <div class="card-body">
+                             <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_sidebar_chat_auto_resize">Tự động điều chỉnh chiều cao</h4>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" disabled>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card feature-planned">
+                        <div class="card-header d-flex justify-between align-center">
+                             <h3 class="card-title" data-i18n="settings_sidebar_file_upload_title">Cài đặt File Upload</h3>
+                             <span class="badge badge-warning" data-i18n="common_coming_soon">Sắp ra mắt</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_sidebar_file_upload_allowed_types">Các loại file được phép</h4>
+                                     <p class="text-sm text-muted">VD: .pdf, .docx, .txt</p>
+                                </div>
+                                <input type="text" class="input w-auto" placeholder=".pdf, .docx" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-context-menu" class="setting-section d-none">
+                     <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-i18n="settings_nav_context_menu">Menu ngữ cảnh</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_context_menu_enable">Hiển thị menu khi bôi đen</h4>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-context-menu" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Translate Section -->
+                <section id="section-translate" class="setting-section d-none">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-i18n="settings_nav_translate">Dịch thuật</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-row d-flex justify-between align-center mb-md">
+                                <label class="text-base font-medium" data-i18n="settings_translate_target_lang">Ngôn ngữ đích</label>
+                                <select class="input w-auto" id="select-target-lang">
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            
+                            <!-- Quick Translate Popup -->
+                            <div class="setting-row d-flex justify-between align-center mb-md">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_translate_quick_popup">Bật popup dịch nhanh khi bôi đen</h4>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-quick-translate-popup" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Bilingual Translation (Planned) -->
+                            <div class="setting-row d-flex justify-between align-center feature-planned">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_translate_bilingual">Bật dịch song ngữ trên Web/Youtube</h4>
+                                </div>
+                                <div class="d-flex align-center gap-sm">
+                                    <span class="badge badge-warning" data-i18n="common_coming_soon">Sắp ra mắt</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-bilingual-translation" disabled>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Web Assistant Section -->
+                <section id="section-web-assistant" class="setting-section d-none">
+                    <!-- Gmail -->
+                    <div class="card mb-lg">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_web_assistant_gmail_title">Tích hợp Gmail</h3>
+                        </div>
+                        <div class="card-body">
+                             <!-- Quick Actions Bar -->
+                             <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_web_assistant_gmail_quick_actions_bar">Hiển thị thanh công cụ AI</h4>
+                                    <p class="text-sm text-muted" data-i18n="settings_web_assistant_gmail_quick_actions_bar_desc">Thanh công cụ chính để tóm tắt, dịch, tạo sự kiện...</p>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-gmail-quick-actions-bar" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                             <!-- AI Summarizer -->
+                             <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_web_assistant_gmail_summarizer">Tự động tóm tắt email</h4>
+                                     <p class="text-sm text-muted" data-i18n="settings_web_assistant_gmail_summarizer_desc">Hiển thị một đoạn tóm tắt ngắn ở đầu mỗi email dài.</p>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-gmail-summarizer" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                             <div class="divider"></div>
+                             <!-- AI Event Parser -->
+                             <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_web_assistant_gmail_event_parser">Phân tích Sự kiện & Tác vụ</h4>
+                                     <p class="text-sm text-muted" data-i18n="settings_web_assistant_gmail_event_parser_desc">Tự động phát hiện các cuộc họp, deadline để tạo trên Lịch.</p>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-gmail-event-parser" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Meeting -->
+                    <div class="card mb-lg">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_web_assistant_meeting_title">Họp trực tuyến (Meet & Teams)</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Enable on Google Meet -->
+                            <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_web_assistant_meeting_enable_meet">Kích hoạt trên Google Meet</h4>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-meeting-enable-meet" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                             <!-- Enable on MS Teams -->
+                            <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_web_assistant_meeting_enable_teams">Kích hoạt trên Microsoft Teams</h4>
+                                </div>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-meeting-enable-teams" checked>
+                                        <span class="switch-slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                             <div class="divider"></div>
+                            <!-- Translation Style -->
+                            <div class="setting-row d-flex justify-between align-center">
+                                <label class="text-base font-medium" data-i18n="settings_web_assistant_meeting_translation_style">Kiểu dịch phụ đề</label>
+                                <select class="input w-auto" id="select-meeting-translation-style">
+                                    <option value="standard" data-i18n="settings_web_assistant_meeting_style_standard">Thông thường</option>
+                                    <option value="terminology" data-i18n="settings_web_assistant_meeting_style_terminology">Giải thích thuật ngữ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-i18n="settings_web_assistant_media_title">Media (Screenshot & Ghi hình)</h3>
+                        </div>
+                        <div class="card-body">
+                             <!-- Screenshot Format -->
+                            <div class="setting-row d-flex justify-between align-center mb-md">
+                                <label class="text-base font-medium" data-i18n="settings_web_assistant_media_screenshot_format">Định dạng ảnh chụp</label>
+                                <select class="input w-auto" id="select-screenshot-format">
+                                    <option value="png">PNG</option>
+                                    <option value="jpeg">JPG</option>
+                                </select>
+                            </div>
+
+                            <!-- Video Quality -->
+                            <div class="setting-row d-flex justify-between align-center">
+                                <label class="text-base font-medium" data-i18n="settings_web_assistant_media_video_quality">Chất lượng ghi hình</label>
+                                <select class="input w-auto" id="select-video-quality">
+                                    <option value="4k">4K (UHD)</option>
+                                    <option value="1440p">1440p (QHD)</option>
+                                    <option value="1080p">1080p (FHD)</option>
+                                    <option value="720p">720p (HD)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-shortcuts" class="setting-section d-none">
+                    <div class="card feature-planned">
+                        <div class="card-header d-flex justify-between align-center">
+                            <h3 class="card-title" data-i18n="settings_shortcuts_title">Quản lý phím tắt</h3>
+                            <span class="badge badge-warning" data-i18n="common_coming_soon">Sắp ra mắt</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_shortcuts_open_sidebar">Mở Sidebar</h4>
+                                </div>
+                                <input type="text" class="input w-auto text-center" value="Ctrl + B" disabled>
+                            </div>
+                            <div class="divider"></div>
+                             <div class="setting-row d-flex justify-between align-center">
+                                <div>
+                                    <h4 class="text-base font-medium" data-i18n="settings_shortcuts_screenshot">Chụp ảnh màn hình</h4>
+                                </div>
+                                <input type="text" class="input w-auto text-center" value="Ctrl + Shift + 1" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <!-- Search Section (Planned) -->
+                <section id="section-search" class="setting-section d-none">
+                    <div class="card feature-planned">
+                        <div class="card-body text-center p-xl">
+                            <h3 class="text-lg font-medium mb-sm" data-i18n="settings_search_title">Cài đặt Tìm kiếm</h3>
+                            <p class="text-muted mb-md" data-i18n="settings_search_desc">Cấu hình các công cụ tìm kiếm và cách chúng hoạt động.</p>
+                            <span class="badge badge-warning" data-i18n="common_coming_soon">Sắp ra mắt</span>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-provider-config" class="modal" style="display: none;">
+        <div class="modal-content card p-0">
+            <div class="card-header d-flex justify-between align-center">
+                <h3 class="card-title" id="modal-title-provider">Cấu hình API</h3>
+                <button class="btn-icon-only close-modal" data-tooltip="tooltips.settings.closeModal">✕</button>
+            </div>
+            <div class="card-body p-md">
+                <div class="form-group mb-md">
+                    <label class="text-sm font-medium mb-xs d-block">API Key</label>
+                    <input type="password" class="input" id="input-api-key" placeholder="sk-...">
+                </div>
+                <div class="form-group mb-md">
+                    <label class="text-sm font-medium mb-xs d-block">Base URL (Optional)</label>
+                    <input type="text" class="input" id="input-base-url" placeholder="https://api.openai.com/v1">
+                </div>
+                
+                <!-- NEW: Add Model fields for manual configuration -->
+                <div class="divider mb-md"></div>
+                <h4 class="text-sm font-semibold mb-sm">Thêm Model Tùy Chỉnh</h4>
+                
+                <div class="form-group mb-sm">
+                    <label class="text-sm font-medium mb-xs d-block" data-i18n="providerDisplayName">Tên hiển thị</label>
+                    <input type="text" class="input" id="input-model-name" placeholder="VD: GPT-4o Custom">
+                </div>
+                
+                <div class="form-group mb-md">
+                    <label class="text-sm font-medium mb-xs d-block" data-i18n="providerModelId">Model ID</label>
+                    <div class="d-flex gap-xs">
+                         <input type="text" class="input" id="input-model-id" placeholder="VD: gpt-4o">
+                         <button class="btn btn-secondary" id="btn-add-model" data-i18n="providerAddModelBtn">Thêm</button>
+                    </div>
+                </div>
+
+                <div id="provider-models-list" class="mt-sm">
+                    <!-- List of added models will appear here -->
+                </div>
+
+            </div>
+            <div class="card-footer p-md bg-secondary rounded-b-lg d-flex justify-end gap-sm">
+                <button class="btn btn-secondary close-modal">Hủy</button>
+                <button class="btn btn-primary" id="btn-save-provider">Lưu cấu hình</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast"></div>
+
+    <script src="/js/i18n.js"></script>
+    <script src="../utils/tooltip-manager.js"></script>
+    <script type="module" src="setting.js"></script>
+</body>
+</html>

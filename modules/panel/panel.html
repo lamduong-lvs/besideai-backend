@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="panelTitle">AI Chat Assistant</title>
+  <!-- Design System - Import theo thứ tự: global → variables → theme → components → module-specific -->
+          <link rel="stylesheet" href="../../styles/global.css">
+          <link rel="stylesheet" href="../../styles/variables.css">
+          <link rel="stylesheet" href="../../styles/theme-light.css">
+          <link rel="stylesheet" href="../../styles/theme-dark.css">
+          <link rel="stylesheet" href="../../styles/components.css">
+          <link rel="stylesheet" href="../../styles/icons.css">
+          <link rel="stylesheet" href="../../styles/tooltip-system.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="../auth/ui/auth-widget.css">
+  <link rel="stylesheet" href="../pdf-chat/ui/pdf-chat.css">
+  <link rel="stylesheet" href="../input/styles/input.css">
+  <link rel="stylesheet" href="components/UserMenu.css">
+  <link rel="stylesheet" href="components/TokenUsageMenu.css">
+  <style>
+    /* Force override any styles for close buttons */
+    /* Button styles - không áp dụng filter cho button */
+    .history-close, .settings-close, .historyPanel-close, .settingsPanel-close {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    /* Icon img styles - dùng var(--icon-filter) thay vì brightness(0) invert(1) */
+    .history-close img, .settings-close img, .historyPanel-close img, .settingsPanel-close img {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+      filter: var(--icon-filter) !important;
+    }
+
+    .history-close:hover, .settings-close:hover, .historyPanel-close:hover, .settingsPanel-close:hover {
+      background: var(--bg-hover) !important;
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Main Content Wrapper -->
+    <div class="main-content-wrapper">
+      <!-- Header (Simplified) -->
+      <div class="popup-header">
+        <span class="header-title" data-i18n="newConversationTitle">Cuộc hội thoại mới</span>
+      </div>
+      
+      <!-- Messages Container with Greeting -->
+      <div class="messages-container-wrapper" id="chatView">
+        <div class="messages-container" id="messagesContainer">
+          <!-- Greeting Section (shown when no messages) -->
+          <div class="greeting-section" id="greetingSection">
+            <h1 class="greeting-title" id="greetingTitle">Chào,</h1>
+            <p class="greeting-subtitle" data-i18n="greetingSubtitle">Hôm nay tôi có thể giúp gì cho bạn?</p>
+          </div>
+        </div>
+        <!-- Scroll to Bottom Button -->
+        <button class="scroll-to-bottom-btn" id="scrollToBottomBtn" data-tooltip="tooltips.panel.scrollToBottom">
+          <img src="../../icons/svg/icon/Arrows/Arrow Down.svg" alt="Scroll to bottom" class="icon">
+        </button>
+      </div>
+      
+      <!-- Record Panel View -->
+      <div class="record-panel-view d-none" id="recordView">
+        <div class="record-panel-body">
+          <div class="setting-group">
+            <div class="setting-label" data-i18n="recordSource">Chọn nguồn quay</div>
+            <div class="source-selector">
+              <button class="source-btn active" id="desktopBtn" data-source="desktop" data-tooltip="tooltips.panel.recordSourceDesktop">
+                <span class="icon icon-source-desktop" aria-hidden="true"></span>
+                <span class="btn-label" data-i18n="recordSourceDesktopLabel">Màn hình</span>
+              </button>
+              <button class="source-btn" id="cameraOnlyBtn" data-source="camera_only" data-tooltip="tooltips.panel.recordSourceCamera">
+                <span class="icon icon-source-camera" aria-hidden="true"></span>
+                <span class="btn-label" data-i18n="recordSourceCameraLabel">Chỉ Camera</span>
+              </button>
+              <button class="source-btn" id="tabBtn" data-source="this_tab" data-tooltip="tooltips.panel.recordSourceTab">
+                <span class="icon icon-source-tab" aria-hidden="true"></span>
+                <span class="btn-label" data-i18n="recordSourceTabLabel">Tab này</span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-group">
+            <div class="setting-label" data-i18n="recordOptions">Tùy chọn ghi hình</div>
+            <div class="settings-row">
+              <button class="setting-btn" id="micBtn" data-setting="mic" data-tooltip="tooltips.panel.recordMic">
+                <span class="icon icon-mic"></span>
+              </button>
+              <button class="setting-btn" id="systemAudioBtn" data-setting="systemAudio" data-tooltip="tooltips.panel.recordSystemAudio">
+                <span class="icon icon-volume"></span>
+              </button>
+              <button class="setting-btn" id="cameraBtn" data-setting="camera" data-tooltip="tooltips.panel.recordCamera">
+                <span class="icon icon-camera"></span>
+              </button>
+              <div class="shape-selector-vertical" id="shapeSelector">
+                <button class="shape-btn" data-shape="square" data-tooltip="tooltips.panel.recordShapeSquare"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                <button class="shape-btn" data-shape="circle" data-tooltip="tooltips.panel.recordShapeCircle"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <button class="setting-btn" id="clickEffectBtn" data-setting="clickEffect" data-tooltip="tooltips.panel.recordClickEffect">
+                <span class="icon icon-click-effect"></span>
+              </button>
+              <button class="setting-btn" id="annotationBtn" data-setting="draw" data-tooltip="tooltips.panel.recordAnnotation">
+                <span class="icon icon-annotation"></span>
+              </button>
+              <div class="control-bar-setting">
+                <span data-i18n="recordControlBarLabel">Thanh điều khiển</span>
+                <label class="switch"><input type="checkbox" id="controlBarToggle" data-setting="showControls"><span class="slider round"></span></label>
+              </div>
+            </div>
+          </div>
+          <div class="setting-group">
+            <div class="setting-label separator" data-i18n="recordQualityFormat">Chất lượng & Định dạng</div>
+            <div class="custom-select-row">
+              <div class="custom-select-wrapper" id="quality-selector">
+                <div class="custom-select-trigger">
+                  <span class="icon icon-quality"></span>
+                  <span class="selected-value">4K</span>
+                </div>
+                <ul class="custom-select-menu" data-setting="videoQuality">
+                  <li data-value="4k" data-i18n="recordQuality4K">4K (UHD)</li>
+                  <li data-value="1440p" data-i18n="recordQuality1440p">1440p (QHD)</li>
+                  <li data-value="1080p" data-i18n="recordQuality1080p">1080p (FHD)</li>
+                  <li data-value="720p" data-i18n="recordQuality720p">720p (HD)</li>
+                  <li data-value="480p" data-i18n="recordQuality480p">480p (SD)</li>
+                </ul>
+              </div>
+              <div class="custom-select-wrapper" id="fps-selector">
+                <div class="custom-select-trigger">
+                  <span class="icon icon-fps"></span>
+                  <span class="selected-value">60 FPS</span>
+                </div>
+                <ul class="custom-select-menu" data-setting="frameRate">
+                  <li data-value="60">60 FPS</li>
+                  <li data-value="30">30 FPS</li>
+                </ul>
+              </div>
+              <div class="custom-select-wrapper" id="format-selector">
+                <div class="custom-select-trigger">
+                  <span class="icon icon-format"></span>
+                  <span class="selected-value">WebM</span>
+                </div>
+                <ul class="custom-select-menu" data-setting="videoFormat"><li data-value="webm">WebM</li><li data-value="mp4">MP4</li></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="record-panel-footer">
+          <button id="startRecordBtn" class="start-btn" data-i18n="recordStartButton">
+            Bắt Đầu Ghi Hình
+          </button>
+        </div>
+      </div>
+
+      <!-- Translate View -->
+      <div class="translate-view d-none" id="translateView">
+        <div class="translate-entry-card">
+          <div class="translate-card-header">
+            <select id="translateSourceLang" class="language-select"></select>
+            <button class="language-swap-btn" id="translateSwapBtn">
+              <img src="../../icons/svg/icon/Arrows/Transfer Horizontal.svg" alt="Swap" class="icon">
+            </button>
+            <select id="translateTargetLang" class="language-select"></select>
+          </div>
+          <div class="translate-card-body">
+            <textarea 
+              id="translateSourceText" 
+              class="translate-input"
+              data-i18n-placeholder="translateInputPlaceholder"
+              placeholder="Nhập văn bản bạn muốn dịch..."></textarea>
+          </div>
+          <div class="translate-card-footer">
+            <div class="translate-footer-buttons">
+              <button class="translate-toggle-btn" id="translateClipboardToggle" data-active="false">
+                <img src="../../icons/svg/icon/Essentional, UI/Copy.svg" alt="Clipboard" class="icon">
+                <span data-i18n="translateClipboardLabel">Clipboard</span>
+              </button>
+              <div class="translate-advanced-group">
+                <button class="translate-toggle-btn" id="translateAdvancedBtn" data-active="true">
+                  <img src="../../icons/svg/icon/Settings, Fine Tuning/Settings.svg" alt="Advanced" class="icon">
+                  <span data-i18n="translateAdvancedLabel">Nâng cao</span>
+                  <svg class="dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <div class="translate-advanced-menu" id="translateAdvancedMenu">
+                  <button class="advanced-option" data-mode="terminology">
+                    <span data-i18n="translateAdvancedTerminology">Dịch thuật ngữ</span>
+                  </button>
+                  <button class="advanced-option active" data-mode="standard">
+                    <span data-i18n="translateAdvancedStandard">Dịch thông thường</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button class="translate-send-btn" id="translateSubmitBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9"></polygon>
+              </svg>
+            </button>
+          </div>
+          <div class="translate-resize-handle" id="translateResizeHandle"></div>
+        </div>
+        <div class="translate-result-area" id="translateResultContainer">
+          <p class="translate-result-placeholder" data-i18n="translateResultPlaceholder">Kết quả dịch sẽ được hiển thị tại đây.</p>
+        </div>
+      </div>
+
+      <!-- PDF Chat View -->
+      <div class="pdf-chat-view d-none" id="pdfChatView">
+        <!-- Content will be dynamically rendered by PDFChatUI -->
+      </div>
+      
+      <!-- Input Area -->
+      <div class="footer-input">
+        <!-- Input Container for Main Chat -->
+        <div id="chat-input-container" class="d-none"></div>
+        
+        <!-- Input Container for PDF Chat -->
+        <div id="pdf-chat-input-container" class="d-none"></div>
+        
+        <!-- Input Container for Gmail -->
+        <div id="gmail-input-container" class="d-none"></div>
+      </div>
+      
+    </div>
+      
+      <!-- Right Sidebar (Simplified) -->
+      <div class="section-menu">
+        <div class="section-menu-top">
+          <!-- Expand Button (Open lavasa.vn) -->
+          <button class="header-btn" id="expandBtn" data-tooltip="tooltips.panel.expandBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          </button>
+          
+          <!-- Chat Button -->
+          <div class="sidebar-item">
+            <button class="menu-icon" id="chatBtn" data-tooltip="tooltips.panel.chatBtn">
+              <img src="../../icons/svg/icon/Messages, Conversation/Chat Round.svg" alt="Chat" class="icon">
+            </button>
+            <span class="sidebar-label">Trò chuyện</span>
+          </div>
+          
+          <!-- REC (Recording) - Direct open toolbar -->
+          <div class="sidebar-item">
+            <button class="menu-icon" id="recBtn" data-tooltip="tooltips.panel.recBtn">
+              <img src="../../icons/svg/icon/Video, Audio, Sound/Camera.svg" alt="Video" class="icon">
+            </button>
+            <span class="sidebar-label">Quay hình</span>
+          </div>
+
+          <!-- Screenshot -->
+          <div class="menu-icon-wrapper sidebar-item">
+            <button class="menu-icon" id="screenshotBtn" data-tooltip="tooltips.panel.screenshotBtn">
+              <img src="../../icons/svg/icon/Electronic, Devices/Monitor.svg" alt="Screenshot" class="icon">
+            </button>
+            <span class="sidebar-label">Chụp màn hình</span>
+            <div class="screenshot-dropdown" id="screenshotDropdown">
+              <button class="dropdown-item" data-action="screenshot-visible" data-tooltip="tooltips.panel.screenshotVisible">
+                <img src="../../icons/svg/icon/Electronic, Devices/Monitor.svg" alt="Visible" class="icon">
+                <span data-i18n="screenshotVisible">Màn hình hiện tại</span>
+              </button>
+              <button class="dropdown-item" data-action="screenshot-area" data-tooltip="tooltips.panel.screenshotArea">
+                <img src="../../icons/svg/icon/Design, Tools/Crop.svg" alt="Area" class="icon">
+                <span data-i18n="screenshotArea">Vùng tùy chọn</span>
+              </button>
+              <button class="dropdown-item" data-action="screenshot-scroll" data-tooltip="tooltips.panel.screenshotScroll">
+                <img src="../../icons/svg/icon/Video, Audio, Sound/Full Screen.svg" alt="Full Page" class="icon">
+                <span data-i18n="screenshotScroll">Toàn bộ trang</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Gmail -->
+          <div class="sidebar-item">
+            <button class="menu-icon" id="gmailBtn" data-tooltip="tooltips.panel.gmailBtn">
+              <img src="../../icons/svg/icon/Messages, Conversation/Letter.svg" alt="Mails" class="icon">
+            </button>
+            <span class="sidebar-label">Gmail</span>
+          </div>
+
+          <!-- Translate -->
+          <div class="sidebar-item">
+            <button class="menu-icon" id="translateBtn" data-tooltip="tooltips.panel.translateBtn">
+              <img src="../../icons/svg/icon/Messages, Conversation/Forward.svg" alt="Translate" class="icon">
+            </button>
+            <span class="sidebar-label" data-i18n="translateBtnLabel">Dịch</span>
+          </div>
+
+          <!-- PDF Chat -->
+          <div class="sidebar-item">
+            <button class="menu-icon" id="pdfChatBtn" data-tooltip="tooltips.panel.pdfChatBtn">
+              <img src="../../icons/svg/icon/Files/File%20Text.svg" alt="PDF Chat" class="icon">
+            </button>
+            <span class="sidebar-label" data-i18n="pdfChatBtnLabel">PDF Chat</span>
+          </div>
+        </div>
+        
+        <div class="section-menu-bottom">
+          <!-- User Avatar -->
+          <div class="menu-icon-wrapper">
+            <button class="user-btn" id="userBtn" data-tooltip="tooltips.panel.userBtn">
+              <img id="userAvatarImg" src="../../icons/svg/icon/Users/User.svg" alt="User" class="icon">
+            </button>
+            <div class="user-popup" id="userPopup">
+              <div id="authWidgetContainer" class="auth-widget-container"></div>
+            </div>
+          </div>
+          
+          <!-- Settings -->
+          <button class="settings-btn" id="settingsBtn" data-tooltip="tooltips.panel.settingsBtn">
+            <img src="../../icons/svg/icon/Settings, Fine Tuning/Settings.svg" alt="Settings" class="icon">
+          </button>
+        </div>
+      </div>
+  
+  <!-- Settings Panel (keep existing) -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-overlay"></div>
+    <div class="settings-content">
+      <div class="settings-header">
+        <h2 class="settings-title" data-i18n="settingsTitle">Cài đặt</h2>
+        <button class="settings-close" id="settingsClose" aria-label="Close" data-tooltip="tooltips.common.close">
+          <span class="icon close-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      
+      <div class="settings-main">
+        <div class="settings-sidebar">
+          <button class="settings-menu-item active" data-panel="general" data-tooltip="tooltips.settings.generalSettings">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v10M1 12h10m2 0h10"/>
+            </svg>
+            <span data-i18n="settingsGeneral">Chung</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="models" data-tooltip="tooltips.settings.modelsSettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span data-i18n="settingsModels">AI Models</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="cerebras" data-tooltip="tooltips.settings.cerebrasSettings">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <span data-i18n="settingsCerebras">Cerebras AI</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="dify" data-tooltip="tooltips.settings.difySettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+            <span data-i18n="settingsDify">Dify AI</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="openai" data-tooltip="tooltips.settings.openaiSettings">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span data-i18n="settingsOpenAI">OpenAI</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="anthropic" data-tooltip="tooltips.settings.anthropicSettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span data-i18n="settingsAnthropic">Anthropic Claude</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="groq" data-tooltip="tooltips.settings.groqSettings">
+            <svg viewBox="0 0 24 24">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span data-i18n="settingsGroq">Groq</span>
+          </button>
+          
+          <button class="settings-menu-item" data-panel="custom" data-tooltip="tooltips.settings.customSettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <span data-i18n="settingsCustom">Custom Provider</span>
+          </button>
+        </div>
+        
+        <div class="settings-body">
+          <div class="settings-panel-content active" data-panel="general">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsAppearanceTitle">Giao diện</h3>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsAppearanceLabel">Giao diện</label>
+                <div class="switch-container">
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeTogglePanel">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="switch-label" data-i18n="settingsDarkMode">Chế độ tối (Dark Mode)</span>
+                </div>
+                <p class="setting-description" data-i18n="settingsThemeDesc">Tự động đồng bộ với cài đặt trong Popup.</p>
+              </div>
+            </div>
+            
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsFloatingIconTitle">Floating Icon</h3>
+              <div class="setting-item">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="showFloatingIcon" checked>
+                  <label for="showFloatingIcon" data-i18n="settingsShowFloatingIcon">Hiển thị icon nổi trên trang web</label>
+                </div>
+                <p class="setting-description" data-i18n="settingsFloatingIconDesc">Icon nổi giúp bạn nhanh chóng mở Panel AI trên bất kỳ trang web nào</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="models" id="modelsSelectorContainer">
+            <!-- Models Selector will be rendered here -->
+          </div>
+          
+          <div class="settings-panel-content" data-panel="cerebras">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsCerebrasTitle">Cerebras Configuration</h3>
+              <p class="setting-description" data-i18n="settingsCerebrasDesc">Cerebras cung cấp API miễn phí với tốc độ xử lý nhanh.</p>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="cerebrasApiKey" placeholder="csk-...">
+                <p class="setting-description" data-i18n="settingsCerebrasApiDesc">Lấy API key miễn phí tại: <a href="https://cloud.cerebras.ai" target="_blank">cloud.cerebras.ai</a></p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="cerebrasBaseUrl" value="https://api.cerebras.ai/v1/chat/completions" readonly>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsModel">Model</label>
+                <select class="setting-select" id="cerebrasModel">
+                  <option value="llama-4-scout-17b-16e-instruct" data-i18n="settingsCerebrasModel1">Llama 4 Scout (17B) - Recommended</option>
+                  <option value="llama3.1-8b" data-i18n="settingsCerebrasModel2">Llama 3.1 (8B)</option>
+                  <option value="llama3.1-70b" data-i18n="settingsCerebrasModel3">Llama 3.1 (70B)</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsTemp">Temperature (0-1)</label>
+                <input type="number" class="setting-input" id="cerebrasTemperature" value="0.7" min="0" max="1" step="0.1">
+                <p class="setting-description" data-i18n="settingsTempDesc">Độ sáng tạo của AI. 0 = chính xác, 1 = sáng tạo</p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsMaxTokens">Max Tokens</label>
+                <input type="number" class="setting-input" id="cerebrasMaxTokens" value="2000" min="100" max="8000">
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveCerebrasConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testCerebrasConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="dify">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsDifyTitle">Dify Configuration</h3>
+              <p class="setting-description" data-i18n="settingsDifyDesc">Dify là nền tảng phát triển ứng dụng AI với LLM.</p>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="difyApiKey" placeholder="app-...">
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="difyBaseUrl" placeholder="https://api.dify.ai/v1">
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveDifyConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testDifyConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="openai">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsOpenAITitle">OpenAI Configuration</h3>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="openaiApiKey" placeholder="sk-...">
+                <p class="setting-description" data-i18n="settingsOpenAIDesc">Lấy API key tại: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="openaiBaseUrl" value="https://api.openai.com/v1/chat/completions" readonly>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsModel">Model</label>
+                <select class="setting-select" id="openaiModel">
+                  <option value="gpt-4o" data-i18n="settingsOpenAIModel1">GPT-4o (Recommended)</option>
+                  <option value="gpt-4o-mini" data-i18n="settingsOpenAIModel2">GPT-4o Mini</option>
+                  <option value="gpt-4-turbo" data-i18n="settingsOpenAIModel3">GPT-4 Turbo</option>
+                  <option value="gpt-3.5-turbo" data-i18n="settingsOpenAIModel4">GPT-3.5 Turbo</option>
+                </select>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveOpenaiConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testOpenaiConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="anthropic">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsAnthropicTitle">Anthropic Claude Configuration</h3>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="anthropicApiKey" placeholder="sk-ant-...">
+                <p class="setting-description" data-i18n="settingsAnthropicApiDesc">Lấy API key tại: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="anthropicBaseUrl" value="https://api.anthropic.com/v1/messages" readonly>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsModel">Model</label>
+                <select class="setting-select" id="anthropicModel">
+                  <option value="claude-3-5-sonnet-20241022" data-i18n="settingsAnthropicModel1">Claude 3.5 Sonnet (Latest)</option>
+                  <option value="claude-3-opus-20240229" data-i18n="settingsAnthropicModel2">Claude 3 Opus</option>
+                  <option value="claude-3-sonnet-20240229" data-i18n="settingsAnthropicModel3">Claude 3 Sonnet</option>
+                  <option value="claude-3-haiku-20240307" data-i18n="settingsAnthropicModel4">Claude 3 Haiku</option>
+                </select>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveAnthropicConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testAnthropicConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="groq">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsGroqTitle">Groq Configuration</h3>
+              <p class="setting-description" data-i18n="settingsGroqDesc">Groq cung cấp API tốc độ cực nhanh với LPU.</p>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="groqApiKey" placeholder="gsk_...">
+                <p class="setting-description" data-i18n="settingsGroqApiDesc">Lấy API key miễn phí tại: <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="groqBaseUrl" value="https://api.groq.com/openai/v1/chat/completions" readonly>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsModel">Model</label>
+                <select class="setting-select" id="groqModel">
+                  <option value="llama-3.3-70b-versatile" data-i18n="settingsGroqModel1">Llama 3.3 70B (Recommended)</option>
+                  <option value="llama-3.1-70b-versatile" data-i18n="settingsGroqModel2">Llama 3.1 70B</option>
+                  <option value="llama-3.1-8b-instant" data-i18n="settingsGroqModel3">Llama 3.1 8B Instant</option>
+                  <option value="mixtral-8x7b-32768" data-i18n="settingsGroqModel4">Mixtral 8x7B</option>
+                </select>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveGroqConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testGroqConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-panel-content" data-panel="custom">
+            <div class="setting-section">
+              <h3 class="setting-section-title" data-i18n="settingsCustomTitle">Custom OpenAI-Compatible Provider</h3>
+              <p class="setting-description" data-i18n="settingsCustomDesc">Dành cho các API tương thích với OpenAI format (Together AI, Perplexity, v.v.)</p>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsCustomProviderName">Provider Name</label>
+                <input type="text" class="setting-input" id="customProviderName" data-i18n-placeholder="settingsCustomProviderNamePlaceholder">
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsApiKey">API Key</label>
+                <input type="password" class="setting-input" id="customApiKey">
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsBaseUrl">Base URL</label>
+                <input type="text" class="setting-input" id="customBaseUrl" placeholder="https://api.together.xyz/v1/chat/completions">
+                <p class="setting-description" data-i18n="settingsCustomBaseUrlDesc">URL endpoint phải tương thích OpenAI format</p>
+              </div>
+              <div class="setting-item">
+                <label class="setting-label" data-i18n="settingsCustomModelId">Model ID</label>
+                <input type="text" class="setting-input" id="customModel" placeholder="meta-llama/Llama-3.3-70B-Instruct-Turbo">
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="saveCustomConfig" data-i18n="settingsSave" data-tooltip="tooltips.settings.saveSettings">Lưu cấu hình</button>
+                <button class="btn" id="testCustomConnection" data-i18n="settingsTest" data-tooltip="tooltips.settings.testConnection">Test kết nối</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="init/error-handler.js"></script>
+  <script src="../../js/marked.min.js"></script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../utils/tooltip-manager.js"></script>
+  <script src="panel.js" type="module"></script>
+</body>
+</html>
+

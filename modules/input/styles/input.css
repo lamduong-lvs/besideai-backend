@@ -1,0 +1,58 @@
+/**
+ * Input Module Base Styles
+ * Tất cả styles được scope trong .input-module-container để tránh conflict
+ */
+
+@import url('./toolbar.css');
+@import url('./textarea.css');
+@import url('./actions.css');
+@import url('./footer.css');
+@import url('./attachments.css');
+
+/* Scope tất cả styles trong .input-module-container */
+.input-module-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 92%; /* Thu nhỏ chiều rộng tối đa xuống 92% */
+  margin: 0 auto 4%; /* Center input: margin top 0, left/right auto, bottom 4% để cân đối với khoảng cách trái/phải */
+  background: var(--input-bg, var(--bg-primary, #ffffff));
+  border-radius: var(--input-border-radius, 8px);
+  border: none; /* Removed border - chỉ giữ border ở input-wrapper */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04); /* Thêm shadow để làm nổi bật */
+  transition: all var(--input-transition-duration, 200ms) ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ✅ Dark theme shadow adjustment */
+[data-theme="dark"] .input-module-container {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.input-module-container.d-none {
+  display: none !important;
+}
+
+.input-module-container .input-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  position: relative;
+  padding: var(--input-padding, 12px); /* Trả lại kích thước ban đầu */
+  gap: 8px; /* Trả lại kích thước ban đầu */
+  background-color: var(--input-wrapper-bg, transparent);
+  border: none; /* Removed border */
+  border-radius: var(--input-wrapper-border-radius, 20px);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-module-container .input-wrapper:focus-within {
+  border: none; /* Removed border */
+  box-shadow: none; /* Removed box-shadow */
+}
+
+.input-module-container .file-input {
+  display: none;
+}
+

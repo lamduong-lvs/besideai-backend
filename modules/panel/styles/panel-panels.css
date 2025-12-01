@@ -1,0 +1,958 @@
+﻿/* Settings Panel - TWO COLUMN LAYOUT */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: none;
+}
+.settings-panel.show {
+  display: block;
+}
+.settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+.settings-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 720px;
+  max-width: 95%;
+  height: 100%;
+  background: var(--bg-primary);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+.settings-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.settings-close {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+.settings-close:hover {
+  background: var(--bg-hover) !important;
+}
+.settings-close img,
+.settings-close svg {
+  width: 100%;
+  height: 100%;
+  filter: var(--icon-filter);
+}
+
+.settings-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Settings Content Area */
+.settings-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.settings-panel-content {
+  display: none;
+}
+.settings-panel-content.active {
+  display: block;
+}
+
+.setting-section {
+  margin-bottom: 28px;
+}
+.setting-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+.setting-item {
+  margin-bottom: 20px;
+}
+.setting-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.setting-input,
+.setting-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.setting-input:focus,
+.setting-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha);
+}
+
+.setting-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.radio-item input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.radio-item label {
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.checkbox-item label {
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover {
+  background: var(--bg-hover);
+}
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+/* History Panel */
+.history-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: none;
+}
+
+.history-panel.show {
+  display: block;
+}
+
+.history-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.history-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 90%;
+  height: 100%;
+  background: var(--bg-primary);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px !important;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  min-height: auto !important;
+}
+
+.history-title,
+.history-header h2 {
+  font-size: 14px !important;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* History Close Button - Đã được xử lý trong panel.history.css và panel.html */
+/* Giữ lại để tương thích ngược, nhưng ưu tiên CSS trong panel.history.css */
+
+.history-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  gap: 12px;
+}
+
+.history-empty-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.3;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  transform: translateX(-4px);
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.history-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.history-item-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.history-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.history-item:hover .history-item-actions {
+  opacity: 1;
+}
+
+.history-action-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-action-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+.history-action-btn.delete {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.history-action-btn.delete:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .footer-controls {
+    flex-wrap: nowrap;
+  }
+  
+  .model-selector-wrapper {
+    min-width: 100px;
+  }
+  
+  .footer-actions {
+    gap: 4px;
+  }
+  
+  .footer-btn {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+  }
+  
+  .footer-btn img,
+  .footer-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .model-dropdown {
+    min-width: 240px;
+  }
+  
+  .settings-content {
+    width: 95%;
+  }
+}
+
+/* ========================================
+   AUTH WIDGET STYLING
+   ======================================== */
+
+/* ========================================
+   AUTH WIDGET STYLING
+   ======================================== */
+
+/* Container cho switch trong panel CÃ i Ä‘áº·t */
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.switch-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  /* Cho phÃ©p nháº¥n vÃ o label "Cháº¿ Ä‘á»™ tá»‘i" Ä‘á»ƒ toggle */
+  cursor: pointer; 
+}
+
+/* The switch - a container for the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;  /* Chiá»u rá»™ng cá»§a nÃºt gáº¡t */
+  height: 28px; /* Chiá»u cao cá»§a nÃºt gáº¡t */
+  flex-shrink: 0; /* NgÄƒn nÃ³ bá»‹ co láº¡i khi khÃ´ng Ä‘á»§ chá»— */
+}
+
+/* áº¨n checkbox HTML máº·c Ä‘á»‹nh */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Thanh trÆ°á»£t (pháº§n ná»n) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color); /* MÃ u khi táº¯t */
+  transition: .4s;
+}
+
+/* NÃºm trÃ²n (pháº§n di chuyá»ƒn) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px; /* Chiá»u cao nÃºm */
+  width: 20px;  /* Chiá»u rá»™ng nÃºm */
+  left: 4px;    /* CÄƒn lá» trÃ¡i */
+  bottom: 4px;  /* CÄƒn lá» dÆ°á»›i */
+  background-color: white;
+  transition: .4s;
+}
+
+/* Khi Ä‘Æ°á»£c check (báº­t) -> Äá»•i mÃ u ná»n */
+input:checked + .slider {
+  background-color: var(--color-primary); /* Sá»­ dá»¥ng biáº¿n mÃ u primary */
+}
+
+/* Khi Ä‘Æ°á»£c check (báº­t) -> Di chuyá»ƒn nÃºm */
+input:checked + .slider:before {
+  /* 50px (width) - 20px (knob) - 8px (2*left) = 22px */
+  transform: translateX(22px); 
+}
+
+/* Kiá»ƒu bo trÃ²n */
+.slider.round {
+  border-radius: 28px; /* Bo trÃ²n báº±ng chiá»u cao */
+}
+
+.slider.round:before {
+  border-radius: 50%; /* Bo trÃ²n nÃºm */
+}
+
+/* ========================================
+   NEW LAYOUT STYLES
+   ======================================== */
+
+/* ===== RECORD PANEL VIEW STYLES ===== */
+.record-panel-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-primary);
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 0;
+}
+
+.record-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px 20px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.record-panel-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.setting-group {
+  margin-bottom: 20px;
+}
+
+.setting-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.setting-label.separator {
+  margin-top: 15px;
+}
+
+.source-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.source-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: var(--bg-secondary);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.source-btn .icon {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.5;
+  fill: none;
+  stroke: currentColor;
+}
+
+.source-btn .btn-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.source-btn:hover {
+  background: var(--bg-hover);
+  opacity: 0.8;
+}
+
+.source-btn.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  opacity: 1;
+  background: var(--color-primary-alpha);
+}
+
+.settings-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.setting-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1.5 / 1;
+  background: var(--bg-secondary);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.setting-btn .icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+  fill: none;
+  stroke: currentColor;
+}
+
+.setting-btn .icon[fill="currentColor"] {
+  fill: currentColor;
+  stroke-width: 0;
+}
+
+.setting-btn:hover {
+  background: var(--bg-hover);
+  opacity: 0.8;
+}
+
+.setting-btn.active {
+  border-color: transparent;
+  color: var(--color-primary);
+  opacity: 1;
+  background: var(--color-primary-alpha);
+}
+
+.setting-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.shape-selector-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+}
+
+.shape-selector-vertical.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.shape-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.shape-btn .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  fill: none;
+  stroke: currentColor;
+}
+
+.shape-btn:hover {
+  background: var(--bg-hover);
+  opacity: 0.8;
+}
+
+.shape-btn.active {
+  border-color: transparent;
+  color: var(--color-primary);
+  opacity: 1;
+  background: var(--color-primary-alpha);
+}
+
+.control-bar-setting {
+  grid-column: span 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  padding: 0 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+  height: 100%;
+}
+
+.custom-select-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.custom-select-trigger:hover {
+  background-color: var(--bg-hover);
+}
+
+.custom-select-trigger .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  fill: var(--text-secondary);
+  stroke: none;
+}
+
+.custom-select-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 160px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--shadow);
+  z-index: 100;
+  list-style: none;
+  padding: 5px;
+}
+
+.custom-select-wrapper.open .custom-select-menu {
+  display: block;
+}
+
+.custom-select-menu li {
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.custom-select-menu li:hover {
+  background-color: var(--bg-hover);
+}
+
+.custom-select-menu li.selected {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 500;
+}
+
+.start-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.start-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.start-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive adjustments for record panel */
+@media (max-width: 500px) {
+  .record-panel-body,
+  .record-panel-footer {
+    max-width: 100%;
+    padding: 12px 16px;
+  }
+  
+  .source-selector {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .settings-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  
+  .custom-select-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .control-bar-setting {
+    grid-column: span 2;
+  }
+}
+
+/* Ensure icons adapt to smaller sizes */
+@media (max-width: 400px) {
+  .source-btn .icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .setting-btn .icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .shape-btn .icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Specific close button styles to override any inherited styles */
+/* History close button - đồng bộ với PDF Chat */
+.historyPanel-close,
+.history-close {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: none !important;
+  outline: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.historyPanel-close:hover,
+.history-close:hover {
+  background: var(--bg-hover) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* History Close Button - Copy chính xác từ PDF Chat */
+#historyClose img,
+.historyPanel-close img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  filter: var(--icon-filter);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+#historyClose:hover img,
+.historyPanel-close:hover img {
+  opacity: 1;
+}
+
+.historyPanel-close:hover img,
+.history-close:hover img,
+.historyPanel-close:hover svg,
+.history-close:hover svg {
+  opacity: 1;
+}
+
+/* Settings close button - giữ nguyên kích thước lớn hơn */
+.settingsPanel-close,
+.settings-close {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: none !important;
+  outline: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.settingsPanel-close:hover,
+.settings-close:hover {
+  background: var(--bg-hover) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.settingsPanel-close img,
+.settings-close img,
+.settingsPanel-close svg,
+.settings-close svg {
+  width: 100%;
+  height: 100%;
+  filter: var(--icon-filter);
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.close-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  flex-shrink: 0;
+  background-color: currentColor;
+  mask: url('../../../icons/svg/icon-close.svg') no-repeat center / contain;
+  -webkit-mask: url('../../../icons/svg/icon-close.svg') no-repeat center / contain;
+  filter: none !important;
+  pointer-events: none;
+}
+

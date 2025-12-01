@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tiêu đề này sẽ không hiển thị, nhưng nên để -->
+  <title>AI Event Suggestions</title>
+  <link rel="stylesheet" href="../../../styles/tooltip-system.css">
+  <script type="module" src="../../../utils/tooltip-manager.js"></script>
+</head>
+<body>
+  <!-- Lớp phủ chính -->
+  <div id="ai-event-popup-overlay" class="ai-popup-overlay d-none">
+    
+    <div class="ai-popup-container">
+      
+      <!-- PHẦN HEADER POPUP -->
+      <div class="ai-popup-header">
+        <h2 id="ai-popup-title" class="ai-popup-title" data-i18n="eventPopupTitle">
+          <img src="../icons/svg/icon/Time/Calendar.svg" alt="Calendar" class="icon icon-xs" style="vertical-align: middle; margin-right: 4px;"> Events & Tasks từ Email
+        </h2>
+        
+        <div class="ai-header-actions">
+          <button id="ai-manual-add-btn" class="ai-popup-action-btn ai-popup-add-btn" 
+                  aria-label="Tạo Event/Task thủ công" data-tooltip="tooltips.gmail.manualAddBtn">
+            <img src="../icons/svg/icon/Essentional, UI/Add Circle.svg" alt="Add" class="icon icon-xs">
+          </button>
+          <button id="ai-popup-close-btn" class="ai-popup-action-btn ai-popup-close-btn" 
+                  aria-label="Đóng" data-tooltip="tooltips.gmail.closeBtn">
+            <img src="../icons/svg/icon/Essentional, UI/Close Circle.svg" alt="Close" class="icon icon-xs">
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PHẦN THÂN POPUP (NỘI DUNG CHÍNH) -->
+      <div class="ai-popup-body">
+        
+        <!-- Trạng thái Loading -->
+        <div id="ai-popup-loading" class="ai-popup-loading d-none">
+          <div class="ai-spinner"></div>
+          <p class="ai-loading-text" data-i18n="loadingAIText">Đang phân tích email với AI...</p>
+          <p class="ai-loading-subtext" data-i18n="loadingAISubtext">Có thể mất 5-10 giây</p>
+        </div>
+
+        <!-- Trạng thái Lỗi -->
+        <div id="ai-popup-error" class="ai-popup-error d-none">
+          <div class="ai-error-icon">
+            <img src="../icons/svg/icon/Security/Shield Warning.svg" alt="Warning" class="icon icon-sm">
+          </div>
+          <h3 class="ai-error-title" data-i18n="errorTitle">Đã xảy ra lỗi</h3>
+          <p id="ai-error-message" class="ai-error-message"></p>
+          <button id="ai-retry-btn" class="ai-retry-btn" data-i18n="retryBtn">Thử lại</button>
+        </div>
+
+        <!-- Trạng thái Rỗng -->
+        <div id="ai-popup-empty" class="ai-popup-empty d-none">
+          <div class="ai-empty-icon">
+            <img src="../icons/svg/icon/Messages, Conversation/Mailbox.svg" alt="Empty" class="icon icon-sm">
+          </div>
+          <h3 class="ai-empty-title" data-i18n="emptyTitle">Không tìm thấy Events hoặc Tasks</h3>
+          <p id="ai-empty-message" class="ai-empty-message" data-i18n="emptyMessage">
+            Email này không chứa thông tin về cuộc họp, deadline, hoặc công việc cần làm.
+          </p>
+        </div>
+        
+        <!-- Trạng thái Hiển thị Kết quả -->
+        <div id="ai-popup-suggestions" class="ai-popup-suggestions d-none">
+          
+          <div class="ai-info-banner">
+            <span class="ai-info-icon">
+              <img src="../icons/svg/icon/Electronic, Devices/Lightbulb.svg" alt="Info" class="icon icon-xs">
+            </span>
+            <span id="ai-info-text" class="ai-info-text" data-i18n="infoTextDefault">
+              Chọn các events/tasks bạn muốn tạo, sau đó nhấn "Tạo vào Calendar"
+            </span>
+          </div>
+
+          <div id="ai-suggestions-container" class="ai-suggestions-container">
+            <!-- Các card sẽ được chèn vào đây bởi event-popup.js -->
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- PHẦN CHÂN POPUP -->
+      <div class="ai-popup-footer">
+        
+        <div class="ai-popup-stats">
+          <!-- Sẽ được cập nhật bởi JS. Ví dụ: "3 được chọn" -->
+          <span id="ai-selected-count">0 được chọn</span>
+        </div>
+
+        <div class="ai-popup-actions">
+          <button id="ai-cancel-btn" class="ai-btn ai-btn-secondary" data-i18n="cancelBtn">
+            Hủy
+          </button>
+          <button id="ai-create-btn" class="ai-btn ai-btn-primary" disabled data-i18n="createCalendarBtn">
+            Tạo vào Calendar
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 
+      TEMPLATE CHO TỪNG CARD 
+      Đây là nơi quan trọng nhất để áp dụng i18n
+    -->
+    <template id="ai-suggestion-card-template">
+      <div class="ai-suggestion-card" data-suggestion-id="">
+        
+        <div class="ai-card-checkbox">
+          <input type="checkbox" class="ai-checkbox" checked>
+        </div>
+
+        <div class="ai-card-content">
+          
+          <!-- CHẾ ĐỘ HIỂN THỊ (DISPLAY) -->
+          <div class="ai-card-display-content">
+            <div class="ai-card-header">
+              <div class="ai-header-left">
+                <span class="ai-card-type-badge">Event</span>
+                <h3 class="ai-card-title">Meeting Title</h3>
+              </div>
+              <div class="ai-card-actions">
+                <div class="ai-card-lang-toggle">
+                  <button class="ai-lang-btn ai-lang-btn-vi active" data-lang="vi">VI</button>
+                  <button class="ai-lang-btn ai-lang-btn-en" data-lang="en">EN</button>
+                </div>
+                <button class="ai-card-action-btn ai-edit-btn" 
+                        title="Chỉnh sửa" data-tooltip="tooltips.gmail.editBtn" data-i18n="editBtn">
+                  Sửa
+                </button>
+              </div>
+            </div>
+            
+            <div class="ai-card-details">
+              <!-- Thời gian -->
+              <div class="ai-card-detail-row">
+                <span class="ai-detail-icon">
+                  <img src="../icons/svg/icon/Time/Calendar.svg" alt="Calendar" class="icon icon-xs">
+                </span>
+                <span class="ai-detail-text ai-card-time">...</span>
+                <span class="ai-card-time-warning d-none" data-tooltip="Thời gian đã qua">
+                  <img src="../icons/svg/icon/Essentional, UI/Danger Triangle.svg" alt="Warning" class="icon icon-xs">
+                </span> 
+              </div>
+              <!-- Người tham gia -->
+              <div class="ai-card-detail-row">
+                <span class="ai-detail-icon">
+                  <img src="../icons/svg/icon/Users/Users Group Rounded.svg" alt="Attendees" class="icon icon-xs">
+                </span>
+                <span class="ai-detail-text ai-card-attendees">...</span>
+              </div>
+              <!-- Địa điểm -->
+              <div class="ai-card-detail-row">
+                <span class="ai-detail-icon">
+                  <img src="../icons/svg/icon/Essentional, UI/Pin.svg" alt="Location" class="icon icon-xs">
+                </span>
+                <span class="ai-detail-text ai-card-location">...</span>
+              </div>
+              <!-- Mô tả -->
+              <div class="ai-card-detail-row ai-card-description-row d-none">
+                <span class="ai-detail-icon">
+                  <img src="../icons/svg/icon/Notes/Notes.svg" alt="Description" class="icon icon-xs">
+                </span>
+                <span class="ai-detail-text ai-card-description"></span>
+              </div>
+              <!-- Link Email -->
+              <div class="ai-card-detail-row ai-card-emaillink-row d-none">
+                <span class="ai-detail-icon">
+                  <img src="../icons/svg/icon/Text Formatting/Link.svg" alt="Link" class="icon icon-xs">
+                </span>
+                <a href="#" target="_blank" class="ai-detail-text ai-card-emaillink ai-email-link" data-i18n="openEmailLink">
+                  Mở email gốc
+                </a>
+              </div>
+            </div>
+
+            <!-- AI Confidence -->
+            <div class="ai-card-confidence">
+              <span class="ai-confidence-label" data-i18n="aiConfidenceLabel">AI Confidence:</span>
+              <span class="ai-confidence-value">95%</span>
+              <span class="ai-confidence-bar">
+                <span class="ai-confidence-bar-fill" style="width: 95%;"></span>
+              </span>
+            </div>
+            
+            <!-- Nguồn Email -->
+            <div class="ai-card-source">
+              <button class="ai-source-toggle">
+                <span class="ai-source-icon">
+                  <img src="../icons/svg/icon/Files/File.svg" alt="Source" class="icon icon-xs">
+                </span>
+                <span data-i18n="viewSourceText">Xem đoạn email gốc</span>
+              </button>
+              <div class="ai-source-text d-none">
+                </div>
+            </div>
+          </div>
+          
+          <!-- CHẾ ĐỘ CHỈNH SỬA (EDIT FORM) -->
+          <div class="ai-card-edit-form">
+            
+            <!-- Tiêu đề -->
+            <label for="edit-title" data-i18n="titleLabel">Tiêu đề</label>
+            <div class="ai-rewrite-wrapper">
+              <input type="text" id="edit-title" class="ai-edit-field ai-edit-title">
+              <div class="ai-rewrite-actions">
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-submit" 
+                        title="Gửi cho AI viết lại" data-tooltip="tooltips.gmail.rewriteSubmit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-redo d-none" 
+                        title="Viết lại" data-tooltip="tooltips.gmail.rewriteRedo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-undo d-none" 
+                        title="Hoàn tác" data-tooltip="tooltips.gmail.rewriteUndo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l1.97-.77C20.22 10.23 16.72 8 12.5 8z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Các trường của Event -->
+            <div class="ai-event-field-group">
+              <div class="ai-form-row">
+                <div class="ai-form-col">
+                  <label for="edit-start" data-i18n="startLabel">Bắt đầu</label>
+                  <input type="datetime-local" id="edit-start" class="ai-edit-field ai-edit-start">
+                </div>
+                <div class="ai-form-col">
+                  <label for="edit-end" data-i18n="endLabel">Kết thúc</label>
+                  <input type="datetime-local" id="edit-end" class="ai-edit-field ai-edit-end">
+                </div>
+              </div>
+
+              <label for="edit-attendees" data-i18n="attendeesLabel">Người tham gia (phân cách bằng dấu phẩy)</label>
+              <textarea id="edit-attendees" class="ai-edit-field ai-edit-attendees" rows="2"></textarea>
+              
+              <label for="edit-location" data-i18n="locationLabel">Địa điểm / Link họp</label>
+              <input type="text" id="edit-location" class="ai-edit-field ai-edit-location">
+            </div>
+
+            <!-- Các trường của Task -->
+            <div class="ai-task-field-group">
+              <label for="edit-due" data-i18n="dueLabel">Đến hạn</label>
+              <input type="datetime-local" id="edit-due" class="ai-edit-field ai-edit-due">
+            </div>
+            
+            <!-- Mô tả -->
+            <label for="edit-description" data-i18n="descriptionLabel">Mô tả</label>
+            <div class="ai-rewrite-wrapper">
+              <div id="edit-description" class="ai-edit-field ai-rich-text-editor" contenteditable="true"></div>
+              <div class="ai-rewrite-actions">
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-submit" 
+                        title="Gửi cho AI viết lại" data-tooltip="tooltips.gmail.rewriteSubmit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-redo d-none" 
+                        title="Viết lại" data-tooltip="tooltips.gmail.rewriteRedo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+                <button class="ai-btn ai-btn-icon ai-btn-rewrite-undo d-none" 
+                        title="Hoàn tác" data-tooltip="tooltips.gmail.rewriteUndo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l1.97-.77C20.22 10.23 16.72 8 12.5 8z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Checkbox Google Meet -->
+            <div class="ai-meet-checkbox-wrapper ai-event-field-group">
+              <input type="checkbox" id="edit-create-meet" class="ai-edit-create-meet">
+              <label for="edit-create-meet">
+                <img src="icons/svg/google-meet.svg" alt="Google Meet icon" width="16" height="16">
+                <span data-i18n="createMeetLabel">Tạo link Google Meet</span>
+              </label>
+            </div>
+            
+            <!-- Nút Lưu / Hủy (trong form Edit) -->
+            <div class="ai-edit-actions">
+              <button class="ai-btn ai-btn-secondary ai-edit-cancel-btn" data-i18n="cancelBtn">Hủy</button>
+              <button class="ai-btn ai-btn-primary ai-edit-save-btn" data-i18n="saveBtn">Lưu</button>
+            </div>
+          </div>
+          </div>
+      </div>
+    </template>
+
+  </div>
+</body>
+</html>

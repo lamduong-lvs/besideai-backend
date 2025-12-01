@@ -1,0 +1,248 @@
+/* panel.chat.attachments.css - Attached files container and preview */
+
+/* Image Preview Container */
+.image-preview-container {
+  padding: 8px 12px;
+  border-top: none;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  min-height: 80px;
+}
+
+/* Preview File Item */
+.preview-file-item {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  width: 80px;
+  box-sizing: border-box;
+}
+
+/* Preview Remove Button */
+.preview-remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: var(--color-error);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 20;
+  pointer-events: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.preview-file-item:hover .preview-remove-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.preview-remove-btn:hover {
+  background: var(--color-error);
+  transform: scale(1.1);
+}
+
+.preview-remove-btn img {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+
+/* Attached Files Container in Messages */
+.attached-files-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.attached-files-scroll-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.attached-files-scroll-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.attached-files-scroll-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.attached-files-scroll-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.attached-files-scroll-wrapper {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.attached-files-scroll-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.attached-files-list {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.attached-file-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  min-width: 110px;
+  max-width: 120px;
+  box-sizing: border-box;
+}
+
+.attached-image-item {
+  padding: 4px;
+}
+
+.attached-image-preview {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--bg-primary);
+}
+
+.attached-document-item {
+  padding: 8px;
+}
+
+.attached-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  margin-bottom: 4px;
+}
+
+.attached-file-icon img,
+.attached-file-icon-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.attached-file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.attached-file-name {
+  font-size: 11px;
+  color: var(--text-primary);
+  text-align: center;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  max-width: 100%;
+}
+
+.attached-file-size {
+  font-size: 9px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* User message specific styles */
+.message.user .attached-files-container {
+  background: transparent;
+}
+
+.message.user .attached-file-item {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.message.user .attached-file-name {
+  color: var(--text-primary);
+}
+
+.message.user .attached-file-size {
+  color: var(--text-secondary);
+}
+
+.message.user .attached-files-scroll-btn {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.message.user .attached-files-scroll-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+

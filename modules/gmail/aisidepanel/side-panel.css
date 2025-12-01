@@ -1,0 +1,443 @@
+/*
+ * File: root/modules/gmail/aisidepanel/side-panel.css
+ * (ĐÃ NÂNG CẤP v6)
+ * - Xóa bỏ selector #ai-summary-result > div:first-child
+ * - Thêm logic .ai-summary-wrapper để thu gọn/căn giữa.
+ */
+
+/* === NÚT KÍCH HOẠT (Giữ nguyên) === */
+.ai-summary-side-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 6px);
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 20px;
+  padding: var(--spacing-sm, 6px) var(--spacing-md-sm, 12px);
+  font-size: var(--font-sm-md, 13px);
+  font-weight: 500;
+  color: var(--text-primary, #3c4043);
+  background-color: var(--bg-primary, #ffffff);
+  margin-left: var(--spacing-sm, 8px);
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s), box-shadow var(--transition-fast, 0.2s);
+}
+.ai-summary-side-button:hover {
+  background-color: var(--bg-secondary, #f8f9fa);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+}
+.ai-summary-side-button svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--text-secondary, #5f6368);
+}
+.ai-summary-side-button img.icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+
+/* === KHUNG PANEL CHÍNH (Cập nhật Giao diện) === */
+.ai-side-panel {
+  position: fixed;
+  top: 64px; /* Giữ nguyên: Nằm dưới header Gmail */
+  right: 0; 
+  
+  /* Yêu cầu 3: Thêm lề dưới (64px top + 8px bottom = 72px) */
+  height: calc(5px + 92vh); 
+  
+  width: 535px;
+  min-width: 535px;
+  max-width: 80vw;
+  background-color: var(--bg-primary, #ffffff);
+  border-left: 0px;
+  box-sizing: border-box;
+  
+  /* Yêu cầu 1: Bỏ đổ bóng */
+  box-shadow: none; 
+  
+  z-index: 9998;
+  transform: translateX(100%);
+  transition: transform var(--transition-normal, 0.3s) ease-in-out;
+  display: flex;
+  flex-direction: column;
+  
+  /* Yêu cầu 2: Bo tròn cả 4 góc */
+  border-radius: var(--radius-xl, 16px); 
+  overflow: hidden;
+}
+.ai-side-panel.open {
+  transform: translateX(0);
+}
+.ai-panel-resizer {
+  position: absolute;
+  top: 0;
+  left: 0px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 9999;
+}
+.ai-panel-resizer:hover {
+  background-color: var(--color-primary-alpha, rgba(0, 102, 255, 0.1));
+}
+.ai-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md, 16px) 20px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  flex-shrink: 0;
+}
+.ai-panel-title {
+  font-size: var(--font-md, 16px);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+}
+.ai-panel-title img.icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  font-weight: 600;
+  color: var(--text-primary, #202124);
+}
+.ai-panel-close {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text-secondary, #5f6368);
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition-fast, 0.2s);
+}
+.ai-panel-close:hover {
+  color: var(--text-primary, #202124);
+}
+.ai-panel-content-wrapper {
+  flex-grow: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === GHI ĐÈ CHO GIAO DIỆN CHAT (Giữ nguyên) === */
+.ai-side-panel .ai-modal-body {
+  flex-grow: 1; 
+  overflow-y: auto;
+  padding: var(--spacing-md, 16px);
+  display: flex;
+  flex-direction: column;
+}
+#ai-summary-top-pane {
+    flex-grow: 1;
+}
+#ai-summary-result {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.ai-chat-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.ai-chat-loading .spinner { 
+    width: 24px; 
+    height: 24px; 
+}
+
+/* === (CẬP NHẬT) KHU VỰC NHẬP LIỆU CHAT (LAYOUT GIẢ LẬP 1 VIỀN) === */
+
+.ai-panel-chat-input-area {
+  flex-shrink: 0; 
+  display: flex;
+  padding: var(--spacing-md-sm, 12px) var(--spacing-md, 16px);
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background-color: var(--bg-primary, #ffffff);
+}
+
+/* (MỚI) Vỏ bọc DUY NHẤT (viên thuốc trắng) */
+.ai-chat-input-wrapper-single-border {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Xếp chồng 2 tầng */
+  background-color: var(--bg-primary, #ffffff);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 14px; /* Giữ bo góc 14px */
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+}
+
+#ai-chat-input-textarea {
+  width: 100%;
+  box-sizing: border-box; 
+  
+  /* (MỚI) Bỏ viền và nền */
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  outline: none;
+  
+  padding: 10px var(--spacing-md, 16px); /* Padding cho chữ */
+  
+  font-family: inherit;
+  font-size: var(--font-base, 14px);
+  line-height: var(--leading-snug, 1.4);
+  resize: none;
+  overflow-y: auto; 
+  
+  /* Giữ nguyên giới hạn 5 dòng */
+  max-height: 118px; 
+}
+
+/* (MỚI) Tầng 2: Thanh công cụ */
+.ai-chat-toolbar {
+  display: flex;
+  justify-content: flex-end; /* Đẩy nút Gửi sang phải */
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 6px); /* Padding cho tầng dưới */
+  border-top: 1px solid var(--bg-hover, #f1f3f4); /* Đường kẻ mờ ngăn cách 2 tầng */
+}
+
+#ai-chat-send-btn {
+  /* Giữ nguyên style nút đen tròn */
+  background-color: var(--color-primary, #f86a01);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: none;
+  padding: var(--spacing-xs, 4px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast, 0.2s);
+  
+  /* (Bỏ margin, vì đã có padding ở toolbar) */
+}
+
+#ai-chat-send-btn:hover { 
+  background-color: var(--color-primary-dark, #d45a01); 
+}
+
+#ai-chat-send-btn svg { 
+  fill: var(--color-text-on-primary, white);
+  width: 20px;
+  height: 20px;
+}
+
+#ai-chat-send-btn:disabled {
+  background-color: var(--bg-hover, #f1f3f4); 
+}
+#ai-chat-send-btn:disabled svg { 
+  fill: var(--text-placeholder, #9e9e9e);
+}
+
+/* === (CẬP NHẬT) ĐỊNH DẠNG BONG BÓNG CHAT (YÊU CẦU 1) === */
+.ai-chat-message {
+  /* Yêu cầu 1: Tăng padding */
+  padding: 13px;
+  border-radius: 18px;
+  /* Yêu cầu 1: Giảm margin-bottom để metadata ở gần */
+  margin: 0;
+  max-width: 90%;
+  line-height: var(--leading-normal, 1.5);
+  word-wrap: break-word;
+}
+
+.ai-chat-message.user {
+  background-color: var(--color-primary-alpha, rgba(0, 102, 255, 0.1)); 
+  color: var(--text-primary, #202124);
+  border-bottom-left-radius: var(--radius-xs, 4px);
+  align-self: flex-start;
+}
+
+.ai-chat-message.ai {
+  background-color: var(--bg-hover, #f1f3f4);
+  color: var(--text-primary, #3c4043);
+  border-bottom-right-radius: var(--radius-xs, 4px);
+  align-self: flex-end;
+}
+
+/* === (MỚI) METADATA (NGÀY/GIỜ, MODEL) (YÊU CẦU 2) === */
+.ai-chat-metadata {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-placeholder, #9aa0a6); /* Màu mờ */
+  padding: 0 10px;
+  /* Yêu cầu 1: Tăng margin-bottom để tạo khoảng cách */
+  margin-bottom: var(--spacing-md, 16px); 
+  align-self: stretch; /* Kéo dãn 100% width */
+}
+.ai-chat-metadata .model-name {
+  text-align: right;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 10px;
+}
+.ai-chat-metadata .timestamp {
+    white-space: nowrap;
+}
+
+/* Căn chỉnh metadata cho user (bên trái) */
+.ai-chat-message.user + .ai-chat-metadata {
+    align-self: flex-start;
+    max-width: 90%;
+}
+/* Căn chỉnh metadata cho AI (bên phải) */
+.ai-chat-message.ai + .ai-chat-metadata {
+    align-self: flex-end;
+    max-width: 90%;
+}
+
+
+/*
+ * (ĐÃ XÓA BỎ)
+ * Khối style cũ cho tóm tắt ban đầu đã bị xóa
+ * ( #ai-summary-result > div:first-child )
+ * và được thay thế bằng khối style mới bên dưới.
+ */
+
+
+/* === (MỚI) STYLE CHO TÓM TẮT THU GỌN (SIDE PANEL) === */
+
+/* Wrapper cho tóm tắt ban đầu */
+#ai-summary-result .ai-summary-wrapper {
+  align-self: center; /* Yêu cầu: Căn giữa */
+  width: 95%; /* Yêu cầu: Mở rộng gần sát lề */
+  max-width: 95%; /* Ghi đè style cũ */
+  
+  /* Style bong bóng chat AI */
+  background-color: var(--bg-hover, #f1f3f4);
+  border-radius: 18px;
+  padding: 13px;
+  box-sizing: border-box;
+  line-height: var(--leading-normal, 1.5);
+  word-wrap: break-word;
+  
+  /* Style cho thu gọn */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Nội dung tóm tắt bên trong (để căn lề text) */
+.ai-summary-content {
+  text-align: left; /* Yêu cầu: Text căn lề trái */
+}
+
+/* Trạng thái thu gọn (mặc định) */
+#ai-summary-result .ai-summary-wrapper:not(.expanded) {
+  max-height: 336px; /* Yêu cầu: ~7 dòng (150px) */
+  cursor: pointer; /* Cho phép click vào để mở rộng */
+}
+
+/* Lớp fade-out ở đáy khi thu gọn */
+#ai-summary-result .ai-summary-wrapper:not(.expanded)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, var(--bg-hover, #f1f3f4) 80%);
+  pointer-events: none; /* Cho phép click xuyên qua */
+}
+
+/* Nút "Xem thêm" */
+.ai-read-more-btn {
+  display: block;
+  text-align: center;
+  padding: var(--spacing-sm, 8px) 0 5px 0;
+  color: var(--color-primary, #f86a01); /* Màu link cam */
+  font-weight: 500;
+  cursor: pointer;
+  font-size: var(--font-sm-md, 13px);
+  background: var(--bg-hover, #f1f3f4); /* Nền giống wrapper */
+  /* (MỚI) Thêm viền mờ phía trên để tách biệt */
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Chỉ hiện "Xem thêm" khi chưa mở rộng */
+#ai-summary-result .ai-summary-wrapper:not(.expanded) .ai-read-more-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Ẩn "Xem thêm" khi đã mở rộng */
+#ai-summary-result .ai-summary-wrapper.expanded .ai-read-more-btn {
+  display: none;
+}
+
+/* Trạng thái mở rộng */
+#ai-summary-result .ai-summary-wrapper.expanded {
+  max-height: none; /* Bỏ giới hạn chiều cao */
+  cursor: default;
+}
+
+/* Metadata (nếu có) phải đi sau wrapper */
+#ai-summary-result .ai-summary-wrapper + .ai-chat-metadata {
+  align-self: center; /* Căn giữa */
+  width: 95%;
+  max-width: 95%;
+  margin-top: var(--spacing-xs, 4px); /* Giảm margin-top */
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+
+/* (Giữ nguyên) Đảm bảo nội dung markdown bên trong tóm tắt hiển thị đẹp */
+#ai-summary-result table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px;
+    background-color: var(--bg-primary, #fff);
+}
+#ai-summary-result th, #ai-summary-result td { 
+    border: 1px solid var(--border-color, #ccc); 
+    padding: var(--spacing-sm, 6px);
+    text-align: left;
+}
+#ai-summary-result ul { 
+    padding-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* === (MỚI) LOGIC NÚT THU GỌN === */
+
+.ai-collapse-btn {
+  display: none; /* Ẩn mặc định */
+  text-align: center;
+  padding: var(--spacing-sm, 8px) 0 5px 0;
+  color: var(--color-error, #d93025); /* Màu đỏ cho dễ phân biệt */
+  font-weight: 500;
+  cursor: pointer;
+  font-size: var(--font-sm-md, 13px);
+  background: var(--bg-hover, #f1f3f4); /* Nền giống wrapper */
+  /* Thêm viền mờ phía trên để tách biệt */
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Khi mở rộng (.expanded), ẨN nút "Xem thêm" */
+#ai-summary-result .ai-summary-wrapper.expanded .ai-read-more-btn {
+  display: none;
+}
+
+/* Khi mở rộng (.expanded), HIỆN nút "Thu gọn" */
+#ai-summary-result .ai-summary-wrapper.expanded .ai-collapse-btn {
+  display: block;
+}
+
+/* (Sửa lỗi) Khi mở rộng, bỏ con trỏ 'default' để cho phép thu gọn */
+#ai-summary-result .ai-summary-wrapper.expanded {
+  cursor: default;
+}
+/* (Sửa lỗi) Khi chưa mở rộng, con trỏ là 'pointer' */
+#ai-summary-result .ai-summary-wrapper:not(.expanded) {
+  cursor: pointer; 
+}

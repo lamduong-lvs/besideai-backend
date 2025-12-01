@@ -1,0 +1,92 @@
+/**
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │  TEAMS THEME CSS                                                │
+ * │  Ghi đè CSS của PiP Window (common) để có giao diện Teams.      │
+ * └─────────────────────────────────────────────────────────────────┘
+ */
+
+/* * Ghi đè các biến CSS gốc (từ meet-common.css) 
+ * khi cửa sổ PiP được tiêm vào trang Teams.
+ * Giả định: teams-content.js sẽ thêm class="teams-theme" vào 
+ * #meetTranslationPiP
+ */
+
+#meetTranslationPiP.teams-theme {
+    /* * Bảng màu cơ bản của Teams
+     * (Chủ yếu là Dark Mode vì Teams thường dùng nền tối)
+     */
+    
+    /* Light Theme (Nền sáng của Teams) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f3f2f1; /* Nền xám rất nhạt của Teams */
+    --bg-tertiary: #e1dfdd;
+    
+    --text-primary: #1f1f1f;
+    --text-secondary: #605e5c;
+    --text-muted: #8a8886;
+    
+    --border-color: #e1dfdd;
+    --border-light: #f3f2f1;
+    
+    --accent-primary: #f86a01; /* Màu chủ đạo */
+    --accent-hover: #d45a01;
+    --accent-light: rgba(248, 106, 1, 0.1);
+    
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --radius-lg: 8px; /* Teams dùng bo góc 8px */
+    --radius-md: 4px;
+}
+
+#meetTranslationPiP.teams-theme[data-theme="dark"] {
+    /* Dark Theme (Nền tối của Teams) */
+    --bg-primary: #252423;   /* Nền chính tối */
+    --bg-secondary: #2f2e2d; /* Nền phụ tối */
+    --bg-tertiary: #484644;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #c8c6c4;
+    --text-muted: #8a8886;
+    
+    --border-color: #484644;
+    --border-light: #2f2e2d;
+    
+    --accent-primary: #f86a01; /* Màu chủ đạo cho nền tối */
+    --accent-hover: #ff7a1a;
+    --accent-light: rgba(248, 106, 1, 0.1);
+}
+
+/* * Ghi đè các thành phần cụ thể 
+ * để sử dụng font Segoe UI (nếu có)
+ */
+#meetTranslationPiP.teams-theme {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+/* Nút bấm trong PiP (Tab, Setting) */
+#meetTranslationPiP.teams-theme .tab-btn.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+#meetTranslationPiP.teams-theme .btn-primary {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+#meetTranslationPiP.teams-theme .btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+#meetTranslationPiP.teams-theme .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-color: var(--border-color);
+}
+#meetTranslationPiP.teams-theme .btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+
+/* Tên người nói trong Tab Dịch */
+#meetTranslationPiP.teams-theme .speaker-name {
+    color: var(--accent-primary);
+}

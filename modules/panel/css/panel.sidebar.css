@@ -1,0 +1,565 @@
+/* Section Menu */
+.section-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 56px;
+  padding: 12px 0;
+  border-left: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 99998;
+  order: 2;
+  /* Ensure sidebar is on the right */
+}
+
+.section-menu-top,
+.section-menu-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.menu-icon,
+.settings-btn,
+.header-btn {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  transform: translate3d(0, 0, 0); /* GPU acceleration */
+  will-change: transform, background;
+}
+
+/* Icon m? r?ng nh? hon */
+.header-btn {
+  width: 28px;
+  height: 28px;
+  padding: 5px;
+}
+
+.user-btn {
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-icon:hover,
+.settings-btn:hover,
+.header-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
+}
+
+.user-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+}
+
+.menu-icon img,
+.settings-btn img,
+.header-btn img {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  /* M�u d?m hon, kh�ng m? */
+  transition: opacity 0.2s;
+  filter: brightness(0) saturate(100%);
+  /* M�u den d?m */
+}
+
+.menu-icon:hover img,
+.settings-btn:hover img,
+.header-btn:hover img {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1.05);
+}
+
+/* Avatar user: icon m?c d?nh v?n m?, nhung avatar t? Gmail th� s�ng r� */
+.user-btn img {
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  filter: brightness(0.9);
+}
+
+.user-btn:hover img {
+  opacity: 0.65;
+}
+
+/* Avatar t? Gmail (c� class user-avatar-img) - s�ng r�, kh�ng m? */
+.user-btn img.user-avatar-img {
+  opacity: 1;
+  filter: none;
+}
+
+.user-btn:hover img.user-avatar-img {
+  opacity: 1;
+}
+
+/* Sidebar tooltips */
+.menu-icon,
+.settings-btn,
+.header-btn,
+.user-btn {
+  position: relative;
+}
+
+.menu-icon[title],
+.settings-btn[title],
+.header-btn[title],
+.user-btn[title] {
+  /* Keep title for accessibility but hide native tooltip */
+}
+
+.menu-icon[data-tooltip-text]::after,
+.settings-btn[data-tooltip-text]::after,
+.header-btn[data-tooltip-text]::after,
+.user-btn[data-tooltip-text]::after {
+  content: attr(data-tooltip-text);
+  position: absolute;
+  right: 0;
+  transform: translateX(0);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10000;
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+.menu-icon[data-tooltip-text]:hover::after,
+.settings-btn[data-tooltip-text]:hover::after,
+.header-btn[data-tooltip-text]:hover::after,
+.user-btn[data-tooltip-text]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-icon[data-tooltip-text].tooltip-top::after,
+.settings-btn[data-tooltip-text].tooltip-top::after,
+.header-btn[data-tooltip-text].tooltip-top::after,
+.user-btn[data-tooltip-text].tooltip-top::after {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+
+.menu-icon[data-tooltip-text].tooltip-bottom::after,
+.settings-btn[data-tooltip-text].tooltip-bottom::after,
+.header-btn[data-tooltip-text].tooltip-bottom::after,
+.user-btn[data-tooltip-text].tooltip-bottom::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+.menu-icon[data-tooltip-text].tooltip-left::after,
+.settings-btn[data-tooltip-text].tooltip-left::after,
+.header-btn[data-tooltip-text].tooltip-left::after,
+.user-btn[data-tooltip-text].tooltip-left::after {
+  top: 50%;
+  bottom: auto;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+
+/* Icon m? r?ng (SVG) - n�t m?nh v� m�u d?m hon */
+.header-btn svg {
+  stroke: var(--text-primary);
+  stroke-width: 1.5;
+  /* N�t m?nh hon */
+  fill: none;
+  opacity: 1;
+  /* M�u d?m hon */
+  transition: all 0.2s;
+}
+
+.header-btn:hover svg {
+  stroke: var(--text-primary);
+  opacity: 1;
+}
+
+/* Screenshot Dropdown in Sidebar */
+.menu-icon-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  gap: 4px;
+}
+
+.menu-icon-wrapper .menu-icon {
+  margin-bottom: 0;
+}
+
+.screenshot-dropdown,
+.rec-dropdown {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.screenshot-dropdown.show,
+.rec-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+/* ========================================
+   DROPDOWN ICONS - UNIFIED STYLING
+   ======================================== */
+
+/* Chung cho c? SVG v� IMG */
+.dropdown-item svg,
+.dropdown-item img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+  /* Quan tr?ng cho IMG */
+}
+
+/* SVG styling */
+.dropdown-item svg {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.7;
+}
+
+/* IMG styling (cho Google Meet icon) */
+.dropdown-item img {
+  /* Kh�ng c?n th�m g�, k�ch thu?c d� d?ng b? ? tr�n */
+}
+
+/* Hover effect */
+.dropdown-item:hover svg {
+  stroke: var(--color-primary);
+}
+
+.dropdown-item:hover img {
+  opacity: 0.8;
+}
+
+/* Dark theme adjustments (n?u c?n) */
+[data-theme="dark"] .dropdown-item img {
+  /* N?u icon Google Meet c� m�u s�ng, gi? nguy�n */
+  /* N?u icon c� m�u t?i, uncomment d�ng du?i */
+  /* filter: brightness(0) invert(1); */
+}
+
+.dropdown-item:hover svg {
+  stroke: var(--color-primary);
+}
+
+.dropdown-item span {
+  flex: 1;
+  white-space: nowrap;
+}
+
+/* User Login Popup */
+.user-popup {
+  position: absolute;
+  right: calc(100% + 12px);
+  bottom: 48px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  min-width: 360px;
+  /* Tang t? 250px l�n 320px */
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.user-popup.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.user-popup-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.user-popup-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.user-popup-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+/* ========================================
+   AUTH WIDGET STYLING
+   ======================================== */
+
+.user-popup .auth-widget-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  width: 100%;
+}
+
+.user-popup:has(.auth-widget-container) {
+  padding: 12px;
+  min-width: 280px;
+}
+
+.user-popup .auth-widget-container>* {
+  width: 100%;
+}
+
+.premium-feature.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+}
+
+.premium-feature.disabled::after {
+  content: '🔒';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 14px;
+}
+
+[data-theme=\"dark\"] .auth-widget-container {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-btn img.user-avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#userPopup .auth-dropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: 8px;
+  z-index: 10001;
+  animation: authMenuSlideUp 0.2s ease;
+}
+
+@keyframes authMenuSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Group hover pattern: khi hover vào sidebar-item, trigger effects cho children */
+.sidebar-item:hover .menu-icon {
+  background: var(--bg-hover);
+  transform: scale(1.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-item:hover .menu-icon img {
+  transform: translate3d(0, 0, 0) scale(1.05);
+  opacity: 1;
+  filter: brightness(0) saturate(100%);
+}
+
+.sidebar-item:hover .sidebar-label {
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.sidebar-item .menu-icon.active {
+  background: var(--color-primary-alpha);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sidebar-item .menu-icon.active img,
+.sidebar-item .menu-icon.active svg {
+  opacity: 1;
+  filter: none;
+}
+
+.sidebar-item.compact {
+  margin-bottom: 4px;
+}
+
+.sidebar-icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sidebar-icon-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.1);
+}
+
+.sidebar-icon-btn svg,
+.sidebar-icon-btn img {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.sidebar-icon-btn:hover svg {
+  stroke: var(--color-primary);
+  opacity: 0.85;
+}
+
+.sidebar-icon-btn:hover img {
+  opacity: 0.85;
+}
+
+.sidebar-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: color 0.2s ease;
+}
+
+.sidebar-item.compact .sidebar-label {
+  display: none;
+}
+
+.sidebar-item.bookmark .bookmark-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+}
+
+.sidebar-icon-btn .check-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  background: var(--bg-primary);
+  border-radius: 50%;
+  padding: 1px;
+}

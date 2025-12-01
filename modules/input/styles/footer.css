@@ -1,0 +1,119 @@
+/**
+ * Footer Styles
+ * Scoped trong .input-module-container để tránh conflict
+ */
+
+.input-module-container .input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--footer-padding, 8px 12px); /* Trả lại kích thước ban đầu */
+    border-top: none; /* Removed border-top */
+    min-height: 36px; /* Trả lại kích thước ban đầu */
+    font-size: 12px; /* Trả lại kích thước ban đầu */
+    color: var(--footer-text-color, #6b7280);
+}
+
+.input-module-container .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.input-module-container .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.input-module-container .footer-token-display,
+.input-module-container .footer-gift-display,
+.input-module-container .footer-upgrade-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.input-module-container .footer-token-display {
+  padding: 4px 10px;
+  background: var(--token-display-bg, rgba(99, 102, 241, 0.08));
+  border-radius: 12px;
+  border: 1px solid var(--token-display-border, rgba(99, 102, 241, 0.15));
+  transition: all 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input-module-container .footer-token-display:hover {
+  background: var(--token-display-hover-bg, rgba(99, 102, 241, 0.12));
+  border-color: var(--token-display-hover-border, rgba(99, 102, 241, 0.25));
+}
+
+.input-module-container .token-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  opacity: 0.7;
+  flex-shrink: 0;
+  display: block;
+  vertical-align: middle;
+}
+
+.input-module-container .token-label,
+.input-module-container .gift-label {
+  font-weight: 500;
+}
+
+.input-module-container .token-value,
+.input-module-container .gift-value {
+  color: var(--footer-value-color, #1f2937);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.input-module-container .footer-upgrade-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--upgrade-text-color, #6366f1);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.input-module-container .footer-upgrade-display:hover {
+  opacity: 0.8;
+}
+
+.input-module-container .rocket-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.input-module-container .footer-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+  color: var(--footer-icon-color, #6b7280);
+  box-sizing: border-box;
+}
+
+.input-module-container .footer-icon-btn:hover {
+  background-color: var(--footer-icon-hover-bg, #f5f5f5);
+}
+
+.input-module-container .footer-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}

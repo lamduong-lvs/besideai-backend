@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captions Guidance</title>
+</head>
+<body>
+    <div id="captionsGuidancePopup" class="guidance-popup">
+        <div class="guidance-backdrop"></div>
+
+        <div class="guidance-content">
+            <div class="guidance-header">
+                <div class="guidance-icon">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="20" fill="#f86a01" opacity="0.1"/>
+                        <path d="M24 16v16m8-8H16" stroke="#f86a01" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h2 data-i18n="guideCaptionTitleV2">Bật Live Captions</h2>
+                <button id="closeGuidanceBtn" class="close-btn" data-i18n-aria-label="closeBtnLabel" aria-label="Đóng">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="guidance-body">
+                <p class="guidance-description" data-i18n="guideCaptionDescV2">
+                    Để sử dụng tính năng dịch phụ đề, bạn cần bật <strong>Live Captions</strong> trong Google Meet trước.
+                </p>
+
+                <div class="guidance-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4 data-i18n="guideCaptionStep1Title">Tìm nút CC</h4>
+                            <p data-i18n="guideCaptionStep1Desc">Nhấn vào nút <strong>CC</strong> (Closed Captions) ở thanh điều khiển dưới cùng của Google Meet</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4 data-i18n="guideCaptionStep2Title">Hoặc dùng phím tắt</h4>
+                            <p data-i18n="guideCaptionStep2Desc">Bạn có thể nhấn phím <kbd>C</kbd> trên bàn phím để bật/tắt Live Captions nhanh chóng</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4 data-i18n="guideCaptionStep3Title">Chờ phụ đề xuất hiện</h4>
+                            <p data-i18n="guideCaptionStep3Desc">Phụ đề sẽ hiển thị khi có người đang nói trong cuộc họp. Sau đó, nhấn nút Dịch lại để bắt đầu dịch.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="visual-guide">
+                    <div class="guide-image">
+                        <svg width="100%" height="120" viewBox="0 0 400 120" fill="none">
+                            <rect x="50" y="40" width="300" height="60" rx="8" fill="#f1f3f4"/>
+                            
+                            <circle cx="100" cy="70" r="15" fill="#5f6368" opacity="0.3"/>
+                            <circle cx="150" cy="70" r="15" fill="#5f6368" opacity="0.3"/>
+                            
+                            <circle cx="200" cy="70" r="18" fill="#f86a01" opacity="0.2"/>
+                            <circle cx="200" cy="70" r="15" fill="#f86a01"/>
+                            <text x="200" y="75" text-anchor="middle" font-size="12" font-weight="bold" fill="white">CC</text>
+                            
+                            <path d="M200 30 L200 45" stroke="#ea4335" stroke-width="3" stroke-linecap="round" marker-end="url(#arrowhead)"/>
+                            <text x="200" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#ea4335" data-i18n="guideCaptionVisualCta">Nhấn vào đây</text>
+                            
+                            <circle cx="250" cy="70" r="15" fill="#5f6368" opacity="0.3"/>
+                            <circle cx="300" cy="70" r="15" fill="#5f6368" opacity="0.3"/>
+                            
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                                    <polygon points="0 0, 10 5, 0 10" fill="#ea4335"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <p class="guide-caption" data-i18n="guideCaptionVisualDesc">Vị trí nút CC trong thanh điều khiển Google Meet</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-icon">ℹ️</div>
+                    <div class="info-text" data-i18n="guideCaptionInfo">
+                        <strong>Lưu ý:</strong> Live Captions chỉ hoạt động khi có người đang nói trong cuộc họp. 
+                        Nếu chưa thấy phụ đề, hãy chờ ai đó phát biểu hoặc tự mình thử nói.
+                    </div>
+                </div>
+            </div>
+
+            <div class="guidance-footer">
+                <button id="tryEnableBtn" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 2v12m0-12l-3 3m3-3l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span data-i18n="guideCaptionTryAuto">Thử bật tự động</span>
+                </button>
+                <button id="gotItBtn" class="btn-primary" data-i18n="guideCaptionGotIt">
+                    Đã hiểu
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

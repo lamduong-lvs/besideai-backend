@@ -1,0 +1,1685 @@
+/**
+ * PDF Chat Styles
+ * All styles for PDF Chat module
+ */
+
+/* ===========================
+   PDF CHAT CONTAINER
+   =========================== */
+.pdf-chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0; /* Cho phép flex items co lại */
+  overflow: hidden; /* Ngăn overflow ra ngoài */
+}
+
+/* Remove border above messages container */
+#pdfChatView .pdf-messages-container {
+  border: none;
+}
+
+/* ===========================
+   MESSAGES CONTAINER
+   =========================== */
+#pdfChatView .pdf-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Messages Container Wrapper - similar to Main Chat */
+#pdfChatView .pdf-messages-container-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#pdfChatView .pdf-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding: 28px 16px 24px 16px; /* Giống Chat Trò chuyện */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  /* Scrollbar styling - auto-hide like Main Chat */
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Scrollbar styles - giữ chiều rộng ổn định, chỉ đổi màu */
+#pdfChatView .pdf-messages-container::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+#pdfChatView .pdf-messages-container::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+#pdfChatView .pdf-messages-container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+
+#pdfChatView .pdf-messages-container:hover::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgba(0, 0, 0, 0.2));
+}
+
+#pdfChatView .pdf-messages-container:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, rgba(0, 0, 0, 0.3));
+}
+
+/* Show scrollbar when scrolling */
+#pdfChatView .pdf-messages-container.scrolling::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* Không cần bù trừ padding nữa, để avatar user có khoảng cách tương đương avatar AI */
+#pdfChatView .pdf-messages-container .user-message {
+  margin-left: auto; /* Đẩy về bên phải */
+  align-self: flex-end; /* Căn về bên phải của container */
+}
+
+/* ===========================
+   PDF INFO CARD (Header)
+   =========================== */
+#pdfChatView .pdf-info-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+#pdfChatView .pdf-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+#pdfChatView .pdf-icon .icon {
+  width: 24px;
+  height: 24px;
+  filter: var(--icon-filter);
+}
+
+#pdfChatView .pdf-details {
+  flex: 1;
+  min-width: 0;
+}
+
+#pdfChatView .pdf-details h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+#pdfChatView .pdf-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+#pdfChatView .pdf-details .icon-sm {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  filter: var(--icon-filter);
+  opacity: 0.7;
+}
+
+#pdfChatView .btn-icon-only {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+#pdfChatView .btn-icon-only:hover {
+  background: var(--bg-hover);
+}
+
+#pdfChatView .btn-icon-only .icon {
+  width: 18px;
+  height: 18px;
+  filter: var(--icon-filter);
+}
+
+/* ===========================
+   MESSAGES - Copy từ Chat Trò chuyện
+   =========================== */
+#pdfChatView .message {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 12px;
+  width: fit-content;
+  align-items: flex-start;
+}
+
+#pdfChatView .message.user-message {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  max-width: 95%;
+}
+
+#pdfChatView .message.assistant-message {
+  align-self: flex-start;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+#pdfChatView .message-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#pdfChatView .message-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Avatar từ Gmail (ảnh thật) cần object-fit: cover và bo tròn */
+#pdfChatView .message-avatar img.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+[data-theme="dark"] #pdfChatView .message-avatar {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+#pdfChatView .message-body { 
+  flex: 1; 
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#pdfChatView .message-content, 
+#pdfChatView .markdown-content {
+  padding: 8px 12px;
+  background: var(--bg-message);
+  border-radius: 12px;
+  font-size: var(--font-base-md);
+  line-height: 1.65;
+  color: var(--text-primary);
+  word-wrap: break-word;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+/* When message has attachments, align content to right */
+#pdfChatView .message.user-message .message-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+}
+
+#pdfChatView .message.user-message .message-content {
+  background: var(--bg-message);
+  color: var(--text-primary);
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+#pdfChatView .message.user-message .message-content a {
+  color: var(--color-link);
+}
+
+#pdfChatView .message.assistant-message .message-content { 
+  background: var(--bg-ai-message); 
+  color: var(--text-primary);
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+/* Hide background when content is empty or only has cursor */
+#pdfChatView .message.assistant-message .message-content:empty {
+  background: transparent !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Hide background when only cursor exists (using class-based approach) */
+#pdfChatView .message.assistant-message .message-content.has-cursor-only {
+  background: transparent !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Show background when there's actual content */
+#pdfChatView .message.assistant-message .message-content.has-content {
+  background: var(--bg-ai-message) !important;
+}
+
+#pdfChatView .message-content {
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+#pdfChatView .message-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 4px;
+  gap: 8px;
+}
+
+/* User message footer: timestamp căn trái, buttons ở phải */
+#pdfChatView .message.user-message .message-footer {
+  justify-content: space-between; /* Timestamp ở ngoài cùng trái, buttons ở ngoài cùng phải */
+}
+
+/* Đảo thứ tự hiển thị: timestamp ở trái (order: 1), buttons ở phải (order: 2) */
+#pdfChatView .message.user-message .message-footer .timestamp {
+  order: 1;
+}
+
+#pdfChatView .message.user-message .message-footer .action-buttons {
+  order: 2;
+}
+
+#pdfChatView .timestamp { 
+  font-size: var(--font-xxs);
+  opacity: 0.4;
+  color: var(--text-secondary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#pdfChatView .action-buttons {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#pdfChatView .message:hover .action-buttons {
+  opacity: 1;
+}
+
+#pdfChatView .action-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+#pdfChatView .action-btn:hover {
+  opacity: 0.8;
+  background: var(--bg-hover, rgba(0, 0, 0, 0.05));
+  transform: scale(1.05);
+}
+
+#pdfChatView .action-btn .icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  filter: brightness(0) saturate(100%);
+  transition: opacity 0.2s, transform 0.2s;
+  object-fit: contain;
+}
+
+#pdfChatView .action-btn:hover .icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Đảm bảo tất cả buttons có cùng kích thước */
+#pdfChatView .action-btn.copy-btn,
+#pdfChatView .action-btn.edit-btn,
+#pdfChatView .action-btn.regenerate-btn {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+}
+
+/* XÓA HOÀN TOÀN TẤT CẢ TOOLTIP CHO ACTION BUTTONS (PDF CHAT) */
+#pdfChatView .action-btn::before,
+#pdfChatView .action-btn::after,
+#pdfChatView .action-btn[data-tooltip-text]::before,
+#pdfChatView .action-btn[data-tooltip-text]::after,
+#pdfChatView .action-btn[title]::before,
+#pdfChatView .action-btn[title]::after,
+#pdfChatView .action-btn.copy-btn::before,
+#pdfChatView .action-btn.copy-btn::after,
+#pdfChatView .action-btn.edit-btn::before,
+#pdfChatView .action-btn.edit-btn::after,
+#pdfChatView .action-btn.regenerate-btn::before,
+#pdfChatView .action-btn.regenerate-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+  color: transparent !important;
+}
+
+/* Copy success state - đồng bộ với Main Chat */
+#pdfChatView .action-btn.copy-success {
+  opacity: 1 !important;
+  animation: copySuccessPulse 0.4s ease !important;
+}
+
+#pdfChatView .action-btn.copy-success img,
+#pdfChatView .action-btn.copy-success .icon {
+  opacity: 1 !important;
+  /* Green color for success checkmark - đồng bộ với Main Chat */
+  filter: brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%) !important;
+  transform: scale(1.15) !important;
+  transition: transform 0.2s ease, filter 0.2s ease !important;
+}
+
+@keyframes copySuccessPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#pdfChatView .typing-indicator {
+  opacity: 0.7;
+}
+
+#pdfChatView .typing-dots {
+  display: none; /* Hide dots, use text instead */
+}
+
+#pdfChatView .typing-text {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+#pdfChatView .typing-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  animation: typing 1.4s infinite;
+}
+
+#pdfChatView .typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+#pdfChatView .typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+#pdfChatView .typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   THINKING CONTAINER - Copy từ Chat Trò chuyện
+   =========================== */
+#pdfChatView .thinking-container {
+  display: none;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--bg-thinking, rgba(59, 130, 246, 0.08));
+  border: 1px solid var(--border-thinking, rgba(59, 130, 246, 0.2));
+  border-radius: 12px;
+  animation: thinkingFadeIn 0.3s ease-in;
+  transition: background 0.2s ease, border 0.2s ease, padding 0.2s ease;
+}
+
+/* Khi thinking đã completed và content bị ẩn - bỏ nền và border */
+#pdfChatView .thinking-container.collapsed {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+/* Khi collapsed, header không cần margin-bottom */
+#pdfChatView .thinking-container.collapsed .thinking-header {
+  margin-bottom: 0;
+}
+
+@keyframes thinkingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#pdfChatView .thinking-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: var(--font-base-md);
+  font-weight: 500;
+  color: var(--text-thinking, rgba(59, 130, 246, 0.9));
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+#pdfChatView .thinking-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  animation: thinkingPulse 2s ease-in-out infinite;
+}
+
+#pdfChatView .thinking-icon.thinking-icon-paused {
+  animation: none;
+}
+
+@keyframes thinkingPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+#pdfChatView .thinking-label {
+  font-weight: 500;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+#pdfChatView .thinking-label.clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+#pdfChatView .thinking-label.clickable:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+#pdfChatView .thinking-content {
+  font-size: var(--font-base-md);
+  line-height: 1.6;
+  color: var(--text-thinking-content, var(--text-primary));
+  padding-left: 24px;
+  opacity: 0.85;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+#pdfChatView .thinking-content p {
+  margin: 0.5em 0;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-base-md);
+}
+
+#pdfChatView .thinking-content p:first-child {
+  margin-top: 0;
+}
+
+#pdfChatView .thinking-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] #pdfChatView .thinking-container {
+  background: var(--bg-thinking, rgba(59, 130, 246, 0.12));
+  border-color: var(--border-thinking, rgba(59, 130, 246, 0.3));
+}
+
+[data-theme="dark"] #pdfChatView .thinking-header {
+  color: var(--text-thinking, rgba(147, 197, 253, 0.9));
+}
+
+[data-theme="dark"] #pdfChatView .thinking-content {
+  color: var(--text-thinking-content, rgba(255, 255, 255, 0.85));
+}
+
+/* ===========================
+   STREAMING CURSOR
+   =========================== */
+#pdfChatView .streaming-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #000000;
+  border-radius: 50%;
+  animation: cursorPulse 0.5s ease-in-out infinite;
+  margin-left: 3px;
+  vertical-align: middle;
+  position: relative;
+}
+
+@keyframes cursorPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* ===========================
+   SCROLL TO BOTTOM BUTTON
+   =========================== */
+#pdfChatView .scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-primary, #ffffff);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+  transform: scale(0.9);
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+#pdfChatView .scroll-to-bottom-btn.visible {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1);
+}
+
+#pdfChatView .scroll-to-bottom-btn:hover {
+  background: var(--bg-hover, rgba(0, 0, 0, 0.05));
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+#pdfChatView .scroll-to-bottom-btn:focus {
+  outline: none;
+  border-color: var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+#pdfChatView .scroll-to-bottom-btn img,
+#pdfChatView .scroll-to-bottom-btn svg {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) saturate(100%);
+  opacity: 0.8;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#pdfChatView .scroll-to-bottom-btn:hover img,
+#pdfChatView .scroll-to-bottom-btn:hover svg {
+  opacity: 1;
+}
+
+/* ===========================
+   MARKDOWN CONTENT
+   =========================== */
+#pdfChatView .markdown-content {
+  /* Basic markdown styling */
+}
+
+#pdfChatView .markdown-content p {
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+#pdfChatView .markdown-content h1,
+#pdfChatView .markdown-content h2,
+#pdfChatView .markdown-content h3,
+#pdfChatView .markdown-content h4,
+#pdfChatView .markdown-content h5,
+#pdfChatView .markdown-content h6 {
+  margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+#pdfChatView .markdown-content h1 { font-size: 1.5rem; }
+#pdfChatView .markdown-content h2 { font-size: 1.3rem; }
+#pdfChatView .markdown-content h3 { font-size: 1.1rem; }
+
+#pdfChatView .markdown-content ul,
+#pdfChatView .markdown-content ol {
+  margin: 0 0 var(--spacing-sm) var(--spacing-md);
+  padding-left: var(--spacing-lg);
+}
+
+#pdfChatView .markdown-content li {
+  margin: var(--spacing-xs) 0;
+}
+
+#pdfChatView .markdown-content code {
+  background: var(--bg-tertiary);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+#pdfChatView .markdown-content pre {
+  background: var(--bg-tertiary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+#pdfChatView .markdown-content pre code {
+  background: none;
+  padding: 0;
+}
+
+#pdfChatView .markdown-content blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding-left: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+#pdfChatView .markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: var(--spacing-md) 0;
+}
+
+#pdfChatView .markdown-content th,
+#pdfChatView .markdown-content td {
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  text-align: left;
+}
+
+#pdfChatView .markdown-content th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+}
+
+/* ===========================
+   INFO MESSAGE
+   =========================== */
+.pdf-info-message {
+  padding: var(--spacing-md);
+  background: var(--bg-tertiary, #f5f5f5);
+  border-left: 4px solid var(--color-primary, #2196f3);
+  margin: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  animation: slideIn 0.3s ease;
+}
+
+.loading-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.pdf-error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  background: var(--color-error-bg, #ffebee);
+  color: var(--color-error, #f44336);
+  margin: var(--spacing-sm) 0;
+}
+
+/* ===========================
+   PDF FOOTER INPUT (Using Chat Styles)
+   =========================== */
+#pdfChatView .pdf-footer-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px 8px 12px;
+  border-top: none;
+  background: var(--bg-footer);
+  flex-shrink: 0; /* Không co lại, giữ nguyên kích thước */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Export toolbar styles are scoped to PDF Chat only */
+
+/* Export Success Message */
+.pdf-export-success {
+  padding: var(--spacing-md);
+  background: var(--color-success-bg, #e8f5e9);
+  border-left: 4px solid var(--color-success, #4caf50);
+  margin: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  animation: slideIn 0.3s ease;
+}
+
+.export-success-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+}
+
+.export-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.export-success-icon img {
+  filter: var(--icon-filter);
+}
+
+.export-success-text {
+  color: var(--color-success, #4caf50);
+  font-weight: 500;
+  flex: 1;
+}
+
+.export-success-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: rgba(var(--color-primary-rgb, 33, 150, 243), 0.1);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.export-success-link:hover {
+  background: rgba(var(--color-primary-rgb, 33, 150, 243), 0.2);
+  text-decoration: none;
+  transform: translateX(2px);
+}
+
+.export-success-link img {
+  filter: var(--icon-filter);
+}
+
+.export-success-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.export-success-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.export-success-close img {
+  filter: var(--icon-filter);
+  width: 18px;
+  height: 18px;
+}
+
+/* PDF Chat uses Chat's input styles from panel.css */
+/* No custom input area styles needed */
+
+/* PDF-specific styling for export buttons (icon only) */
+/* Scoped to #pdfChatView to avoid affecting main chat */
+#pdfChatView .pdf-export-toolbar .toolbar-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: auto;
+  padding: var(--spacing-xs);
+}
+
+#pdfChatView .pdf-export-toolbar .toolbar-action-btn .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  filter: none !important; /* Hiển thị màu sắc gốc của icon */
+  opacity: 1 !important;
+}
+
+/* Đảm bảo icon Word và Excel hiển thị màu gốc */
+#pdfChatView .btn-export-docs .icon,
+#pdfChatView .btn-export-sheets .icon {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+#pdfChatView .btn-export-docs:hover {
+  background: rgba(33, 102, 214, 0.1);
+}
+
+#pdfChatView .btn-export-docs:hover .icon {
+  filter: none !important; /* Giữ màu gốc khi hover */
+}
+
+#pdfChatView .btn-export-sheets:hover {
+  background: rgba(28, 124, 71, 0.1);
+}
+
+#pdfChatView .btn-export-sheets:hover .icon {
+  filter: none !important; /* Giữ màu gốc khi hover */
+}
+
+/* ===========================
+   PDF HISTORY PANEL (Copy from Chat History)
+   =========================== */
+#pdfHistoryPanel.pdf-history-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200000;
+  display: none;
+}
+
+#pdfHistoryPanel.pdf-history-panel.show {
+  display: block;
+}
+
+.pdf-history-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* PDF History Panel - Slide-in style (main) */
+#pdfHistoryPanel .pdf-history-content,
+.pdf-history-panel .pdf-history-content {
+  position: absolute !important;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 90%;
+  height: 100vh !important;
+  max-height: none !important;
+  background: var(--bg-primary);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+#pdfHistoryPanel .pdf-history-header,
+.pdf-history-panel .pdf-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px !important;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  min-height: auto !important;
+}
+
+#pdfHistoryPanel .pdf-history-title,
+.pdf-history-panel .pdf-history-title,
+#pdfHistoryPanel .pdf-history-header h2,
+.pdf-history-panel .pdf-history-header h2 {
+  font-size: 14px !important;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* PDF History Close Button - Simple and clean */
+#pdfHistoryClose,
+.pdfHistoryPanel-close {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#pdfHistoryClose:hover,
+.pdfHistoryPanel-close:hover {
+  background: var(--bg-hover) !important;
+}
+
+#pdfHistoryClose img,
+.pdfHistoryPanel-close img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  filter: var(--icon-filter);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+#pdfHistoryClose:hover img,
+.pdfHistoryPanel-close:hover img {
+  opacity: 1;
+}
+
+#pdfHistoryPanelBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+#pdfHistoryPanelBody .history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  gap: 12px;
+}
+
+#pdfHistoryPanelBody .history-empty-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.3;
+}
+
+#pdfHistoryPanelBody .history-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#pdfHistoryPanelBody .history-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+  transform: translateX(-4px);
+}
+
+#pdfHistoryPanelBody .history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+#pdfHistoryPanelBody .history-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#pdfHistoryPanelBody .history-type-icon {
+  flex-shrink: 0;
+  filter: var(--icon-filter);
+}
+
+#pdfHistoryPanelBody .history-item-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+#pdfHistoryPanelBody .history-item-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 6px;
+}
+
+#pdfHistoryPanelBody .history-item-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+#pdfHistoryPanelBody .history-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#pdfHistoryPanelBody .history-action-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#pdfHistoryPanelBody .history-action-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+#pdfHistoryPanelBody .history-action-btn.delete:hover {
+  background: var(--color-danger, #ef4444);
+  border-color: var(--color-danger, #ef4444);
+  color: white;
+}
+
+/* ===========================
+   OLD HISTORY MODAL (Keep for backward compatibility)
+   =========================== */
+.pdf-history-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-history-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.pdf-history-content {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  height: 100vh;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 10001;
+}
+
+.pdf-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.pdf-history-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.btn-close-modal:hover {
+  background: var(--bg-hover);
+}
+
+.pdf-history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+}
+
+.history-item {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--border-color);
+}
+
+.history-item.history-user {
+  background: var(--bg-secondary);
+  border-left-color: var(--color-primary);
+}
+
+.history-item.history-ai {
+  background: var(--bg-hover);
+  border-left-color: #4caf50;
+}
+
+.history-role {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+}
+
+.history-text {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.pdf-history-footer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+}
+
+/* ===========================
+   PROCESSING STATE
+   =========================== */
+.pdf-processing-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  padding: var(--spacing-xl);
+  gap: var(--spacing-lg);
+}
+
+.pdf-processing-state p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* ===========================
+   PROGRESS BAR
+   =========================== */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  max-width: 300px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--bg-tertiary, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary, #3b82f6), var(--color-primary-hover, #2563eb));
+  border-radius: var(--radius-md, 8px);
+  transition: width 0.2s ease;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-percentage {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 45px;
+  text-align: center;
+}
+
+/* ===========================
+   LOADING SPINNER
+   =========================== */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+@media (max-width: 600px) {
+  /* Remove max-width limit for assistant messages */
+  #pdfChatView .message.assistant-message .message-content {
+    max-width: 100% !important;
+  }
+  
+  /* Keep max-width for user messages */
+  #pdfChatView .message.user-message .message-content {
+    max-width: 100%;
+  }
+  
+  .pdf-upload-zone {
+    padding: var(--spacing-xl);
+  }
+  
+  .config-warning-card {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* ===========================
+   DARK MODE ENHANCEMENTS
+   =========================== */
+[data-theme="dark"] .pdf-upload-zone {
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .pdf-message.ai-message .message-content {
+  background: rgba(66, 133, 244, 0.1);
+}
+
+[data-theme="dark"] .config-warning-card {
+  background: var(--bg-secondary);
+  border-color: var(--color-warning, #ff9800);
+}
+
+[data-theme="dark"] .loading-spinner {
+  border-color: var(--border-color);
+  border-top-color: var(--color-primary);
+}
+
+/* ===========================
+   UTILITY
+   =========================== */
+.d-none {
+  display: none !important;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, textarea, select {
+  transition: all 0.2s ease;
+}
+
+/* ===========================
+   EMPTY STATE
+   =========================== */
+/* ===========================
+   ERROR STATE
+   =========================== */
+#pdfChatView .pdf-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  gap: var(--spacing-lg);
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+#pdfChatView .pdf-error-state .error-icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 50%;
+  margin-bottom: var(--spacing-sm);
+}
+
+#pdfChatView .pdf-error-state .error-icon img {
+  width: 48px;
+  height: 48px;
+  filter: var(--icon-filter);
+  opacity: 0.6;
+}
+
+#pdfChatView .pdf-error-state h3 {
+  margin: 0;
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+#pdfChatView .pdf-error-state .error-message {
+  margin: 0;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+#pdfChatView .pdf-error-state .error-file-name {
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+#pdfChatView .pdf-error-state .error-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#pdfChatView .pdf-error-state .btn-primary {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+#pdfChatView .pdf-error-state .btn-primary:hover {
+  background: var(--color-primary-hover, var(--color-primary));
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+#pdfChatView .pdf-error-state .btn-primary:active {
+  transform: translateY(0);
+}
+
+#pdfChatView .pdf-error-state .btn-secondary {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+#pdfChatView .pdf-error-state .btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-color-hover, var(--border-color));
+}
+
+/* ===========================
+   EMPTY STATE
+   =========================== */
+.pdf-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--spacing-xl);
+}
+
+.pdf-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xxl);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 200px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Upload button - Remove border and background */
+#pdfChatView .btn-upload-icon,
+#pdfChatView #pdfUploadBtn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+  box-shadow: none !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#pdfChatView .btn-upload-icon:hover,
+#pdfChatView #pdfUploadBtn:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+#pdfChatView .btn-upload-icon:active,
+#pdfChatView #pdfUploadBtn:active {
+  background: transparent !important;
+  border: none !important;
+  transform: scale(0.95);
+}
+

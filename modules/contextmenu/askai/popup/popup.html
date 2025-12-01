@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="popupHtmlTitle">AI Action Popup</title>
+  <!-- Design System -->
+          <link rel="stylesheet" href="../../../../styles/global.css">
+          <link rel="stylesheet" href="../../../../styles/variables.css">
+          <link rel="stylesheet" href="../../../../styles/theme-light.css">
+          <link rel="stylesheet" href="../../../../styles/theme-dark.css">
+          <link rel="stylesheet" href="../../../../styles/components.css">
+          <link rel="stylesheet" href="../../../../styles/icons.css">
+          <link rel="stylesheet" href="../../../../styles/tooltip-system.css">
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="../../../../utils/tooltip-manager.js"></script>
+</head>
+<body>
+  <div class="popup-container">
+    
+    <div class="popup-header" id="popupHeader">
+      <div class="header-title-wrapper">
+        <svg class="header-icon" id="headerIcon" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="header-title" id="popupTitle">Hỏi AI</span>
+        
+        <select class="language-selector d-none" id="languageSelector">
+          <!-- Options will be populated by JavaScript -->
+        </select>
+      </div>
+      <button class="header-btn" id="closeBtn" data-tooltip="tooltips.contextmenu.closeBtn">
+        <img src="../../../../icons/svg/icon/Essentional, UI/Close Circle.svg" alt="Close" class="icon">
+      </button>
+    </div>
+    
+    <div class="messages-container" id="messagesContainer">
+      </div>
+    
+    <div class="footer-input is-single-line" id="footerInput">
+      
+      <div class="textarea-wrapper">
+        <textarea 
+          class="chat-input" 
+          id="chatInput"
+          data-i18n-placeholder="placeholderLoading" 
+          rows="1"
+        ></textarea>
+      </div>
+      
+      <div class="footer-controls">
+        <div class="footer-buttons">
+          <button class="mic-btn" id="micBtn" data-tooltip="tooltips.contextmenu.micBtn">
+            <img src="../../../../icons/svg/icon/Video, Audio, Sound/Microphone.svg" alt="Mic" class="icon">
+          </button>
+          <button class="send-btn" id="sendBtn" data-tooltip="tooltips.contextmenu.sendBtn">
+            <img src="../../../../icons/svg/icon/Arrows Action/Send Square.svg" alt="Send" class="icon">
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+  <div class="resize-handle" id="resizeHandle"></div>
+  <script src="../../../../js/marked.min.js"></script>
+  <script src="popup.js" type="module"></script>
+  <script src="/js/i18n.js"></script>
+</body>
+</html>

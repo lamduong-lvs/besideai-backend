@@ -1,0 +1,274 @@
+{
+  "manifest_version": 3,
+  "name": "AI Chat Assistant",
+  "version": "1.0.2.0",
+  "description": "AI-powered chat assistant",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "contextMenus",
+    "commands",
+    "offscreen",
+    "tabCapture",
+    "desktopCapture",
+    "tabs",
+    "identity",
+    "sidePanel",
+    "notifications"
+  ],
+  
+  "host_permissions": [
+    "https://api.cerebras.ai/*",
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://besideai.work/*",
+    "https://besideai-backend.vercel.app/*",
+    "<all_urls>"
+  ],
+  
+  "oauth2": {
+    "client_id": "636759880823-b3eopt81tgh3fsj1aepl3ftedv3kc1rs.apps.googleusercontent.com",
+    "scopes": [
+      "openid",
+      "email",
+      "profile",
+	  "https://www.googleapis.com/auth/documents",
+	  "https://www.googleapis.com/auth/drive.file",
+	  "https://www.googleapis.com/auth/calendar.events",
+	  "https://www.googleapis.com/auth/spreadsheets"
+    ]
+  },
+  
+  "key": "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCByd/2hgPyBEyACveJzJARpGS0yufMp0AuBCuZVx8054eldjJX3Nv5L236NqUhdCk66doZxjlkJ7ywmKyQtLlH3Rm0RnDxMbVj8cikrmBx3Rz5CYQW69AcgDEhvVDDLuvMvG004n96oExG7zzcfa+D6SlKlgZUok18JYOpfku2LGxamORqOtxah/eyMezcKwpvSwQVpzkILrTA5HLE4KR6KrdRlj2FVkyLZcKMegykF8z0U7HWYCG2V6mNWhqolTMgk5aR4RPozqPTox782cIqPdmBejGeyBrKAz+e4tMdvjnOs/U0V6j1nWyzmnSSjeZfz/JYLtfWexo4mLw/d1E9AgMBAAECggEAIVEowHh7l8t5td7a15FfJGA+h9iUc4k1pPpmFMl0FdkfjZ6PYtWr1EZUJYiUkEdo9Bom5jnn7qlyuySeG9GAxI1h9VCl2oynoz3kgz3OPTyFHPrP4TBsrnxL4HzgOBKZ7mcqY4qHLfvrSMROK83J2gNnGaH0gxJc8LMSntZwahWUr2tJtNWAtg4+Pl/U8Fg+OKmTEbcrLQeqqX3eBX66e5LrH3u6kvUkPg+w7JgHFSgiYwmID4XH2D03y+1MPlL1uJ29SdIzDrv3eslAfJIObYzgLqSLT14rT2TzhPDcwppUWMrdPrW66nBWmUU5M/+/63dql1jA3NrV2tQDxGdUcwKBgQC2TCulycq0GItJFHKFHc1igWTxS5LWAPuuR3uP+MQ+DNxajHeDx3Ut9JQX5bilepYjiDVKHS2ZLairwwzWJf4muh8p+q//DdqIUdWBnffm1wfGxKXYruDQCI/CtQhFD4RyeOJtK+qhuguO7sfmArh89ZQjoGy5UfAwMKe4jO7xFwKBgQC2QwQ1bSGnLicSUpNTMr+0WP9ry7JU0+vK4A3jouZnUfaHKG1biBefgLuaOmW2Ho4AgWp66Tdpj089Mky3m7PI4c95tOFBhIObN8cJc2LhTbqCWFOdKbw7vFeHQzdb8ngICQYNN4en3712PVeiygnlUnmeBxIWhQi/FD8JhOF8ywKBgCiWFtWncrDcEg6oNcL7WqHGyzGJsNxihaZMle785Lwn4ttqEKXPP4CGxn33kD+PZmPszGh+zIshBj+PgokfFlGK+KtA+/QeInxdM9rSz8GeOEYBvCbc8IKAlXk1Eu1FQii2TzsdHvT41d/xu6GzE14G0v+HlQ1Bd+dSvdSx0/TrAoGAVy4vMS8GTeVxov4EomM/95AqfPFuV80WmHAbtKsS8pDuDzBzPrkWM6FsGxWb2UU8P1moCSrM6p02FdudfqXnlUsN5vVyWdh86x3/ArJCtepsMDT3qdFwzFIGvBiWvlB4wb8vOds59D69bXViGefyW9LbgY94Q3VW/a89h9wbz4kCgYEAi0XCmp30TU0J5+GteAPJG9gw3LITVmxX+jZeNpbBKvSnuPmAjMLpS7HyqSX1QS4eOAh7if9r8sN/ZpwE0YweqA3/JjhIZ5m02VNOvGddAf8anhOTuUrm9JMgp8NaZABJj8jExI4rj+3Dovgug7fmxkRxtfh7TjeNdJStBn0jOyc=",
+  
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  
+  "side_panel": {
+    "default_path": "modules/panel/panel.html",
+    "min_width": 535
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+		"js/i18n.js",
+        "js/marked.min.js",
+        "content/content-loader.js",
+        "modules/screenshot/content-script.js"
+      ],
+      "css": [
+        "styles/variables.css",
+        "styles/theme-light.css",
+        "styles/theme-dark.css",
+        "content/css/content.css"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    },
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": [
+        "modules/common/utils/logger.js",
+        "modules/common/utils/storage.js",
+        "modules/common/utils/utils.js",
+        "modules/common/utils/caption-filter.js",
+        "modules/common/config/models-config.js",
+        "modules/common/config/racing-config.js",
+        "modules/common/utils/language-detection.js",
+        "modules/common/config/translation-languages.js",
+        "modules/common/api/model-adapter.js",
+        "modules/common/api/racing-helper.js",
+        "modules/common/api/google-docs-exporter.js",
+        "modules/common/api/translator-manager.js",
+        "modules/common/api/summarizer-manager.js",
+        "modules/common/ui/historymanager.js",
+        "modules/common/ui/summaryrenderer.js",
+        "modules/common/ui/pip-window.js",
+        "modules/google-meet/config/constants.js",
+        "modules/google-meet/config/meet-settings.js",
+        "modules/google-meet/core/caption-capture.js",
+        "modules/google-meet/core/meet-recorder.js",
+        "modules/google-meet/ui/translator-ui.js",
+        "modules/google-meet/ui/control-bar.js",
+        "modules/google-meet/meet-content.js"
+      ],
+      "css": [
+        "modules/common/styles/meet-common.css",
+        "modules/common/ui/pip-window.css",
+        "modules/google-meet/styles/meet-theme.css",
+        "modules/google-meet/ui/control-bar.css",
+        "modules/google-meet/ui/translator-popup.css"
+      ],
+      "run_at": "document_end"
+    }
+	,
+    {
+      "matches": ["https://teams.microsoft.com/*",
+	  "https://teams.live.com/*"],
+      "js": [
+        "modules/common/utils/logger.js",
+        "modules/common/utils/storage.js",
+        "modules/common/utils/utils.js",
+        "modules/common/utils/caption-filter.js",
+        "modules/common/config/models-config.js",
+        "modules/common/config/racing-config.js",
+        "modules/common/utils/language-detection.js",
+        "modules/common/config/translation-languages.js",
+        "modules/common/api/model-adapter.js",
+        "modules/common/api/racing-helper.js",
+        "modules/common/api/google-docs-exporter.js",
+        "modules/common/api/translator-manager.js",
+        "modules/common/api/summarizer-manager.js",
+        "modules/common/ui/historymanager.js",
+        "modules/common/ui/summaryrenderer.js",
+        "modules/common/ui/pip-window.js",
+        "modules/microsoft-teams/config/constants.js",
+        "modules/microsoft-teams/core/teams-caption-capture.js",
+        "modules/microsoft-teams/ui/teams-translator-ui.js",
+        "modules/microsoft-teams/ui/teams-control-bar.js",
+        "modules/microsoft-teams/teams-content.js"
+      ],
+      "css": [
+        "modules/common/styles/meet-common.css",
+        "modules/common/ui/pip-window.css",
+        "modules/microsoft-teams/styles/teams-theme.css",
+        "modules/microsoft-teams/ui/teams-control-bar.css",
+        "modules/microsoft-teams/ui/teams-translator-popup.css"
+      ],
+      "run_at": "document_end"
+    }
+	,
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": [
+        "js/i18n.js",
+        "js/jquery-3.7.1.min.js",
+        "js/gmail.js",
+        "js/marked.min.js",
+        "js/purify.min.js",
+        "js/shared-gmail-instance.js",
+        "modules/gmail/aiquickactions/prompt-templates.js",
+        "modules/gmail/aiquickactions/email-extractor.js",
+        "modules/gmail/aiquickactions/ai-event-parser.js",
+        "modules/gmail/aiquickactions/calendar-api.js",
+        "modules/gmail/aiquickactions/event-popup.js",
+		"modules/gmail/aiSummarizer/email-dom-reader.js",
+        "modules/gmail/aiSummarizer/summarizer.js",
+        "modules/gmail/quickActionsBar/actions.js",
+        "modules/gmail/aisidepanel/side-panel.js"
+      ],
+      "css": [
+        "modules/gmail/aiSummarizer/summarizer.css",
+        "modules/gmail/quickActionsBar/actions.css",
+        "modules/gmail/aiquickactions/event-popup.css",
+        "modules/gmail/aisidepanel/side-panel.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "css": ["modules/input/styles/input.css"]
+    }
+  ],
+  
+  "action": {
+    "default_popup": "modules/toolbar/menu-toolbar.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "AI Chat Assistant & Screen Recorder"
+  },
+  
+  "commands": {
+    "open-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Mở Popup của Extension"
+    },
+    "new-chat": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+N",
+        "mac": "Command+Shift+N"
+      },
+      "description": "Bắt đầu một cuộc trò chuyện mới"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+		"lang/*.json",
+		"js/i18n.js",
+        "icons/*",
+        "icons/svg/*.svg",
+		"icons/svg/google-meet.svg",
+        "styles/screenshot-area.css",
+        "js/screenshot-area.js",
+        "js/fabric.min.js",
+        "modules/screenshot-editor/viewer.html",
+        "modules/screenshot-editor/viewer.css",
+        "modules/screenshot-editor/viewer.js",
+        "modules/screenshot-editor/viewer-pro.js",
+        "modules/panel/panel.html",
+        "modules/panel/panel.js",
+        "modules/panel/panel.css",
+        "modules/screenshot/*",
+        "modules/auth/ui/auth-widget.html",
+        "modules/auth/auth.js",
+        "modules/auth/ui/auth-widget.css",
+        "modules/auth/ui/auth-widget.js",
+        "modules/contextmenu/askai/popup/popup.html",
+        "modules/contextmenu/askai/popup/popup.css",
+        "styles/content-styles.css",
+        "modules/contextmenu/askai/popup/popup.js",
+        "modules/common/ui/pip-window.html",
+        "modules/common/ui/pip-window.css",
+        "modules/common/styles/meet-common.css",
+        "modules/google-meet/ui/translator-popup.html",
+        "modules/google-meet/ui/translator-popup.css",
+        "modules/google-meet/ui/control-bar.css",
+        "modules/google-meet/styles/meet-theme.css",
+        "modules/microsoft-teams/ui/teams-translator-popup.html",
+        "modules/microsoft-teams/ui/teams-translator-popup.css",
+        "modules/microsoft-teams/ui/teams-control-bar.css",
+        "modules/microsoft-teams/styles/teams-theme.css",
+        "modules/gmail/aiquickactions/event-popup.html",
+        "content/injectors/floating-icon-injector.js",
+        "content/injectors/context-menu-injector.js",
+        "content/css/content.css",
+        "utils/api.js",
+        "utils/storage.js",
+        "utils/storage-enhanced.js",
+        "utils/theme.js",
+        "utils/conversation-db.js",
+        "utils/IndexedDBWrapper.js",
+        "utils/shadow-dom-helper.js",
+        "modules/common/config/translation-languages.js",
+        "modules/common/utils/language-detection.js",
+        "modules/input/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

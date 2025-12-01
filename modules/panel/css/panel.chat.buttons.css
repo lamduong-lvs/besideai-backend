@@ -1,0 +1,312 @@
+/* panel.chat.buttons.css - Action buttons and footer buttons */
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.message:hover .action-buttons {
+  opacity: 1;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+  background: var(--bg-hover, rgba(0, 0, 0, 0.05));
+  transform: scale(1.05);
+}
+
+.action-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.action-btn img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  filter: brightness(0) saturate(100%);
+  transition: opacity 0.2s, transform 0.2s;
+  object-fit: contain;
+}
+
+.action-btn:hover img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Copy success state */
+.action-btn.copy-success {
+  opacity: 1;
+  animation: copySuccessPulse 0.4s ease;
+}
+
+.action-btn.copy-success img {
+  opacity: 1;
+  /* Green color for success checkmark */
+  filter: brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+  transform: scale(1.15);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+@keyframes copySuccessPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Đảm bảo tất cả buttons có cùng kích thước */
+.action-buttons .action-btn.copy-btn,
+.action-buttons .action-btn.edit-btn,
+.action-buttons .action-btn.regenerate-btn {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  border: none;
+  background: none;
+  border-radius: 4px;
+}
+
+.action-buttons .action-btn.edit-btn img,
+.action-buttons .action-btn.regenerate-btn img {
+  width: 14px;
+  height: 14px;
+}
+
+.action-buttons .action-btn.edit-btn svg,
+.action-buttons .action-btn.regenerate-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.5;
+}
+
+/* XÓA HOÀN TOÀN TẤT CẢ TOOLTIP CHO ACTION BUTTONS */
+.action-btn::before,
+.action-btn::after,
+.action-btn[data-tooltip-text]::before,
+.action-btn[data-tooltip-text]::after,
+.action-btn[title]::before,
+.action-btn[title]::after,
+.action-btn.copy-btn::before,
+.action-btn.copy-btn::after,
+.action-btn.edit-btn::before,
+.action-btn.edit-btn::after,
+.action-btn.regenerate-btn::before,
+.action-btn.regenerate-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+  color: transparent !important;
+}
+
+/* Edit Container */
+.edit-container {
+  margin-top: 8px;
+}
+
+.edit-textarea {
+  width: 100%;
+  border: 1px solid var(--border-focus);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+  box-sizing: border-box;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.edit-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.edit-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+}
+
+.edit-btn.save-btn {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.edit-btn.save-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.edit-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.edit-btn.save-btn svg {
+  stroke: white;
+}
+
+/* Tooltip cho edit button trong edit container - KHÔNG áp dụng cho action buttons */
+.edit-container .edit-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+}
+
+.edit-container .edit-btn:hover::after {
+  opacity: 1;
+}
+
+/* XÓA HOÀN TOÀN tooltip cũ cho edit button trong action-buttons */
+.action-buttons .action-btn.edit-btn::after {
+  /* XÓA HOÀN TOÀN - không tạo tooltip ở đây */
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+  color: transparent !important;
+}
+
+/* Tooltip được định nghĩa DUY NHẤT bởi .action-btn[data-tooltip-text]::after ở trên */
+
+/* Scroll to Bottom Button - Refactored */
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+  transform: scale(0.9);
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+.scroll-to-bottom-btn.visible {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1);
+}
+
+.scroll-to-bottom-btn:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--border-color);
+}
+
+.scroll-to-bottom-btn:focus {
+  outline: none;
+  border-color: var(--border-color);
+}
+
+.scroll-to-bottom-btn img,
+.scroll-to-bottom-btn svg {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) saturate(100%);
+  opacity: 0.8;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.scroll-to-bottom-btn:hover img,
+.scroll-to-bottom-btn:hover svg {
+  opacity: 1;
+}
+
+/* Đảm bảo nút scroll không tạo border */
+.scroll-to-bottom-btn.visible {
+  border: 1px solid var(--border-color) !important;
+  outline: none !important;
+}
+

@@ -1,0 +1,40 @@
+/**
+ * Textarea Styles
+ * Scoped trong .input-module-container để tránh conflict
+ */
+
+.input-module-container .input-text-area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.input-module-container .chat-input {
+  width: 100%;
+  min-height: 24px; /* Trả lại kích thước ban đầu */
+  max-height: var(--textarea-max-height, 120px);
+  padding: 8px 12px; /* Trả lại kích thước ban đầu */
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 14px; /* Trả lại kích thước ban đầu */
+  line-height: 1.5;
+  color: var(--textarea-text-color, #1f2937);
+  background: transparent;
+  font-family: inherit;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.input-module-container .chat-input::placeholder {
+  color: var(--textarea-placeholder-color, #9ca3af);
+}
+
+.input-module-container .chat-input:focus {
+  outline: none;
+}
+
+.input-module-container .chat-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
