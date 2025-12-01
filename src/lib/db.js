@@ -52,15 +52,20 @@ export function getDbPool() {
       const url = new URL(connectionString);
       
       // Supabase only supports IPv6
-      // Use IPv6 address directly to avoid DNS resolution issues on Windows
-      const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
+      // Use IPv6 address directly ONLY on Windows/local to avoid DNS resolution issues
+      // On Vercel (production), use hostname normally as Vercel network supports IPv6 well
+      const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+      const isWindows = process.platform === 'win32';
+      
       let host = url.hostname;
       
-      // Replace Supabase hostname with IPv6 address directly
-      // This bypasses DNS resolution which may fail on Windows
-      if (host.includes('supabase.co')) {
+      // Only replace with IPv6 address on Windows/local, not on Vercel
+      if (host.includes('supabase.co') && !isVercel && isWindows) {
+        const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
         host = SUPABASE_IPV6;
-        console.log('[DB] Using IPv6 address directly for Supabase (bypassing DNS)');
+        console.log('[DB] Using IPv6 address directly for Supabase (bypassing DNS on Windows)');
+      } else if (host.includes('supabase.co')) {
+        console.log('[DB] Using hostname for Supabase (Vercel/cloud environment)');
       }
       
       poolConfig = {
