@@ -51,42 +51,10 @@ export function getDbPool() {
     const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
     const isWindows = process.platform === 'win32';
     
-    // Parse URL to extract components
-    // On both Vercel and Windows, use IPv6 address for Supabase to bypass DNS issues
-    try {
-      const url = new URL(connectionString);
-      let host = url.hostname;
-      
-      // Use IPv6 address directly for Supabase on both Vercel and Windows
-      // This bypasses DNS resolution which may fail on Vercel
-      if (host.includes('supabase.co')) {
-        // Use IPv6 address directly - this is the most reliable method
-        // Supabase database server IPv6 address
-        const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
-        host = SUPABASE_IPV6;
-        if (isVercel) {
-          console.log('[DB] Using IPv6 address directly for Supabase on Vercel (bypassing DNS)');
-        } else {
-          console.log('[DB] Using IPv6 address directly for Supabase on Windows (bypassing DNS)');
-        }
-      }
-      
-      poolConfig = {
-        user: decodeURIComponent(url.username),
-        password: decodeURIComponent(url.password),
-        host: host,
-        port: parseInt(url.port) || 5432,
-        database: url.pathname.slice(1), // Remove leading /
-        ssl: { rejectUnauthorized: false },
-        max: 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 20000,
-      };
-      console.log('[DB] ✅ Parsed connection string to config object');
-      console.log('[DB] Host:', poolConfig.host, 'Port:', poolConfig.port);
-    } catch (error) {
-      // Fallback to connectionString
-      console.warn('[DB] Could not parse as URL, using connectionString:', error.message);
+    // On Vercel, always use connectionString directly - let pg library handle DNS
+    // Connection Pooler works best with hostname, not IPv6 address
+    if (isVercel) {
+      console.log('[DB] Using connectionString directly on Vercel (best for Connection Pooler)');
       poolConfig = {
         connectionString,
         ssl: { rejectUnauthorized: false },
@@ -94,6 +62,47 @@ export function getDbPool() {
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 20000
       };
+    } else {
+      // On Windows/local, parse URL and use IPv6 only for direct connection (db.supabase.co)
+      // Don't use IPv6 for Connection Pooler (pooler.supabase.com)
+      try {
+        const url = new URL(connectionString);
+        let host = url.hostname;
+        
+        // Only use IPv6 address for direct connection (db.supabase.co) on Windows
+        // Connection Pooler (pooler.supabase.com) should use hostname
+        if (host.includes('db.supabase.co') && isWindows) {
+          const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
+          host = SUPABASE_IPV6;
+          console.log('[DB] Using IPv6 address directly for Supabase direct connection on Windows');
+        } else if (host.includes('pooler.supabase.com')) {
+          console.log('[DB] Using Connection Pooler hostname (no IPv6 replacement needed)');
+        }
+        
+        poolConfig = {
+          user: decodeURIComponent(url.username),
+          password: decodeURIComponent(url.password),
+          host: host,
+          port: parseInt(url.port) || 5432,
+          database: url.pathname.slice(1), // Remove leading /
+          ssl: { rejectUnauthorized: false },
+          max: 10,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 20000,
+        };
+        console.log('[DB] ✅ Parsed connection string to config object');
+        console.log('[DB] Host:', poolConfig.host, 'Port:', poolConfig.port);
+      } catch (error) {
+        // Fallback to connectionString
+        console.warn('[DB] Could not parse as URL, using connectionString:', error.message);
+        poolConfig = {
+          connectionString,
+          ssl: { rejectUnauthorized: false },
+          max: 10,
+          idleTimeoutMillis: 30000,
+          connectionTimeoutMillis: 20000
+        };
+      }
     }
 
     pool = new Pool(poolConfig);
