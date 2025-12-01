@@ -296,12 +296,18 @@ export default async function handler(req, res) {
         }
         
         // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
+        // Also check if pathname contains the endpoint name
         const endpoint = pathname.split('/').pop() || '';
+        const hasStatus = pathname.includes('/status') || endpoint === 'status';
+        const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
+        const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
+        const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
+        const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
         
         console.log('[Subscription] URL:', req.url, 'Pathname:', pathname, 'Endpoint:', endpoint, 'Method:', req.method);
 
-      // Route based on method and endpoint
-      if (endpoint === 'status' || pathname.includes('/status')) {
+        // Route based on method and endpoint
+        if (hasStatus) {
         if (req.method === 'GET') {
           await getSubscriptionStatus(req, res);
         } else if (req.method === 'PUT') {
@@ -316,7 +322,7 @@ export default async function handler(req, res) {
             message: `Method ${req.method} not allowed`
           });
         }
-      } else if (endpoint === 'limits' || pathname.includes('/limits')) {
+      } else if (hasLimits) {
         if (req.method === 'GET') {
           await getSubscriptionLimits(req, res);
         } else {
@@ -326,7 +332,7 @@ export default async function handler(req, res) {
             message: `Method ${req.method} not allowed`
           });
         }
-      } else if (endpoint === 'upgrade' || pathname.includes('/upgrade')) {
+      } else if (hasUpgrade) {
         if (req.method === 'POST') {
           await commonValidators.tier.run(req);
           await commonValidators.billingCycle.run(req);
@@ -340,7 +346,7 @@ export default async function handler(req, res) {
             message: `Method ${req.method} not allowed`
           });
         }
-      } else if (endpoint === 'cancel' || pathname.includes('/cancel')) {
+      } else if (hasCancel) {
         if (req.method === 'POST') {
           await cancelSubscription(req, res);
         } else {
@@ -350,7 +356,7 @@ export default async function handler(req, res) {
             message: `Method ${req.method} not allowed`
           });
         }
-      } else if (endpoint === 'portal' || pathname.includes('/portal')) {
+      } else if (hasPortal) {
         if (req.method === 'POST') {
           await createPortalSession(req, res);
         } else {
