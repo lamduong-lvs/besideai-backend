@@ -52,6 +52,18 @@
       "dest": "/api/migrate.js"
     },
     {
+      "src": "/api/models",
+      "dest": "/api/models.js"
+    },
+    {
+      "src": "/api/ai/call",
+      "dest": "/api/ai/call.js"
+    },
+    {
+      "src": "/api/admin/add-api-key",
+      "dest": "/api/admin/add-api-key.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }

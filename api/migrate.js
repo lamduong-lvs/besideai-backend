@@ -39,7 +39,9 @@ export default async function handler(req, res) {
     const migrations = [
       '001_create_users_table.sql',
       '002_create_subscriptions_table.sql',
-      '003_create_usage_table.sql'
+      '003_create_usage_table.sql',
+      '004_create_models_table.sql',
+      '005_create_api_keys_table.sql'
     ];
 
     const results = [];
