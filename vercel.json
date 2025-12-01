@@ -19,26 +19,10 @@
       "src": "/api/users/me",
       "dest": "/api/users/me.js"
     },
-    {
-      "src": "/api/subscription/status",
-      "dest": "/api/subscription/status.js"
-    },
-    {
-      "src": "/api/subscription/limits",
-      "dest": "/api/subscription/limits.js"
-    },
-    {
-      "src": "/api/subscription/upgrade",
-      "dest": "/api/subscription/upgrade.js"
-    },
-    {
-      "src": "/api/subscription/cancel",
-      "dest": "/api/subscription/cancel.js"
-    },
-    {
-      "src": "/api/subscription/portal",
-      "dest": "/api/subscription/portal.js"
-    },
+          {
+            "src": "/api/subscription/(.*)",
+            "dest": "/api/subscription.js"
+          },
     {
       "src": "/api/usage",
       "dest": "/api/usage/index.js"
