@@ -282,22 +282,23 @@ async function createPortalSession(req, res) {
  * Routes based on pathname
  */
 export default async function handler(req, res) {
-  // Apply auth middleware
-  await verifyAuth(req, res, async () => {
-    try {
-      // Parse URL to get pathname
-      // In Vercel, req.url contains the path
-      let pathname = req.url || '';
-      
-      // Remove query string if present
-      if (pathname.includes('?')) {
-        pathname = pathname.split('?')[0];
-      }
-      
-      // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
-      const endpoint = pathname.split('/').pop() || '';
-      
-      console.log('[Subscription] URL:', req.url, 'Pathname:', pathname, 'Endpoint:', endpoint, 'Method:', req.method);
+  try {
+    // Apply auth middleware
+    await verifyAuth(req, res, async () => {
+      try {
+        // Parse URL to get pathname
+        // In Vercel, req.url contains the path
+        let pathname = req.url || '';
+        
+        // Remove query string if present
+        if (pathname.includes('?')) {
+          pathname = pathname.split('?')[0];
+        }
+        
+        // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
+        const endpoint = pathname.split('/').pop() || '';
+        
+        console.log('[Subscription] URL:', req.url, 'Pathname:', pathname, 'Endpoint:', endpoint, 'Method:', req.method);
 
       // Route based on method and endpoint
       if (endpoint === 'status' || pathname.includes('/status')) {
@@ -366,10 +367,22 @@ export default async function handler(req, res) {
           message: 'Subscription endpoint not found'
         });
       }
-    } catch (error) {
-      // Error will be handled by error handler middleware
-      throw error;
+      } catch (error) {
+        console.error('[Subscription] Routing error:', error);
+        // Error will be handled by error handler middleware
+        throw error;
+      }
+    });
+  } catch (error) {
+    console.error('[Subscription] Handler error:', error);
+    // If error wasn't already handled by middleware, handle it here
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        error: 'internal_error',
+        message: error.message || 'Internal server error'
+      });
     }
-  });
+  }
 }
 
