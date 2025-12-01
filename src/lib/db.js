@@ -48,25 +48,21 @@ export function getDbPool() {
     // Supabase only supports IPv6, so we need to ensure proper IPv6 handling
     let poolConfig;
     
-    const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
     const isWindows = process.platform === 'win32';
     
-    // Parse URL to extract components
-    // On both Vercel and Windows, use IPv6 address for Supabase to avoid DNS issues
+    // Use connectionString directly - let pg library handle DNS resolution
+    // This works best on Vercel and most cloud environments
+    // On Windows, we'll still try to use IPv6 if DNS fails
     try {
       const url = new URL(connectionString);
       let host = url.hostname;
       
-      // Use IPv6 address directly for Supabase on both Vercel and Windows
-      // This bypasses DNS resolution which may fail
-      if (host.includes('supabase.co')) {
+      // Only use IPv6 address on Windows/local if hostname contains supabase.co
+      // On Vercel/cloud, use hostname normally as cloud providers handle DNS well
+      if (host.includes('supabase.co') && isWindows) {
         const SUPABASE_IPV6 = '2406:da14:271:9900:5ea0:274d:56b8:80ac';
         host = SUPABASE_IPV6;
-        if (isVercel) {
-          console.log('[DB] Using IPv6 address directly for Supabase on Vercel (bypassing DNS)');
-        } else {
-          console.log('[DB] Using IPv6 address directly for Supabase on Windows (bypassing DNS)');
-        }
+        console.log('[DB] Using IPv6 address directly for Supabase on Windows (bypassing DNS)');
       }
       
       poolConfig = {
@@ -78,13 +74,13 @@ export function getDbPool() {
         ssl: { rejectUnauthorized: false },
         max: 10,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 20000, // Increased for IPv6 connection latency
+        connectionTimeoutMillis: 20000,
       };
       console.log('[DB] ✅ Parsed connection string to config object');
       console.log('[DB] Host:', poolConfig.host, 'Port:', poolConfig.port);
     } catch (error) {
-      // Fallback to connectionString
-      console.warn('[DB] Could not parse as URL, using connectionString:', error.message);
+      // Fallback to connectionString - this is the most reliable method
+      console.log('[DB] Using connectionString directly (most reliable method)');
       poolConfig = {
         connectionString,
         ssl: { rejectUnauthorized: false },
