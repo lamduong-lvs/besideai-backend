@@ -286,12 +286,18 @@ export default async function handler(req, res) {
   await verifyAuth(req, res, async () => {
     try {
       // Parse URL to get pathname
-      // req.url in Vercel includes the full path
-      const url = req.url ? new URL(req.url, `http://${req.headers.host || 'localhost'}`) : null;
-      const pathname = url ? url.pathname : '';
+      // In Vercel, req.url contains the path
+      let pathname = req.url || '';
+      
+      // Remove query string if present
+      if (pathname.includes('?')) {
+        pathname = pathname.split('?')[0];
+      }
       
       // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
       const endpoint = pathname.split('/').pop() || '';
+      
+      console.log('[Subscription] URL:', req.url, 'Pathname:', pathname, 'Endpoint:', endpoint, 'Method:', req.method);
 
       // Route based on method and endpoint
       if (endpoint === 'status' || pathname.includes('/status')) {
