@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/webhooks/stripe",
+      "dest": "/api/webhooks/stripe.js"
+    },
+    {
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/users/me",
+      "dest": "/api/users/me.js"
+    },
+    {
+      "src": "/api/subscription/status",
+      "dest": "/api/subscription/status.js"
+    },
+    {
+      "src": "/api/subscription/limits",
+      "dest": "/api/subscription/limits.js"
+    },
+    {
+      "src": "/api/subscription/upgrade",
+      "dest": "/api/subscription/upgrade.js"
+    },
+    {
+      "src": "/api/subscription/cancel",
+      "dest": "/api/subscription/cancel.js"
+    },
+    {
+      "src": "/api/subscription/portal",
+      "dest": "/api/subscription/portal.js"
+    },
+    {
+      "src": "/api/usage",
+      "dest": "/api/usage/index.js"
+    },
+    {
+      "src": "/api/usage/sync",
+      "dest": "/api/usage/index.js"
+    },
+    {
+      "src": "/api/migrate",
+      "dest": "/api/migrate.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/daily-reset",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
