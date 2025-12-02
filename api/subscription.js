@@ -282,8 +282,10 @@ async function createPortalSession(req, res) {
  * Routes based on pathname
  */
 export default async function handler(req, res) {
+  // Wrap everything in try-catch to handle any errors
   try {
     // Apply auth middleware
+    // verifyAuth will return 401 if no token, so we need to handle that
     await verifyAuth(req, res, async () => {
       try {
         // Parse URL to get pathname
@@ -308,21 +310,21 @@ export default async function handler(req, res) {
 
         // Route based on method and endpoint
         if (hasStatus) {
-        if (req.method === 'GET') {
-          await getSubscriptionStatus(req, res);
-        } else if (req.method === 'PUT') {
-          await Promise.all(subscriptionValidators.map(validator => validator.run(req)));
-          await validate(req, res, async () => {
-            await updateSubscriptionStatus(req, res);
-          });
-        } else {
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${req.method} not allowed`
-          });
-        }
-      } else if (hasLimits) {
+          if (req.method === 'GET') {
+            await getSubscriptionStatus(req, res);
+          } else if (req.method === 'PUT') {
+            await Promise.all(subscriptionValidators.map(validator => validator.run(req)));
+            await validate(req, res, async () => {
+              await updateSubscriptionStatus(req, res);
+            });
+          } else {
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${req.method} not allowed`
+            });
+          }
+        } else if (hasLimits) {
         if (req.method === 'GET') {
           await getSubscriptionLimits(req, res);
         } else {
