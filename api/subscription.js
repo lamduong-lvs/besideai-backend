@@ -282,30 +282,31 @@ async function createPortalSession(req, res) {
  * Routes based on pathname
  */
 export default async function handler(req, res) {
-  // Parse URL to get pathname BEFORE auth check
-  // In Vercel, req.url contains the path
-  let pathname = req.url || '';
-  
-  // Remove query string if present
-  if (pathname.includes('?')) {
-    pathname = pathname.split('?')[0];
-  }
-  
-  // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
-  const endpoint = pathname.split('/').pop() || '';
-  const hasStatus = pathname.includes('/status') || endpoint === 'status';
-  const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
-  const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
-  const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
-  const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
-  
-  console.log('[Subscription] URL:', req.url, 'Pathname:', pathname, 'Endpoint:', endpoint, 'Method:', req.method);
-
-  // Wrap everything in try-catch to handle any errors
   try {
+    console.log('[Subscription] Handler called. URL:', req.url, 'Method:', req.method);
+    
+    // Parse URL to get pathname BEFORE auth check
+    // In Vercel, req.url contains the path
+    let pathname = req.url || '';
+    
+    // Remove query string if present
+    if (pathname.includes('?')) {
+      pathname = pathname.split('?')[0];
+    }
+    
+    // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
+    const endpoint = pathname.split('/').pop() || '';
+    const hasStatus = pathname.includes('/status') || endpoint === 'status';
+    const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
+    const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
+    const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
+    const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
+    
+    console.log('[Subscription] Pathname:', pathname, 'Endpoint:', endpoint, 'hasStatus:', hasStatus);
+
     // Apply auth middleware
     // verifyAuth will return 401 if no token, so we need to handle that
-    await verifyAuth(req, res, async () => {
+    return await verifyAuth(req, res, async () => {
       try {
 
         // Route based on method and endpoint
