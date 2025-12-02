@@ -336,40 +336,40 @@ export default async function handler(req, res) {
             });
           }
         } else if (hasUpgrade) {
-        if (req.method === 'POST') {
-          await commonValidators.tier.run(req);
-          await commonValidators.billingCycle.run(req);
-          await validate(req, res, async () => {
-            await upgradeSubscription(req, res);
-          });
+          if (req.method === 'POST') {
+            await commonValidators.tier.run(req);
+            await commonValidators.billingCycle.run(req);
+            await validate(req, res, async () => {
+              await upgradeSubscription(req, res);
+            });
+          } else {
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${req.method} not allowed`
+            });
+          }
+        } else if (hasCancel) {
+          if (req.method === 'POST') {
+            await cancelSubscription(req, res);
+          } else {
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${req.method} not allowed`
+            });
+          }
+        } else if (hasPortal) {
+          if (req.method === 'POST') {
+            await createPortalSession(req, res);
+          } else {
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${req.method} not allowed`
+            });
+          }
         } else {
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${req.method} not allowed`
-          });
-        }
-      } else if (hasCancel) {
-        if (req.method === 'POST') {
-          await cancelSubscription(req, res);
-        } else {
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${req.method} not allowed`
-          });
-        }
-      } else if (hasPortal) {
-        if (req.method === 'POST') {
-          await createPortalSession(req, res);
-        } else {
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${req.method} not allowed`
-          });
-        }
-      } else {
         return res.status(404).json({
           success: false,
           error: 'not_found',
