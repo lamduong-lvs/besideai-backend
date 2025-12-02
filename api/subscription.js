@@ -282,116 +282,104 @@ async function createPortalSession(req, res) {
  * Routes based on pathname
  */
 export default async function handler(req, res) {
-  try {
-    console.log('[Subscription] Handler called. URL:', req.url, 'Method:', req.method);
-    
-    // Parse URL to get pathname BEFORE auth check
-    // In Vercel, req.url contains the path
-    let pathname = req.url || '';
-    
-    // Remove query string if present
-    if (pathname.includes('?')) {
-      pathname = pathname.split('?')[0];
-    }
-    
-    // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
-    const endpoint = pathname.split('/').pop() || '';
-    const hasStatus = pathname.includes('/status') || endpoint === 'status';
-    const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
-    const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
-    const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
-    const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
-    
-    console.log('[Subscription] Pathname:', pathname, 'Endpoint:', endpoint, 'hasStatus:', hasStatus);
+  // Apply auth middleware
+  await verifyAuth(req, res, async () => {
+    try {
+      // Parse URL to get pathname
+      // In Vercel, req.url contains the path
+      let pathname = req.url || '';
+      
+      // Remove query string if present
+      if (pathname.includes('?')) {
+        pathname = pathname.split('?')[0];
+      }
+      
+      // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
+      const endpoint = pathname.split('/').pop() || '';
+      const hasStatus = pathname.includes('/status') || endpoint === 'status';
+      const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
+      const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
+      const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
+      const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
 
-    // Apply auth middleware
-    // verifyAuth will return 401 if no token, so we need to handle that
-    await verifyAuth(req, res, async () => {
-      try {
-
-        // Route based on method and endpoint
-        if (hasStatus) {
-          if (req.method === 'GET') {
-            await getSubscriptionStatus(req, res);
-          } else if (req.method === 'PUT') {
-            await Promise.all(subscriptionValidators.map(validator => validator.run(req)));
-            await validate(req, res, async () => {
-              await updateSubscriptionStatus(req, res);
-            });
-          } else {
-            return res.status(405).json({
-              success: false,
-              error: 'method_not_allowed',
-              message: `Method ${req.method} not allowed`
-            });
-          }
-        } else if (hasLimits) {
-          if (req.method === 'GET') {
-            await getSubscriptionLimits(req, res);
-          } else {
-            return res.status(405).json({
-              success: false,
-              error: 'method_not_allowed',
-              message: `Method ${req.method} not allowed`
-            });
-          }
-        } else if (hasUpgrade) {
-          if (req.method === 'POST') {
-            await commonValidators.tier.run(req);
-            await commonValidators.billingCycle.run(req);
-            await validate(req, res, async () => {
-              await upgradeSubscription(req, res);
-            });
-          } else {
-            return res.status(405).json({
-              success: false,
-              error: 'method_not_allowed',
-              message: `Method ${req.method} not allowed`
-            });
-          }
-        } else if (hasCancel) {
-          if (req.method === 'POST') {
-            await cancelSubscription(req, res);
-          } else {
-            return res.status(405).json({
-              success: false,
-              error: 'method_not_allowed',
-              message: `Method ${req.method} not allowed`
-            });
-          }
-        } else if (hasPortal) {
-          if (req.method === 'POST') {
-            await createPortalSession(req, res);
-          } else {
-            return res.status(405).json({
-              success: false,
-              error: 'method_not_allowed',
-              message: `Method ${req.method} not allowed`
-            });
-          }
+      // Route based on method and endpoint
+      if (hasStatus) {
+        if (req.method === 'GET') {
+          await getSubscriptionStatus(req, res);
+        } else if (req.method === 'PUT') {
+          await Promise.all(subscriptionValidators.map(validator => validator.run(req)));
+          await validate(req, res, async () => {
+            await updateSubscriptionStatus(req, res);
+          });
         } else {
+          return res.status(405).json({
+            success: false,
+            error: 'method_not_allowed',
+            message: `Method ${req.method} not allowed`
+          });
+        }
+      } else if (hasLimits) {
+        if (req.method === 'GET') {
+          await getSubscriptionLimits(req, res);
+        } else {
+          return res.status(405).json({
+            success: false,
+            error: 'method_not_allowed',
+            message: `Method ${req.method} not allowed`
+          });
+        }
+      } else if (hasUpgrade) {
+        if (req.method === 'POST') {
+          await commonValidators.tier.run(req);
+          await commonValidators.billingCycle.run(req);
+          await validate(req, res, async () => {
+            await upgradeSubscription(req, res);
+          });
+        } else {
+          return res.status(405).json({
+            success: false,
+            error: 'method_not_allowed',
+            message: `Method ${req.method} not allowed`
+          });
+        }
+      } else if (hasCancel) {
+        if (req.method === 'POST') {
+          await cancelSubscription(req, res);
+        } else {
+          return res.status(405).json({
+            success: false,
+            error: 'method_not_allowed',
+            message: `Method ${req.method} not allowed`
+          });
+        }
+      } else if (hasPortal) {
+        if (req.method === 'POST') {
+          await createPortalSession(req, res);
+        } else {
+          return res.status(405).json({
+            success: false,
+            error: 'method_not_allowed',
+            message: `Method ${req.method} not allowed`
+          });
+        }
+      } else {
         return res.status(404).json({
           success: false,
           error: 'not_found',
           message: 'Subscription endpoint not found'
         });
       }
-      } catch (error) {
-        console.error('[Subscription] Routing error:', error);
-        // Error will be handled by error handler middleware
-        throw error;
+    } catch (error) {
+      console.error('[Subscription] Routing error:', error);
+      // If headers not sent, send error response
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          error: 'internal_error',
+          message: error.message || 'Internal server error'
+        });
       }
-    });
-  } catch (error) {
-    console.error('[Subscription] Handler error:', error);
-    // If error wasn't already handled by middleware, handle it here
-    if (!res.headersSent) {
-      return res.status(500).json({
-        success: false,
-        error: 'internal_error',
-        message: error.message || 'Internal server error'
-      });
+      throw error;
     }
-  }
+  });
 }
-
