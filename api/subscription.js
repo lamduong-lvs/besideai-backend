@@ -282,25 +282,27 @@ async function createPortalSession(req, res) {
  * Routes based on pathname
  */
 export default async function handler(req, res) {
-  // Apply auth middleware
-  await verifyAuth(req, res, async () => {
-    try {
-      // Parse URL to get pathname
-      // In Vercel, req.url contains the path
-      let pathname = req.url || '';
-      
-      // Remove query string if present
-      if (pathname.includes('?')) {
-        pathname = pathname.split('?')[0];
-      }
-      
-      // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
-      const endpoint = pathname.split('/').pop() || '';
-      const hasStatus = pathname.includes('/status') || endpoint === 'status';
-      const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
-      const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
-      const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
-      const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
+  try {
+    // Parse URL to get pathname
+    // In Vercel, req.url contains the path
+    let pathname = req.url || '';
+    
+    // Remove query string if present
+    if (pathname.includes('?')) {
+      pathname = pathname.split('?')[0];
+    }
+    
+    // Extract endpoint from pathname (e.g., /api/subscription/status -> status)
+    const endpoint = pathname.split('/').pop() || '';
+    const hasStatus = pathname.includes('/status') || endpoint === 'status';
+    const hasLimits = pathname.includes('/limits') || endpoint === 'limits';
+    const hasUpgrade = pathname.includes('/upgrade') || endpoint === 'upgrade';
+    const hasCancel = pathname.includes('/cancel') || endpoint === 'cancel';
+    const hasPortal = pathname.includes('/portal') || endpoint === 'portal';
+
+    // Apply auth middleware
+    await verifyAuth(req, res, async () => {
+      try {
 
       // Route based on method and endpoint
       if (hasStatus) {
@@ -369,17 +371,28 @@ export default async function handler(req, res) {
           message: 'Subscription endpoint not found'
         });
       }
-    } catch (error) {
-      console.error('[Subscription] Routing error:', error);
-      // If headers not sent, send error response
-      if (!res.headersSent) {
-        return res.status(500).json({
-          success: false,
-          error: 'internal_error',
-          message: error.message || 'Internal server error'
-        });
+      } catch (error) {
+        console.error('[Subscription] Routing error:', error);
+        // If headers not sent, send error response
+        if (!res.headersSent) {
+          return res.status(500).json({
+            success: false,
+            error: 'internal_error',
+            message: error.message || 'Internal server error'
+          });
+        }
+        throw error;
       }
-      throw error;
+    });
+  } catch (error) {
+    console.error('[Subscription] Handler error:', error);
+    // If error wasn't already handled by middleware, handle it here
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        error: 'internal_error',
+        message: error.message || 'Internal server error'
+      });
     }
-  });
+  }
 }
