@@ -14,8 +14,11 @@ export class Subscription {
    * @param {string} subscriptionData.status - Status (active, trial, expired, cancelled)
    * @param {Date} subscriptionData.trialEndsAt - Trial end date
    * @param {Date} subscriptionData.subscriptionEndsAt - Subscription end date
-   * @param {string} subscriptionData.stripeSubscriptionId - Stripe subscription ID
-   * @param {string} subscriptionData.stripeCustomerId - Stripe customer ID
+     * @param {string} subscriptionData.stripeSubscriptionId - Stripe subscription ID (legacy)
+     * @param {string} subscriptionData.stripeCustomerId - Stripe customer ID (legacy)
+     * @param {string} subscriptionData.lemonSubscriptionId - Lemon Squeezy subscription ID
+     * @param {string} subscriptionData.lemonCustomerId - Lemon Squeezy customer ID
+     * @param {string} subscriptionData.lemonOrderId - Lemon Squeezy order ID
    * @param {string} subscriptionData.billingCycle - Billing cycle (monthly, yearly)
    * @returns {Promise<Object>} Created subscription
    */
@@ -28,6 +31,9 @@ export class Subscription {
       subscriptionEndsAt = null,
       stripeSubscriptionId = null,
       stripeCustomerId = null,
+      lemonSubscriptionId = null,
+      lemonCustomerId = null,
+      lemonOrderId = null,
       billingCycle = null
     } = subscriptionData;
 
@@ -40,8 +46,10 @@ export class Subscription {
     const result = await query(
       `INSERT INTO subscriptions 
        (user_id, tier, status, trial_ends_at, subscription_ends_at, 
-        stripe_subscription_id, stripe_customer_id, billing_cycle)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        stripe_subscription_id, stripe_customer_id, 
+        lemon_subscription_id, lemon_customer_id, lemon_order_id,
+        billing_cycle)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
       [
         userId,
@@ -51,6 +59,9 @@ export class Subscription {
         subscriptionEndsAt,
         stripeSubscriptionId,
         stripeCustomerId,
+        lemonSubscriptionId,
+        lemonCustomerId,
+        lemonOrderId,
         billingCycle
       ]
     );
@@ -87,7 +98,7 @@ export class Subscription {
   }
 
   /**
-   * Find subscription by Stripe subscription ID
+   * Find subscription by Stripe subscription ID (legacy)
    * @param {string} stripeSubscriptionId - Stripe subscription ID
    * @returns {Promise<Object|null>} Subscription or null
    */
@@ -95,6 +106,34 @@ export class Subscription {
     const result = await query(
       'SELECT * FROM subscriptions WHERE stripe_subscription_id = $1',
       [stripeSubscriptionId]
+    );
+
+    return result.rows.length > 0 ? this._formatSubscription(result.rows[0]) : null;
+  }
+
+  /**
+   * Find subscription by Lemon Squeezy subscription ID
+   * @param {string} lemonSubscriptionId - Lemon Squeezy subscription ID
+   * @returns {Promise<Object|null>} Subscription or null
+   */
+  static async findByLemonSubscriptionId(lemonSubscriptionId) {
+    const result = await query(
+      'SELECT * FROM subscriptions WHERE lemon_subscription_id = $1',
+      [lemonSubscriptionId]
+    );
+
+    return result.rows.length > 0 ? this._formatSubscription(result.rows[0]) : null;
+  }
+
+  /**
+   * Find subscription by Lemon Squeezy order ID
+   * @param {string} lemonOrderId - Lemon Squeezy order ID
+   * @returns {Promise<Object|null>} Subscription or null
+   */
+  static async findByLemonOrderId(lemonOrderId) {
+    const result = await query(
+      'SELECT * FROM subscriptions WHERE lemon_order_id = $1',
+      [lemonOrderId]
     );
 
     return result.rows.length > 0 ? this._formatSubscription(result.rows[0]) : null;
@@ -134,6 +173,18 @@ export class Subscription {
     if (updates.stripeCustomerId !== undefined) {
       fields.push(`stripe_customer_id = $${paramIndex++}`);
       values.push(updates.stripeCustomerId);
+    }
+    if (updates.lemonSubscriptionId !== undefined) {
+      fields.push(`lemon_subscription_id = $${paramIndex++}`);
+      values.push(updates.lemonSubscriptionId);
+    }
+    if (updates.lemonCustomerId !== undefined) {
+      fields.push(`lemon_customer_id = $${paramIndex++}`);
+      values.push(updates.lemonCustomerId);
+    }
+    if (updates.lemonOrderId !== undefined) {
+      fields.push(`lemon_order_id = $${paramIndex++}`);
+      values.push(updates.lemonOrderId);
     }
     if (updates.billingCycle !== undefined) {
       fields.push(`billing_cycle = $${paramIndex++}`);
@@ -232,6 +283,9 @@ export class Subscription {
       subscriptionEndsAt: row.subscription_ends_at,
       stripeSubscriptionId: row.stripe_subscription_id,
       stripeCustomerId: row.stripe_customer_id,
+      lemonSubscriptionId: row.lemon_subscription_id,
+      lemonCustomerId: row.lemon_customer_id,
+      lemonOrderId: row.lemon_order_id,
       billingCycle: row.billing_cycle,
       createdAt: row.created_at,
       updatedAt: row.updated_at

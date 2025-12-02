@@ -11,7 +11,7 @@
 import { Subscription } from '../src/models/index.js';
 import { verifyAuth } from '../src/middleware/auth.js';
 import { subscriptionValidators, commonValidators, validate } from '../src/middleware/validation.js';
-import { createCheckoutSession, createPortalSession as createStripePortalSession, getOrCreateCustomer, cancelSubscription as cancelStripeSubscription } from '../src/lib/stripe.js';
+import { createCheckoutSession, createPortalSession, getOrCreateCustomer, cancelSubscription as cancelLemonSubscription } from '../src/lib/lemon-squeezy.js';
 import { SUBSCRIPTION_LIMITS } from '../src/config/subscription-limits.js';
 
 /**
@@ -157,7 +157,7 @@ async function upgradeSubscription(req, res) {
       });
     }
 
-    // Create Stripe checkout session
+    // Create Lemon Squeezy checkout session
     const session = await createCheckoutSession({
       user,
       tier,
@@ -209,14 +209,14 @@ async function cancelSubscription(req, res) {
       });
     }
 
-    // If has Stripe subscription, cancel in Stripe
-    if (subscription.stripeSubscriptionId) {
+    // If has Lemon Squeezy subscription, cancel in Lemon Squeezy
+    if (subscription.lemonSubscriptionId) {
       try {
-        await cancelStripeSubscription(subscription.stripeSubscriptionId, immediately);
-        console.log('[Subscription API] Cancelled Stripe subscription:', subscription.stripeSubscriptionId);
+        await cancelLemonSubscription(subscription.lemonSubscriptionId, immediately);
+        console.log('[Subscription API] Cancelled Lemon Squeezy subscription:', subscription.lemonSubscriptionId);
       } catch (error) {
-        console.error('[Subscription API] Error cancelling Stripe subscription:', error);
-        // Continue to update database even if Stripe cancel fails
+        console.error('[Subscription API] Error cancelling Lemon Squeezy subscription:', error);
+        // Continue to update database even if Lemon Squeezy cancel fails
       }
     }
 
@@ -256,11 +256,11 @@ async function handleCreatePortalSession(req, res) {
       });
     }
 
-    // Get or create Stripe customer
-    const customer = await getOrCreateCustomer(user, subscription.stripeCustomerId);
+    // Get or create Lemon Squeezy customer
+    const customer = await getOrCreateCustomer(user, subscription.lemonCustomerId);
 
-    // Create portal session
-    const session = await createStripePortalSession(
+    // Create portal session (Lemon Squeezy customer management)
+    const session = await createPortalSession(
       user,
       customer.id,
       returnUrl || `${process.env.API_BASE_URL || 'https://besideai.work'}/account`

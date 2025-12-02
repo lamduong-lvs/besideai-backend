@@ -41,7 +41,8 @@ export default async function handler(req, res) {
       '002_create_subscriptions_table.sql',
       '003_create_usage_table.sql',
       '004_create_models_table.sql',
-      '005_create_api_keys_table.sql'
+      '005_create_api_keys_table.sql',
+      '006_update_subscriptions_for_lemon_squeezy.sql' // Added for Lemon Squeezy
     ];
 
     const results = [];
