@@ -326,16 +326,16 @@ export default async function handler(req, res) {
             });
           }
         } else if (hasLimits) {
-        if (req.method === 'GET') {
-          await getSubscriptionLimits(req, res);
-        } else {
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${req.method} not allowed`
-          });
-        }
-      } else if (hasUpgrade) {
+          if (req.method === 'GET') {
+            await getSubscriptionLimits(req, res);
+          } else {
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${req.method} not allowed`
+            });
+          }
+        } else if (hasUpgrade) {
         if (req.method === 'POST') {
           await commonValidators.tier.run(req);
           await commonValidators.billingCycle.run(req);
