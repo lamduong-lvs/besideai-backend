@@ -38,6 +38,8 @@ export async function checkLimit({ userId, tier, feature, model }) {
   }
   
   // Check feature-specific limits
+  // Note: Feature availability check is disabled - all features are allowed
+  // Only check usage limits, not feature availability
   if (feature === 'ai_call') {
     if (limits.maxAICallsPerDay && todayUsage.requests >= limits.maxAICallsPerDay) {
       const error = new Error(`Daily AI call limit exceeded (${limits.maxAICallsPerDay} calls)`);
@@ -46,6 +48,9 @@ export async function checkLimit({ userId, tier, feature, model }) {
       throw error;
     }
   }
+  
+  // Feature availability check disabled - all features allowed for now
+  // This will be re-enabled when proper feature gating is implemented
 }
 
 /**

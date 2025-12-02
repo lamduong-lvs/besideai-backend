@@ -5,25 +5,28 @@
 
 export const SUBSCRIPTION_LIMITS = {
   free: {
-    maxTokensPerDay: 10000,
-    maxRequestsPerDay: 50,
-    maxAICallsPerDay: 50,
-    maxRecordingTimePerDay: 30, // minutes
-    maxTranslationTimePerDay: 60 // minutes
+    maxTokensPerDay: 50000, // Match extension config
+    maxRequestsPerDay: 10, // Match extension config
+    maxAICallsPerDay: 10, // Match extension config
+    maxTokensPerRequest: 2000, // Match extension config
+    maxRecordingTimePerDay: 0, // No recording for free
+    maxTranslationTimePerDay: 0 // No translation for free
   },
   pro: {
-    maxTokensPerDay: 100000,
-    maxRequestsPerDay: 500,
-    maxAICallsPerDay: 500,
-    maxRecordingTimePerDay: 300, // minutes
-    maxTranslationTimePerDay: 600 // minutes
+    maxTokensPerDay: 500000, // Match extension config
+    maxRequestsPerDay: 500, // Match extension config
+    maxAICallsPerDay: 500, // Match extension config
+    maxTokensPerRequest: 4000, // Match extension config
+    maxRecordingTimePerDay: 60, // 1 hour per day
+    maxTranslationTimePerDay: 120 // 2 hours per day
   },
   premium: {
-    maxTokensPerDay: 1000000,
-    maxRequestsPerDay: 5000,
-    maxAICallsPerDay: 5000,
-    maxRecordingTimePerDay: 3000, // minutes
-    maxTranslationTimePerDay: 6000 // minutes
+    maxTokensPerDay: 2000000, // Match extension config
+    maxRequestsPerDay: 2000, // Match extension config
+    maxAICallsPerDay: 2000, // Match extension config
+    maxTokensPerRequest: 8000, // Match extension config
+    maxRecordingTimePerDay: 240, // 4 hours per day
+    maxTranslationTimePerDay: 480 // 8 hours per day
   }
 };
 
