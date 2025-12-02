@@ -11,7 +11,7 @@
 import { Subscription } from '../src/models/index.js';
 import { verifyAuth } from '../src/middleware/auth.js';
 import { subscriptionValidators, commonValidators, validate } from '../src/middleware/validation.js';
-import { createCheckoutSession, createPortalSession, getOrCreateCustomer, cancelSubscription as cancelStripeSubscription } from '../src/lib/stripe.js';
+import { createCheckoutSession, createPortalSession as createStripePortalSession, getOrCreateCustomer, cancelSubscription as cancelStripeSubscription } from '../src/lib/stripe.js';
 import { SUBSCRIPTION_LIMITS } from '../src/config/subscription-limits.js';
 
 /**
@@ -260,7 +260,7 @@ async function createPortalSession(req, res) {
     const customer = await getOrCreateCustomer(user, subscription.stripeCustomerId);
 
     // Create portal session
-    const session = await createPortalSession(
+    const session = await createStripePortalSession(
       user,
       customer.id,
       returnUrl || `${process.env.API_BASE_URL || 'https://besideai.work'}/account`
