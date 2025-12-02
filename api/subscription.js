@@ -240,7 +240,7 @@ async function cancelSubscription(req, res) {
  * POST /api/subscription/portal
  * Create Stripe customer portal session
  */
-async function createPortalSession(req, res) {
+async function handleCreatePortalSession(req, res) {
   try {
     const user = req.user;
     const { returnUrl } = req.body;
@@ -356,7 +356,7 @@ export default async function handler(req, res) {
         }
       } else if (hasPortal) {
         if (req.method === 'POST') {
-          await createPortalSession(req, res);
+          await handleCreatePortalSession(req, res);
         } else {
           return res.status(405).json({
             success: false,
