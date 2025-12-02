@@ -306,7 +306,7 @@ export default async function handler(req, res) {
 
     // Apply auth middleware
     // verifyAuth will return 401 if no token, so we need to handle that
-    return await verifyAuth(req, res, async () => {
+    await verifyAuth(req, res, async () => {
       try {
 
         // Route based on method and endpoint
