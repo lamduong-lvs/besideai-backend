@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -13,18 +15,12 @@ export default function Home() {
             gói trả phí qua Lemon Squeezy và tối ưu chi phí Free Tier.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/login"
-              className="rounded-full bg-black px-6 py-2 text-sm font-semibold text-white hover:bg-zinc-800"
-            >
-              Bắt đầu miễn phí
-            </Link>
-            <Link
-              href="/pricing"
-              className="rounded-full border border-zinc-300 px-6 py-2 text-sm font-semibold text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
-            >
-              Xem bảng giá
-            </Link>
+            <Button asChild size="lg">
+              <Link href="/login">Bắt đầu miễn phí</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/pricing">Xem bảng giá</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -84,12 +80,14 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-      <h3 className="text-base font-semibold">{title}</h3>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        {description}
-      </p>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CardDescription>{description}</CardDescription>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -105,25 +103,27 @@ function PricingCard({
   features: string[];
 }) {
   return (
-    <div className="flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-      <div>
-        <h3 className="text-lg font-semibold">{name}</h3>
-        <p className="mt-1 text-2xl font-semibold">{price}</p>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          {description}
-        </p>
-        <ul className="mt-4 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+    <Card className="flex flex-col justify-between">
+      <CardHeader>
+        <CardTitle>{name}</CardTitle>
+        <div className="text-2xl font-semibold">{price}</div>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2 text-sm">
           {features.map((f) => (
-            <li key={f}>• {f}</li>
+            <li key={f} className="flex items-start">
+              <span className="mr-2">✓</span>
+              <span>{f}</span>
+            </li>
           ))}
         </ul>
+      </CardContent>
+      <div className="p-6 pt-0">
+        <Button asChild className="w-full">
+          <Link href="/login">Chọn gói {name}</Link>
+        </Button>
       </div>
-      <Link
-        href="/login"
-        className="mt-6 inline-flex items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800"
-      >
-        Chọn gói {name}
-      </Link>
-    </div>
+    </Card>
   );
 }

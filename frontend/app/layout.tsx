@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,45 +26,53 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex min-h-screen flex-col">
-          <header className="border-b bg-white/70 backdrop-blur dark:bg-black/70">
-            <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-              <Link href="/" className="flex items-center gap-2">
-                <span className="text-lg font-semibold tracking-tight">
-                  BesideAI
-                </span>
-              </Link>
-              <nav className="flex items-center gap-4 text-sm font-medium">
-                <a href="#features" className="hover:underline">
-                  Tính năng
-                </a>
-                <Link href="/pricing" className="hover:underline">
-                  Bảng giá
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="flex min-h-screen flex-col">
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+              <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+                <Link href="/" className="flex items-center gap-2">
+                  <span className="text-lg font-semibold tracking-tight">
+                    BesideAI
+                  </span>
                 </Link>
-                <Link href="/terms" className="hover:underline">
-                  Terms
-                </Link>
-                <Link href="/privacy" className="hover:underline">
-                  Privacy
-                </Link>
-                <Link
-                  href="/login"
-                  className="rounded-full bg-black px-4 py-1.5 text-sm font-semibold text-white hover:bg-zinc-800"
-                >
-                  Đăng nhập
-                </Link>
-              </nav>
-            </div>
-          </header>
-          <main className="flex-1">{children}</main>
-          <footer className="border-t bg-white/70 py-4 text-center text-xs text-zinc-500 dark:bg-black/70">
-            © {new Date().getFullYear()} BesideAI. All rights reserved.
-          </footer>
-        </div>
+                <nav className="flex items-center gap-4 text-sm font-medium">
+                  <a href="#features" className="hover:underline">
+                    Tính năng
+                  </a>
+                  <Link href="/pricing" className="hover:underline">
+                    Bảng giá
+                  </Link>
+                  <Link href="/terms" className="hover:underline">
+                    Terms
+                  </Link>
+                  <Link href="/privacy" className="hover:underline">
+                    Privacy
+                  </Link>
+                  <ThemeToggle />
+                  <Link
+                    href="/login"
+                    className="rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                  >
+                    Đăng nhập
+                  </Link>
+                </nav>
+              </div>
+            </header>
+            <main className="flex-1">{children}</main>
+            <footer className="border-t bg-background py-4 text-center text-xs text-muted-foreground">
+              © {new Date().getFullYear()} BesideAI. All rights reserved.
+            </footer>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
