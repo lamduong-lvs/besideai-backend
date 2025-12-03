@@ -56,6 +56,14 @@
       "dest": "/api/admin/models.js"
     },
     {
+      "src": "/api/admin/set-admin",
+      "dest": "/api/admin/set-admin.js"
+    },
+    {
+      "src": "/api/admin/list-users",
+      "dest": "/api/admin/list-users.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }

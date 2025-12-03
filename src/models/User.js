@@ -137,6 +137,10 @@ export class User {
       fields.push(`preferences = $${paramIndex++}::jsonb`);
       values.push(JSON.stringify(updates.preferences));
     }
+    if (updates.role !== undefined) {
+      fields.push(`role = $${paramIndex++}`);
+      values.push(updates.role);
+    }
 
     if (fields.length === 0) {
       return await this.findById(id);
