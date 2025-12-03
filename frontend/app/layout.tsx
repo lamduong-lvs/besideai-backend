@@ -18,6 +18,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "BesideAI - AI trợ lý cho Gmail, Meet và hơn thế nữa",
   description: "BesideAI kết nối Chrome Extension với backend AI mạnh mẽ, quản lý gói trả phí qua Lemon Squeezy và tối ưu chi phí Free Tier.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -40,6 +44,11 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
                 <Link href="/" className="flex items-center gap-2">
+                  <img
+                    src="/logo.png"
+                    alt="BesideAI"
+                    className="h-8 w-8"
+                  />
                   <span className="text-lg font-semibold tracking-tight">
                     BesideAI
                   </span>
