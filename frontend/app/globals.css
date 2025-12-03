@@ -1,50 +1,100 @@
 @import "tailwindcss";
 
 :root {
+  /* Backgrounds - Light Theme */
   --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
+  --foreground: 0 0% 10.2%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
+  --card-foreground: 0 0% 10.2%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  /* Primary color: #f86a01 (orange) */
-  --primary: 24 100% 49%;
+  --popover-foreground: 0 0% 10.2%;
+  
+  /* Primary Colors - Extension Theme (#f86a01) */
+  --primary: 24 100% 49%; /* #f86a01 */
   --primary-foreground: 0 0% 100%;
+  --primary-hover: 24 100% 43%; /* #d45a01 */
+  --primary-light: 24 100% 58%; /* #ff8a2e */
+  --primary-lighter: 24 100% 68%; /* #ffaa5c */
+  --primary-alpha: 24 100% 49% / 0.1;
+  --primary-alpha-light: 24 100% 49% / 0.05;
+  --primary-alpha-medium: 24 100% 49% / 0.15;
+  
+  /* Secondary */
   --secondary: 0 0% 96.1%;
   --secondary-foreground: 0 0% 9%;
+  
+  /* Muted */
   --muted: 0 0% 96.1%;
   --muted-foreground: 0 0% 45.1%;
-  --accent: 24 100% 96.5%;
+  
+  /* Accent */
+  --accent: 24 100% 97%; /* Light orange tint */
   --accent-foreground: 24 100% 10%;
+  
+  /* Destructive */
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
+  
+  /* Borders & Inputs */
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
   --ring: 24 100% 49%;
+  
+  /* Radius */
   --radius: 0.5rem;
+  
+  /* Status Colors */
+  --success: 142 71% 45%;
+  --error: 0 84.2% 60.2%;
+  --warning: 38 92% 50%;
+  --info: 199 89% 48%;
 }
 
 .dark {
-  --background: 0 0% 3.9%;
+  /* Backgrounds - Dark Theme */
+  --background: 0 0% 11.8%; /* #1E1E1E */
   --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
+  --card: 0 0% 11.8%;
   --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
+  --popover: 0 0% 11.8%;
   --popover-foreground: 0 0% 98%;
-  /* Primary color: #f86a01 (orange) - same in dark mode */
-  --primary: 24 100% 49%;
+  
+  /* Primary Colors - Same orange in dark mode */
+  --primary: 24 100% 49%; /* #f86a01 */
   --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 14.9%;
+  --primary-hover: 24 100% 43%; /* #d45a01 */
+  --primary-light: 24 100% 58%; /* #ff8a2e */
+  --primary-lighter: 24 100% 68%; /* #ffaa5c */
+  --primary-alpha: 24 100% 49% / 0.15;
+  --primary-alpha-light: 24 100% 49% / 0.1;
+  --primary-alpha-medium: 24 100% 49% / 0.2;
+  
+  /* Secondary */
+  --secondary: 0 0% 17.6%; /* #2D2D2D */
   --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
+  
+  /* Muted */
+  --muted: 0 0% 17.6%;
   --muted-foreground: 0 0% 63.9%;
-  --accent: 24 100% 10%;
+  
+  /* Accent */
+  --accent: 24 100% 15%; /* Dark orange tint */
   --accent-foreground: 24 100% 90%;
+  
+  /* Destructive */
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
+  
+  /* Borders & Inputs */
+  --border: 0 0% 25.1%; /* #404040 */
+  --input: 0 0% 25.1%;
   --ring: 24 100% 49%;
+  
+  /* Status Colors - Dark Theme */
+  --success: 142 71% 55%;
+  --error: 0 72% 51%;
+  --warning: 38 92% 60%;
+  --info: 199 89% 58%;
 }
 
 @layer base {
