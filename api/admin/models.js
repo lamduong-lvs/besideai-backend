@@ -8,43 +8,42 @@
 
 import { query } from '../../src/lib/db.js';
 import { verifyAuth } from '../../src/middleware/auth.js';
-
-// TODO: Add admin role check
-// For now, any authenticated user can manage models
-// You should add admin role check later
+import { verifyAdmin } from '../../src/middleware/admin.js';
 
 export default async function handler(req, res) {
-  // Require authentication
+  // Require authentication and admin role
   await verifyAuth(req, res, async () => {
-    try {
-      const method = req.method;
-      // Get model ID from query params or URL path
-      const id = req.query.id || req.query.modelId || (req.url && req.url.split('/').pop());
+    await verifyAdmin(req, res, async () => {
+      try {
+        const method = req.method;
+        // Get model ID from query params or URL path
+        const id = req.query.id || req.query.modelId || (req.url && req.url.split('/').pop());
 
-      switch (method) {
-        case 'GET':
-          return await handleGetModels(req, res);
-        case 'POST':
-          return await handleCreateModel(req, res);
-        case 'PUT':
-          return await handleUpdateModel(req, res, id);
-        case 'DELETE':
-          return await handleDeleteModel(req, res, id);
-        default:
-          return res.status(405).json({
-            success: false,
-            error: 'method_not_allowed',
-            message: `Method ${method} not allowed`
-          });
+        switch (method) {
+          case 'GET':
+            return await handleGetModels(req, res);
+          case 'POST':
+            return await handleCreateModel(req, res);
+          case 'PUT':
+            return await handleUpdateModel(req, res, id);
+          case 'DELETE':
+            return await handleDeleteModel(req, res, id);
+          default:
+            return res.status(405).json({
+              success: false,
+              error: 'method_not_allowed',
+              message: `Method ${method} not allowed`
+            });
+        }
+      } catch (error) {
+        console.error('[Admin Models API] Error:', error);
+        return res.status(500).json({
+          success: false,
+          error: 'internal_error',
+          message: error.message
+        });
       }
-    } catch (error) {
-      console.error('[Admin Models API] Error:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'internal_error',
-        message: error.message
-      });
-    }
+    });
   });
 }
 

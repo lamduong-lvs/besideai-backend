@@ -17,13 +17,17 @@ export class User {
    * @returns {Promise<Object>} Created user
    */
   static async create(userData) {
-    const { email, name, picture, googleId, preferences = {} } = userData;
+    const { email, name, picture, googleId, role = 'user', preferences = {} } = userData;
+
+    // Check if email is in admin list (for initial setup)
+    const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : [];
+    const finalRole = adminEmails.includes(email) ? 'admin' : role;
 
     const result = await query(
-      `INSERT INTO users (email, name, picture, google_id, preferences)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO users (email, name, picture, google_id, role, preferences)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [email, name || null, picture || null, googleId || null, JSON.stringify(preferences)]
+      [email, name || null, picture || null, googleId || null, finalRole, JSON.stringify(preferences)]
     );
 
     return this._formatUser(result.rows[0]);
@@ -252,12 +256,34 @@ export class User {
       name: row.name,
       picture: row.picture,
       googleId: row.google_id,
+      role: row.role || 'user', // Default to 'user' if role column doesn't exist yet
       preferences: typeof row.preferences === 'string' 
         ? JSON.parse(row.preferences) 
         : (row.preferences || {}),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
+  }
+
+  /**
+   * Check if user is admin
+   * @param {string} userId - User ID
+   * @returns {Promise<boolean>} True if user is admin
+   */
+  static async isAdmin(userId) {
+    const user = await this.findById(userId);
+    if (!user) {
+      return false;
+    }
+    
+    // Check role from database
+    if (user.role === 'admin') {
+      return true;
+    }
+    
+    // Fallback: Check admin emails from environment variable (for migration)
+    const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : [];
+    return adminEmails.includes(user.email);
   }
 }
 
