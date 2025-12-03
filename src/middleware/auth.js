@@ -13,18 +13,28 @@ import { User } from '../models/index.js';
 export async function verifyAuth(req, res, next) {
   try {
     // Log request details for debugging
-    const authHeader = req.headers.authorization;
+    // Vercel serverless functions may have headers in different formats
+    const allHeaders = req.headers || {};
+    const authHeader = allHeaders.authorization || 
+                      allHeaders.Authorization || 
+                      allHeaders['authorization'] ||
+                      allHeaders['Authorization'];
+    
     console.log('[Auth Middleware] Request:', {
       method: req.method,
       path: req.path,
+      url: req.url,
       hasAuthHeader: !!authHeader,
-      authHeaderPrefix: authHeader ? authHeader.substring(0, 20) + '...' : 'none'
+      authHeaderPrefix: authHeader ? authHeader.substring(0, 30) + '...' : 'none',
+      allHeaderKeys: Object.keys(allHeaders).filter(k => k.toLowerCase().includes('auth'))
     });
 
     const token = extractToken(req);
 
     if (!token) {
       console.warn('[Auth Middleware] No token found in request');
+      console.warn('[Auth Middleware] Available headers:', Object.keys(allHeaders));
+      console.warn('[Auth Middleware] Authorization header value:', authHeader || 'NOT FOUND');
       return res.status(401).json({
         success: false,
         error: 'unauthorized',

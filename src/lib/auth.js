@@ -119,26 +119,38 @@ export async function verifyGoogleToken(token) {
  * @returns {string|null} Token or null
  */
 export function extractToken(req) {
-  // Try multiple header formats (Vercel serverless functions may use different casing)
-  const authHeader = req.headers.authorization || 
-                     req.headers.Authorization || 
-                     req.headers['authorization'] ||
-                     req.headers['Authorization'];
+  // Vercel serverless functions may have headers in different formats
+  const headers = req.headers || {};
+  
+  // Try multiple header formats and case variations
+  const authHeader = headers.authorization || 
+                     headers.Authorization || 
+                     headers['authorization'] ||
+                     headers['Authorization'] ||
+                     headers['AUTHORIZATION'];
   
   if (!authHeader) {
     console.warn('[Auth] No Authorization header found');
+    console.warn('[Auth] Available header keys:', Object.keys(headers));
+    console.warn('[Auth] Request headers:', JSON.stringify(headers, null, 2));
     return null;
   }
+
+  console.log('[Auth] Authorization header found, length:', authHeader.length);
+  console.log('[Auth] Authorization header preview:', authHeader.substring(0, 30) + '...');
 
   // Format: "Bearer <token>"
   const parts = authHeader.split(' ');
   if (parts.length !== 2) {
     console.warn('[Auth] Invalid Authorization header format (expected "Bearer <token>")');
+    console.warn('[Auth] Header parts count:', parts.length);
+    console.warn('[Auth] Header value:', authHeader.substring(0, 50));
     return null;
   }
   
-  if (parts[0] !== 'Bearer' && parts[0] !== 'bearer') {
+  if (parts[0] !== 'Bearer' && parts[0] !== 'bearer' && parts[0] !== 'BEARER') {
     console.warn('[Auth] Authorization header does not start with "Bearer"');
+    console.warn('[Auth] First part:', parts[0]);
     return null;
   }
 
@@ -148,6 +160,7 @@ export function extractToken(req) {
     return null;
   }
 
+  console.log('[Auth] Token extracted successfully, length:', token.length);
   return token;
 }
 
