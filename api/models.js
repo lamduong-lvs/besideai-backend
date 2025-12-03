@@ -41,9 +41,20 @@ export default async function handler(req, res) {
       const defaultModel = await getDefaultModel(tier);
       const recommendedModels = await getRecommendedModels(tier, 3);
 
+      // Group models by category
+      const categories = {};
+      models.forEach(model => {
+        const category = model.category || 'llm'; // Default to 'llm' if no category
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+        categories[category].push(model.id);
+      });
+
       return res.status(200).json({
         success: true,
         models: models,
+        categories: categories,
         defaultModel: defaultModel?.id || null,
         recommendedModels: recommendedModels.map(m => m.id),
         tier: tier,

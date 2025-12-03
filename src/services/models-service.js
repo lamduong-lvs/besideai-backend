@@ -13,8 +13,9 @@ import { query } from '../lib/db.js';
 export async function getAvailableModels(tier = 'free') {
   try {
     // Map tier to allowed tiers
+    // Free tier can access all models (temporarily)
     const tierMap = {
-      'free': ['free'],
+      'free': ['free', 'pro', 'premium'], // Free tier can access all
       'pro': ['free', 'pro'],
       'premium': ['free', 'pro', 'premium']
     };
@@ -132,8 +133,13 @@ export async function canAccessModel(modelId, tier) {
       return false;
     }
     
+    // Free tier can access all models (temporarily)
+    if (tier === 'free') {
+      return true;
+    }
+    
     const tierMap = {
-      'free': ['free'],
+      'free': ['free', 'pro', 'premium'], // Free tier can access all
       'pro': ['free', 'pro'],
       'premium': ['free', 'pro', 'premium']
     };

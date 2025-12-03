@@ -7,7 +7,9 @@ import express from 'express';
 import { verifyAuth } from '../middleware/auth.js';
 import { subscriptionValidators, commonValidators, validate } from '../middleware/validation.js';
 import { Subscription } from '../models/index.js';
-import { createCheckoutSession, cancelSubscription as cancelStripeSubscription, createPortalSession, getOrCreateCustomer } from '../lib/stripe.js';
+// TODO: Update to use Lemon Squeezy instead of Stripe
+// import { createCheckoutSession, cancelSubscription, createPortalSession, getOrCreateCustomer } from '../lib/stripe.js';
+import { createCheckoutSession, cancelSubscription, createPortalSession, getOrCreateCustomer } from '../lib/lemon-squeezy.js';
 
 const router = express.Router();
 
@@ -25,11 +27,7 @@ const TIER_LIMITS = {
       requestsPerMinute: 2,
       requestsPerHour: 10
     },
-    allowedModels: [
-      'openai/gpt-3.5-turbo',
-      'googleai/gemini-1.5-flash',
-      'cerebras/llama-4-scout-17b-16e-instruct'
-    ]
+    allowedModels: ['*'] // All models allowed (temporarily open for Free tier)
   },
   professional: {
     tokensPerDay: 500000,
@@ -174,7 +172,7 @@ router.get('/limits', verifyAuth, async (req, res, next) => {
 /**
  * POST /api/subscription/upgrade
  * Upgrade subscription
- * Creates Stripe checkout session
+ * Creates Lemon Squeezy checkout session
  */
 router.post('/upgrade',
   verifyAuth,
@@ -263,12 +261,12 @@ router.post('/cancel', verifyAuth, async (req, res, next) => {
       });
     }
 
-    if (subscription.stripeSubscriptionId) {
+    if (subscription.lemonSqueezySubscriptionId) {
       try {
-        await cancelStripeSubscription(subscription.stripeSubscriptionId, immediately);
-        console.log('[Subscription API] Cancelled Stripe subscription:', subscription.stripeSubscriptionId);
+        await cancelSubscription(subscription.lemonSqueezySubscriptionId, immediately);
+        console.log('[Subscription API] Cancelled Lemon Squeezy subscription:', subscription.lemonSqueezySubscriptionId);
       } catch (error) {
-        console.error('[Subscription API] Error cancelling Stripe subscription:', error);
+        console.error('[Subscription API] Error cancelling Lemon Squeezy subscription:', error);
       }
     }
 
@@ -288,7 +286,7 @@ router.post('/cancel', verifyAuth, async (req, res, next) => {
 
 /**
  * POST /api/subscription/portal
- * Create Stripe customer portal session
+ * Create Lemon Squeezy customer portal session
  */
 router.post('/portal', verifyAuth, async (req, res, next) => {
   try {
@@ -305,7 +303,7 @@ router.post('/portal', verifyAuth, async (req, res, next) => {
       });
     }
 
-    const customer = await getOrCreateCustomer(user, subscription.stripeCustomerId);
+    const customer = await getOrCreateCustomer(user, subscription.lemonSqueezyCustomerId);
     const session = await createPortalSession(
       user,
       customer.id,

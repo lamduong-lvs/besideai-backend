@@ -74,17 +74,15 @@ Required:
 - `DATABASE_URL` - PostgreSQL connection string
 - `GOOGLE_CLIENT_ID` - Google OAuth client ID
 - `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
-- `STRIPE_SECRET_KEY` - Stripe secret key
-- `STRIPE_WEBHOOK_SECRET` - Stripe webhook signing secret
+- `LEMON_SQUEEZY_API_KEY` - Lemon Squeezy API key
+- `LEMON_SQUEEZY_STORE_ID` - Lemon Squeezy store ID
+- `LEMON_SQUEEZY_VARIANT_ID_*` - Variant IDs for subscription plans
+- `LEMON_SQUEEZY_WEBHOOK_SECRET` - Lemon Squeezy webhook signing secret
 - `CORS_ORIGIN` - Chrome Extension ID
 
 ## 📚 Documentation
 
-- [API Documentation](./API_DOCUMENTATION.md) - Complete API reference
-- [Deployment Guide](./DEPLOYMENT.md) - Deployment instructions
-- [Security Audit](./SECURITY.md) - Security measures
-- [Stripe Setup](./STRIPE_SETUP.md) - Stripe configuration
-- [Setup Guide](./SETUP.md) - Initial setup
+- [Summary & Next Steps](./SUMMARY.md) - Tóm tắt dự án và các việc còn lại cần làm
 
 ## 🗄️ Database
 
@@ -101,7 +99,7 @@ Uses Google OAuth 2.0. Extension sends Google token, backend verifies it.
 
 ## 💳 Payments
 
-Stripe integration for subscription management.
+Lemon Squeezy integration for subscription management (migrated from Stripe).
 
 ## 🚢 Deployment
 
@@ -137,9 +135,9 @@ npm start
 - `POST /api/usage/sync` - Sync usage data
 
 ### Webhooks
-- `POST /api/webhooks/stripe` - Stripe webhook
+- `POST /api/webhooks/lemon-squeezy` - Lemon Squeezy webhook
 
-See [API Documentation](./API_DOCUMENTATION.md) for details.
+See [Summary](./SUMMARY.md) for complete documentation and next steps.
 
 ## 🧪 Testing
 

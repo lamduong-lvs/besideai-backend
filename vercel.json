@@ -7,14 +7,10 @@
     }
   ],
   "routes": [
-          {
-            "src": "/api/webhooks/stripe",
-            "dest": "/api/webhooks/stripe.js"
-          },
-          {
-            "src": "/api/webhooks/lemon-squeezy",
-            "dest": "/api/webhooks/lemon-squeezy.js"
-          },
+    {
+      "src": "/api/webhooks/lemon-squeezy",
+      "dest": "/api/webhooks/lemon-squeezy.js"
+    },
     {
       "src": "/api/health",
       "dest": "/api/health.js"
@@ -42,6 +38,10 @@
     {
       "src": "/api/models",
       "dest": "/api/models.js"
+    },
+    {
+      "src": "/api/models/preference",
+      "dest": "/api/models/preference.js"
     },
     {
       "src": "/api/ai/call",

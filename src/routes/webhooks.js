@@ -4,7 +4,9 @@
  */
 
 import express from 'express';
-import { verifyWebhookSignature } from '../lib/stripe.js';
+// TODO: Update to use Lemon Squeezy instead of Stripe
+// import { verifyWebhookSignature } from '../lib/stripe.js';
+import { verifyWebhookSignature } from '../lib/lemon-squeezy.js';
 import { Subscription } from '../models/index.js';
 import { User } from '../models/index.js';
 

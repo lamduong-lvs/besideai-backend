@@ -211,6 +211,37 @@ export class User {
   }
 
   /**
+   * Get user's preferred model
+   * @param {string} id - User UUID
+   * @returns {Promise<string|null>} Preferred model ID or null
+   */
+  static async getPreferredModel(id) {
+    const user = await this.findById(id);
+    if (!user) {
+      return null;
+    }
+    return user.preferences?.preferredModel || null;
+  }
+
+  /**
+   * Set user's preferred model
+   * @param {string} id - User UUID
+   * @param {string} modelId - Model ID
+   * @returns {Promise<Object>} Updated user
+   */
+  static async setPreferredModel(id, modelId) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const preferences = user.preferences || {};
+    preferences.preferredModel = modelId;
+
+    return await this.update(id, { preferences });
+  }
+
+  /**
    * Format user from database row
    * @private
    */
