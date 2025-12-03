@@ -333,18 +333,19 @@ export class AuthWidget {
    * Handle login
    * (Cập nhật i18n)
    */
-  async handleLogin() {
+  async handleLogin(useWebFlow = true) {
     // Thoát nếu i18n.js chưa sẵn sàng
     if (!window.Lang) return;
 
     try {
-      console.log('[AuthWidget] Login initiated');
+      console.log('[AuthWidget] Login initiated', { useWebFlow });
       
       // Dịch loading (truyền key)
       this.showLoadingState('authLoggingIn');
       this.closeModal('login');
       
-      const user = await auth.login();
+      // Use web flow by default (opens web page instead of Chrome Identity popup)
+      const user = await auth.login(null, useWebFlow);
       
       console.log('[AuthWidget] Login successful:', user.email);
       // UI sẽ được cập nhật bởi session event listener (đã được dịch)

@@ -699,16 +699,76 @@ async function handleAuthActions(request, sender, sendResponse) {
   try {
     switch(request.action) {
       case 'auth_initialize': await auth.initialize(); sendResponse({ success: true }); break;
-      case 'auth_login': const user = await auth.login(request.accountHint); sendResponse({ success: true, user }); break;
+      case 'auth_login': 
+        const useWebFlow = request.useWebFlow || false;
+        const user = await auth.login(request.accountHint, useWebFlow); 
+        sendResponse({ success: true, user }); 
+        break;
       case 'auth_logout': await auth.logout(); sendResponse({ success: true }); break;
       case 'auth_is_logged_in': const isLoggedIn = await auth.isLoggedIn(); sendResponse({ success: true, isLoggedIn }); break;
       case 'auth_get_user': const currentUser = await auth.getCurrentUser(); sendResponse({ success: true, user: currentUser }); break;
       case 'auth_get_token': const token = await auth.getToken(); sendResponse({ success: true, token }); break;
       case 'auth_get_session_stats': const stats = await auth.getSessionStats(); sendResponse({ success: true, stats }); break;
+      case 'auth_web_callback':
+        // Handle web callback - save token and get user info
+        await handleWebAuthCallback(request.token, sendResponse);
+        return true; // Keep channel open for async
       default: sendResponse({ success: false, error: getLang('errorAuthUnknownAction') });
     }
   } catch (error) {
     console.error('[Background] Auth action failed:', error);
+    sendResponse({ success: false, error: error.message });
+  }
+}
+
+// Handle web authentication callback
+async function handleWebAuthCallback(token, sendResponse) {
+  try {
+    console.log('[Background] Handling web auth callback...');
+    
+    // Get user info from Google
+    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!userInfoResponse.ok) {
+      throw new Error('Failed to get user info from Google');
+    }
+    
+    const googleUserInfo = await userInfoResponse.json();
+    
+    const user = {
+      id: googleUserInfo.id,
+      email: googleUserInfo.email,
+      name: googleUserInfo.name,
+      picture: googleUserInfo.picture,
+      verified_email: googleUserInfo.verified_email
+    };
+    
+    // Establish session with token
+    await auth.sessionManager.establishSession(user);
+    
+    // Store token in chrome.storage.local
+    await chrome.storage.local.set({ 'web_auth_token': token });
+    
+    console.log('[Background] Web auth callback successful:', user.email);
+    sendResponse({ success: true, user });
+    
+    // Token is already stored in chrome.storage.local as 'web_auth_token'
+    // oauth-handler will detect it via chrome.storage.onChanged listener
+    // Also broadcast message for direct listeners
+    chrome.runtime.sendMessage({
+      action: 'auth_web_callback_token',
+      token: token,
+      promiseId: 'any' // Will match any listener waiting for token
+    }).catch(() => {
+      // Ignore errors if no listeners
+    });
+    
+  } catch (error) {
+    console.error('[Background] Web auth callback failed:', error);
     sendResponse({ success: false, error: error.message });
   }
 }

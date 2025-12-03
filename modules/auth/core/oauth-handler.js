@@ -288,20 +288,127 @@ export class OAuthHandler {
 
   /**
    * Complete login flow
-   * (Không thay đổi)
+   * Supports both Chrome Identity API (default) and Web-based OAuth
    */
-  async login(accountHint = null) {
-  try {
-    const token = await this.getGoogleToken();
-    
-    const user = await this.getUserInfo(token);
-    
-    return { token, user };
+  async login(accountHint = null, useWebFlow = false) {
+    try {
+      let token;
+      
+      if (useWebFlow) {
+        // Web-based OAuth flow: Open web login page
+        console.log('[OAuth] Starting web-based login flow...');
+        token = await this.loginViaWeb();
+      } else {
+        // Chrome Identity API flow (default)
+        token = await this.getGoogleToken();
+      }
+      
+      const user = await this.getUserInfo(token);
+      
+      return { token, user };
       
     } catch (error) {
       console.error('[OAuth] Login failed:', error);
       throw error;
     }
+  }
+
+  /**
+   * Login via web page (opens web login, redirects back to extension)
+   * This method opens a web login page and waits for the callback.html to send the token
+   */
+  async loginViaWeb() {
+    return new Promise((resolve, reject) => {
+      // Generate unique promise ID first
+      const promiseId = `web_auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Get extension ID
+      const extensionId = chrome.runtime.id;
+      const callbackUrl = chrome.runtime.getURL('modules/auth/callback.html');
+      
+      // Build web login URL with extension callback
+      const webLoginUrl = new URL('https://besideai.work/login');
+      webLoginUrl.searchParams.set('extension_callback', callbackUrl);
+      webLoginUrl.searchParams.set('extension_id', extensionId);
+      webLoginUrl.searchParams.set('promise_id', promiseId);
+      
+      console.log('[OAuth] Opening web login page:', webLoginUrl.toString());
+      
+      // Open web login in new tab
+      chrome.tabs.create({ url: webLoginUrl.toString() }, (tab) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+          return;
+        }
+        
+        const tabId = tab.id;
+        console.log('[OAuth] Web login tab opened:', tabId);
+        
+        // Store promise info in chrome.storage (accessible from background)
+        chrome.storage.local.set({
+          [`web_auth_pending_${promiseId}`]: {
+            tabId: tabId,
+            timestamp: Date.now()
+          }
+        });
+        
+        // Use chrome.storage.onChanged to detect when token is stored
+        const storageListener = (changes, areaName) => {
+          if (areaName === 'local' && changes.web_auth_token && changes.web_auth_token.newValue) {
+            const storedToken = changes.web_auth_token.newValue;
+            console.log('[OAuth] Received token from web callback via storage');
+            
+            // Remove listener
+            chrome.storage.onChanged.removeListener(storageListener);
+            
+            // Close the login tab
+            chrome.tabs.remove(tabId).catch(() => {});
+            
+            // Clean up storage
+            chrome.storage.local.remove(`web_auth_pending_${promiseId}`);
+            
+            resolve(storedToken);
+          }
+        };
+        
+        chrome.storage.onChanged.addListener(storageListener);
+        
+        // Also listen for direct message from background (fallback)
+        const messageListener = (message, sender, sendResponse) => {
+          if (message.action === 'auth_web_callback_token' && 
+              (message.promiseId === promiseId || message.promiseId === 'any')) {
+            console.log('[OAuth] Received token from web callback via message');
+            
+            // Remove listeners
+            chrome.runtime.onMessage.removeListener(messageListener);
+            chrome.storage.onChanged.removeListener(storageListener);
+            
+            // Close the login tab
+            chrome.tabs.remove(tabId).catch(() => {});
+            
+            // Clean up storage
+            chrome.storage.local.remove(`web_auth_pending_${promiseId}`);
+            
+            if (message.token) {
+              resolve(message.token);
+            } else {
+              reject(new Error(message.error || 'No token received'));
+            }
+          }
+        };
+        
+        chrome.runtime.onMessage.addListener(messageListener);
+        
+        // Timeout after 5 minutes
+        setTimeout(() => {
+          chrome.runtime.onMessage.removeListener(messageListener);
+          chrome.storage.onChanged.removeListener(storageListener);
+          chrome.tabs.remove(tabId).catch(() => {});
+          chrome.storage.local.remove(`web_auth_pending_${promiseId}`);
+          reject(new Error('Login timeout. Please try again.'));
+        }, 5 * 60 * 1000);
+      });
+    });
   }
 
   /**

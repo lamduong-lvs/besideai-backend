@@ -51,45 +51,49 @@ class AuthModule {
 
   /**
    * Login with Google
+   * @param {string} accountHint - Optional account hint (deprecated, kept for compatibility)
+   * @param {boolean} useWebFlow - If true, opens web login page instead of Chrome Identity popup
    */
-  async login() { // Xóa accountHint
+  async login(accountHint = null, useWebFlow = false) {
     try {
-      console.log('[Auth] Starting login flow...');
+      console.log('[Auth] Starting login flow...', { useWebFlow });
       
-      // Step 1: Lấy token và user info từ Google (interactive: true)
-      const { token, user } = await this.oauthHandler.login();
+      // Step 1: Lấy token và user info từ Google
+      const { token, user } = await this.oauthHandler.login(accountHint, useWebFlow);
       
       // Step 2: "Establish" session (chỉ lưu user info)
       await this.sessionManager.establishSession(user);
       
-      // Step 3: Verify token is cached in Chrome Identity API
-      // Small delay to ensure token is cached
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Step 4: Verify token can be retrieved (non-interactive)
-      try {
-        const verifyToken = await new Promise((resolve, reject) => {
-          chrome.identity.getAuthToken({ interactive: false }, (verifyToken) => {
-            if (chrome.runtime.lastError) {
-              console.warn('[Auth] Token verification failed (non-interactive):', chrome.runtime.lastError.message);
-              // Token might not be cached yet, but that's okay - it will be cached on next use
-              resolve(null);
-            } else {
-              resolve(verifyToken);
-            }
-          });
-        });
+      // Step 3: For Chrome Identity flow, verify token is cached
+      if (!useWebFlow) {
+        // Small delay to ensure token is cached
+        await new Promise(resolve => setTimeout(resolve, 200));
         
-        if (verifyToken && verifyToken === token) {
-          console.log('[Auth] ✅ Token verified and cached');
-        } else if (verifyToken) {
-          console.log('[Auth] ⚠️ Token retrieved but different (might be refreshed)');
-        } else {
-          console.log('[Auth] ⚠️ Token not yet cached, will be cached on next API call');
+        // Step 4: Verify token can be retrieved (non-interactive)
+        try {
+          const verifyToken = await new Promise((resolve, reject) => {
+            chrome.identity.getAuthToken({ interactive: false }, (verifyToken) => {
+              if (chrome.runtime.lastError) {
+                console.warn('[Auth] Token verification failed (non-interactive):', chrome.runtime.lastError.message);
+                // Token might not be cached yet, but that's okay - it will be cached on next use
+                resolve(null);
+              } else {
+                resolve(verifyToken);
+              }
+            });
+          });
+          
+          if (verifyToken && verifyToken === token) {
+            console.log('[Auth] ✅ Token verified and cached');
+          } else if (verifyToken) {
+            console.log('[Auth] ⚠️ Token retrieved but different (might be refreshed)');
+          } else {
+            console.log('[Auth] ⚠️ Token not yet cached, will be cached on next API call');
+          }
+        } catch (verifyError) {
+          console.warn('[Auth] Token verification error (non-critical):', verifyError);
+          // Non-critical - token will be cached on next use
         }
-      } catch (verifyError) {
-        console.warn('[Auth] Token verification error (non-critical):', verifyError);
-        // Non-critical - token will be cached on next use
       }
       
       console.log('[Auth] ✅ Login successful:', user.email);

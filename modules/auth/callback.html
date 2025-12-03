@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BesideAI - Authentication</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid rgba(255, 0, 0, 0.5);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="spinner"></div>
+    <h2>Đang xử lý đăng nhập...</h2>
+    <p id="status">Vui lòng chờ trong giây lát.</p>
+    <div id="error" class="error" style="display: none;"></div>
+  </div>
+
+  <script type="module">
+    // Get token from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+
+    const statusEl = document.getElementById('status');
+    const errorEl = document.getElementById('error');
+
+    if (error) {
+      // Show error
+      errorEl.textContent = errorDescription || error;
+      errorEl.style.display = 'block';
+      statusEl.textContent = 'Đăng nhập thất bại.';
+      
+      // Close after 3 seconds
+      setTimeout(() => {
+        window.close();
+      }, 3000);
+      return;
+    }
+
+    if (!token) {
+      errorEl.textContent = 'Không nhận được token từ server.';
+      errorEl.style.display = 'block';
+      statusEl.textContent = 'Đăng nhập thất bại.';
+      
+      setTimeout(() => {
+        window.close();
+      }, 3000);
+      return;
+    }
+
+    // Send token to background script
+    try {
+      statusEl.textContent = 'Đang lưu thông tin đăng nhập...';
+      
+      // Get promise ID from URL (if exists) or use default
+      const urlParams = new URLSearchParams(window.location.search);
+      const promiseId = urlParams.get('promise_id') || 'default';
+      
+      // Send message to background script
+      chrome.runtime.sendMessage({
+        action: 'auth_web_callback',
+        token: token
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('Error sending message:', chrome.runtime.lastError);
+          errorEl.textContent = chrome.runtime.lastError.message;
+          errorEl.style.display = 'block';
+          statusEl.textContent = 'Lỗi khi lưu token.';
+          
+          setTimeout(() => {
+            window.close();
+          }, 3000);
+          return;
+        }
+
+        if (response && response.success) {
+          statusEl.textContent = 'Đăng nhập thành công!';
+          
+          // Get promise_id from URL and forward token to oauth-handler
+          const promiseId = urlParams.get('promise_id');
+          if (promiseId) {
+            chrome.runtime.sendMessage({
+              action: 'auth_web_callback_token',
+              token: token,
+              promiseId: promiseId
+            }).catch(() => {
+              // Ignore errors
+            });
+          }
+          
+          // Close window after 1 second
+          setTimeout(() => {
+            window.close();
+          }, 1000);
+        } else {
+          errorEl.textContent = response?.error || 'Lỗi không xác định.';
+          errorEl.style.display = 'block';
+          statusEl.textContent = 'Đăng nhập thất bại.';
+          
+          setTimeout(() => {
+            window.close();
+          }, 3000);
+        }
+      });
+    } catch (err) {
+      console.error('Error processing callback:', err);
+      errorEl.textContent = err.message;
+      errorEl.style.display = 'block';
+      statusEl.textContent = 'Lỗi khi xử lý callback.';
+      
+      setTimeout(() => {
+        window.close();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
+

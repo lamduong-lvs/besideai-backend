@@ -90,13 +90,34 @@ export class SessionManager {
   }
 
   /**
-   * Get session token (từ chrome.identity)
+   * Get session token (từ chrome.identity hoặc web auth token)
    * (Cập nhật i18n)
    */
   async getToken() {
     // ✅ Đây là thay đổi cốt lõi
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
+        // First, try to get web auth token (if exists)
+        const webAuthData = await chrome.storage.local.get('web_auth_token');
+        if (webAuthData.web_auth_token) {
+          // Verify token is still valid
+          try {
+            const response = await fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + webAuthData.web_auth_token);
+            if (response.ok) {
+              console.log('[SessionManager] Using web auth token');
+              resolve(webAuthData.web_auth_token);
+              return;
+            } else {
+              // Token expired, remove it
+              await chrome.storage.local.remove('web_auth_token');
+            }
+          } catch (e) {
+            // Token invalid, remove it
+            await chrome.storage.local.remove('web_auth_token');
+          }
+        }
+        
+        // Fallback to Chrome Identity API
         if (!chrome.identity) {
           // CẬP NHẬT i18n
           const errorMsg = window.Lang ? window.Lang.get('errorApiNotAvailable') : 'Chrome Identity API not available';
