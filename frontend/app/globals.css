@@ -123,3 +123,36 @@
     color: hsl(var(--link-hover));
   }
 }
+
+@layer utilities {
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+  .text-primary {
+    color: hsl(var(--primary));
+  }
+  .border-primary {
+    border-color: hsl(var(--primary));
+  }
+  .text-primary-foreground {
+    color: hsl(var(--primary-foreground));
+  }
+  .hover\:bg-primary\/90:hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+  .hover\:text-primary:hover {
+    color: hsl(var(--primary));
+  }
+  .bg-primary\/10 {
+    background-color: hsl(var(--primary) / 0.1);
+  }
+  .bg-primary\/20 {
+    background-color: hsl(var(--primary) / 0.2);
+  }
+  .border-primary\/20 {
+    border-color: hsl(var(--primary) / 0.2);
+  }
+  .border-primary\/40 {
+    border-color: hsl(var(--primary) / 0.4);
+  }
+}

@@ -13,7 +13,7 @@ export default function Home() {
         <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
           <Link
             href="#"
-            className="rounded-2xl bg-muted px-4 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80"
+            className="rounded-2xl bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
           >
             <Sparkles className="mr-2 inline h-4 w-4 text-primary" />
             AI-Powered Chrome Extension
@@ -58,42 +58,42 @@ export default function Home() {
         </div>
         <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-4">
           <FeatureCard
-            icon={<Mail className="h-6 w-6" />}
+            icon={<Mail className="h-6 w-6 text-primary" />}
             title="Gmail Integration"
             description="Tích hợp sâu với Gmail để xử lý email thông minh và nhanh chóng."
           />
           <FeatureCard
-            icon={<Video className="h-6 w-6" />}
+            icon={<Video className="h-6 w-6 text-primary" />}
             title="Google Meet"
             description="Hỗ trợ Google Meet với transcription và AI-powered insights."
           />
           <FeatureCard
-            icon={<FileText className="h-6 w-6" />}
+            icon={<FileText className="h-6 w-6 text-primary" />}
             title="PDF & Documents"
             description="Xử lý PDF, Word, Excel và nhiều định dạng tài liệu khác."
           />
           <FeatureCard
-            icon={<Image className="h-6 w-6" />}
+            icon={<Image className="h-6 w-6 text-primary" />}
             title="Screenshot Analysis"
             description="Phân tích screenshot và hình ảnh với AI vision models."
           />
           <FeatureCard
-            icon={<Zap className="h-6 w-6" />}
+            icon={<Zap className="h-6 w-6 text-primary" />}
             title="Tốc độ cao"
             description="Xử lý nhanh chóng với backend được tối ưu và caching thông minh."
           />
           <FeatureCard
-            icon={<Shield className="h-6 w-6" />}
+            icon={<Shield className="h-6 w-6 text-primary" />}
             title="Bảo mật tuyệt đối"
             description="API keys được quản lý hoàn toàn phía server, không lộ trên client."
           />
           <FeatureCard
-            icon={<Globe className="h-6 w-6" />}
+            icon={<Globe className="h-6 w-6 text-primary" />}
             title="Đa ngôn ngữ"
             description="Hỗ trợ dịch và xử lý nhiều ngôn ngữ khác nhau."
           />
           <FeatureCard
-            icon={<Sparkles className="h-6 w-6" />}
+            icon={<Sparkles className="h-6 w-6 text-primary" />}
             title="AI Models đa dạng"
             description="Truy cập GPT-4o, Claude 3.5, Gemini và nhiều models khác."
           />
@@ -169,11 +169,11 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
+    <div className="relative overflow-hidden rounded-lg border border-primary/20 bg-background p-2 hover:border-primary/40 hover:shadow-md transition-all">
       <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-        <div className="text-primary">{icon}</div>
+        <div className="mb-4">{icon}</div>
         <div className="space-y-2">
-          <h3 className="font-bold">{title}</h3>
+          <h3 className="font-bold text-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>

@@ -15,7 +15,7 @@ export function SiteHeader() {
         <MainNav items={marketingConfig.mainNav} />
         <nav className="flex items-center gap-4">
           <ThemeToggle />
-          <Button asChild className="hidden md:inline-flex">
+          <Button asChild className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90">
             <Link href="/login">Đăng nhập</Link>
           </Button>
         </nav>
