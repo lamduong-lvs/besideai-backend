@@ -18,6 +18,12 @@ function LoginContent() {
       return;
     }
 
+    // Check if this is an extension callback request
+    const urlParams = new URLSearchParams(window.location.search);
+    const extensionCallback = urlParams.get('extension_callback');
+    const extensionId = urlParams.get('extension_id');
+    const promiseId = urlParams.get('promise_id');
+
     // Build Google OAuth URL
     const params = new URLSearchParams({
       client_id: clientId,
@@ -28,6 +34,18 @@ function LoginContent() {
       prompt: "consent",
       state: redirect, // Store redirect path in state
     });
+
+    // If extension callback, add it to state so callback page can access it
+    if (extensionCallback && extensionId) {
+      // Store extension info in state (will be passed back via callback)
+      const stateData = {
+        redirect: redirect,
+        extension_callback: extensionCallback,
+        extension_id: extensionId,
+        promise_id: promiseId
+      };
+      params.set('state', btoa(JSON.stringify(stateData)));
+    }
 
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
     

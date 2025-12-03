@@ -16,9 +16,29 @@ function OAuthCallbackContent() {
 
   useEffect(() => {
     const code = searchParams.get("code");
-    const state = searchParams.get("state"); // Contains redirect path
+    const stateParam = searchParams.get("state"); // Contains redirect path or extension info
     const errorParam = searchParams.get("error");
-    const redirect = state || "/account";
+    
+    // Parse state (might be base64 encoded JSON for extension callbacks)
+    let stateData = null;
+    let redirect = "/account";
+    let extensionCallback = null;
+    let extensionId = null;
+    let promiseId = null;
+    
+    if (stateParam) {
+      try {
+        // Try to parse as JSON (extension callback)
+        stateData = JSON.parse(atob(stateParam));
+        redirect = stateData.redirect || "/account";
+        extensionCallback = stateData.extension_callback;
+        extensionId = stateData.extension_id;
+        promiseId = stateData.promise_id;
+      } catch (e) {
+        // Not JSON, treat as plain redirect path
+        redirect = stateParam;
+      }
+    }
 
     // Handle OAuth errors
     if (errorParam) {
@@ -61,7 +81,22 @@ function OAuthCallbackContent() {
         const data = await response.json();
         
         if (data.token) {
-          // Save token to localStorage
+          // Check if this is an extension callback (from parsed state)
+          if (extensionCallback && extensionId) {
+            // Redirect to extension callback with token
+            const callbackUrl = new URL(extensionCallback);
+            callbackUrl.searchParams.set('token', data.token);
+            if (promiseId) {
+              callbackUrl.searchParams.set('promise_id', promiseId);
+            }
+            // Also preserve extension_callback and extension_id for callback.html
+            callbackUrl.searchParams.set('extension_callback', extensionCallback);
+            callbackUrl.searchParams.set('extension_id', extensionId);
+            window.location.href = callbackUrl.toString();
+            return;
+          }
+          
+          // Normal web flow: Save token to localStorage
           setAuthToken(data.token);
           
           // Redirect to account page
