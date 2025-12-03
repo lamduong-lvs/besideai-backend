@@ -5,12 +5,13 @@
 
 /**
  * Subscription Tiers Configuration
+ * Only 3 tiers: Free, Professional, Premium
+ * All tiers use Backend for AI calls
  */
 export const SUBSCRIPTION_TIERS = {
   FREE: 'free',
   PROFESSIONAL: 'professional',
-  PREMIUM: 'premium',
-  BYOK: 'byok' // Bring Your Own Key
+  PREMIUM: 'premium'
 };
 
 /**
@@ -37,12 +38,8 @@ export const TIER_LIMITS = {
       requestsPerHour: 10
     },
     
-    // Allowed models (basic models only)
-    allowedModels: [
-      'openai/gpt-3.5-turbo',
-      'googleai/gemini-1.5-flash',
-      'cerebras/llama-4-scout-17b-16e-instruct'
-    ]
+    // Allowed models (all models - temporarily open for Free tier)
+    allowedModels: ['*'] // All models allowed
   },
   
   [SUBSCRIPTION_TIERS.PROFESSIONAL]: {
@@ -99,19 +96,6 @@ export const TIER_LIMITS = {
     
     // Allowed models (all models)
     allowedModels: ['*'] // All models allowed
-  },
-  
-  [SUBSCRIPTION_TIERS.BYOK]: {
-    // BYOK mode - no limits (user uses their own API keys)
-    tokensPerDay: null, // Unlimited
-    tokensPerMonth: null,
-    maxTokensPerRequest: null,
-    requestsPerDay: null,
-    requestsPerMonth: null,
-    recordingTimePerDay: null,
-    translationTimePerDay: null,
-    rateLimit: null,
-    allowedModels: ['*'] // All models
   }
 };
 
@@ -160,21 +144,6 @@ export const TIER_FEATURES = {
     pdfChat: true,
     contextMenu: true,
     webSummary: true
-  },
-  
-  [SUBSCRIPTION_TIERS.BYOK]: {
-    // All features enabled (user pays for their own API)
-    aiChat: true,
-    basicTranslation: true,
-    screenshot: true,
-    recording: true,
-    advancedModels: true,
-    gmailIntegration: true,
-    meetTranslation: true,
-    teamsTranslation: true,
-    pdfChat: true,
-    contextMenu: true,
-    webSummary: true
   }
 };
 
@@ -201,13 +170,6 @@ export const TIER_PRICING = {
     currency: 'USD',
     period: 'month',
     trialDays: 7
-  },
-  
-  [SUBSCRIPTION_TIERS.BYOK]: {
-    price: 0, // User pays for their own API
-    currency: 'USD',
-    period: 'month',
-    trialDays: 0
   }
 };
 
@@ -247,7 +209,7 @@ export function getPricingForTier(tier) {
 export function isModelAllowedForTier(tier, modelId) {
   const limits = getLimitsForTier(tier);
   
-  // BYOK or PRO with wildcard - all models allowed
+  // Premium tier with wildcard - all models allowed
   if (limits.allowedModels.includes('*')) {
     return true;
   }
@@ -311,7 +273,6 @@ export function getRequiredTierForModel(modelId) {
 export const DEFAULT_SUBSCRIPTION_CONFIG = {
   tier: SUBSCRIPTION_TIERS.FREE,
   status: 'active',
-  mode: 'local', // 'local' | 'server' | 'auto'
   expiresAt: null,
   trialEndsAt: null,
   lastSynced: null

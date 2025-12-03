@@ -74,7 +74,7 @@ class LimitsEnforcer {
     const status = await subscriptionManager.getStatus();
 
     // Check if subscription is active (for paid tiers)
-    if (tier !== 'free' && tier !== 'byok') {
+    if (tier !== 'free') {
       if (status === 'expired' || status === 'cancelled') {
         return {
           allowed: false,
@@ -84,10 +84,7 @@ class LimitsEnforcer {
       }
     }
 
-    // BYOK mode - no limits
-    if (tier === 'byok') {
-      return { allowed: true };
-    }
+    // BYOK tier removed - all tiers now use Backend
 
     // Check model availability
     if (check.model) {
@@ -104,7 +101,9 @@ class LimitsEnforcer {
     }
 
     // Check feature availability
-    if (check.feature) {
+    // Temporarily disabled - backend will handle feature checks
+    // All features are allowed for now (until proper feature gating is implemented)
+    if (check.feature && false) { // Disabled temporarily
       const featureAllowed = await subscriptionManager.hasFeature(check.feature);
       if (!featureAllowed) {
         const requiredTier = getRequiredTierForFeature(check.feature);
@@ -210,10 +209,7 @@ class LimitsEnforcer {
     const tier = await subscriptionManager.getTier();
     const limits = await subscriptionManager.getLimits();
 
-    // BYOK mode - no limits
-    if (tier === 'byok') {
-      return { allowed: true };
-    }
+    // BYOK tier removed - all tiers now use Backend
 
     // Check time limits
     let timeLimit = null;

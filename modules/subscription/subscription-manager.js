@@ -55,67 +55,39 @@ class SubscriptionManager {
 
   /**
    * Detect current subscription tier
-   * Priority: BYOK > Paid (authenticated) > Free
+   * Priority: Backend subscription > Free
+   * All tiers use Backend for AI calls
    */
   async detectTier() {
     try {
-      // 1. Check if user has API keys (BYOK mode)
-      const hasApiKeys = await this.checkApiKeys();
-      if (hasApiKeys) {
-        console.log('[SubscriptionManager] BYOK mode detected');
-        return SUBSCRIPTION_TIERS.BYOK;
-      }
-
-      // 2. Check if user is authenticated
+      // 1. Check if user is authenticated
       const isAuth = await this.isAuthenticated();
       if (!isAuth) {
         console.log('[SubscriptionManager] Not authenticated, defaulting to free tier');
         return SUBSCRIPTION_TIERS.FREE;
       }
 
-      // 3. Check subscription status from backend
+      // 2. Check subscription status from backend
       try {
         const subscription = await this.getSubscriptionStatusFromBackend();
-        if (subscription?.tier && subscription.tier !== SUBSCRIPTION_TIERS.FREE) {
-          console.log('[SubscriptionManager] Paid tier detected:', subscription.tier);
-          return subscription.tier;
+        if (subscription?.tier) {
+          // Validate tier (only allow Free, Professional, Premium)
+          const validTiers = [SUBSCRIPTION_TIERS.FREE, SUBSCRIPTION_TIERS.PROFESSIONAL, SUBSCRIPTION_TIERS.PREMIUM];
+          if (validTiers.includes(subscription.tier)) {
+            console.log('[SubscriptionManager] Tier detected from backend:', subscription.tier);
+            return subscription.tier;
+          }
         }
       } catch (error) {
         console.warn('[SubscriptionManager] Failed to get subscription from backend:', error);
         // Fallback to free if backend unavailable
       }
 
-      // 4. Default to free
+      // 3. Default to free
       return SUBSCRIPTION_TIERS.FREE;
     } catch (error) {
       console.error('[SubscriptionManager] Tier detection failed:', error);
       return SUBSCRIPTION_TIERS.FREE;
-    }
-  }
-
-  /**
-   * Check if user has API keys configured (BYOK mode)
-   */
-  async checkApiKeys() {
-    try {
-      const data = await chrome.storage.local.get(['apiConfigs']);
-      const apiConfigs = data.apiConfigs || {};
-      
-      // Check if any provider has API key configured
-      for (const providerId in apiConfigs) {
-        const config = apiConfigs[providerId];
-        if (config && config.apiKey && config.apiKey.trim() !== '') {
-          // Exclude Cerebras (free tier)
-          if (providerId.toLowerCase() !== 'cerebras') {
-            return true;
-          }
-        }
-      }
-      
-      return false;
-    } catch (error) {
-      console.error('[SubscriptionManager] Failed to check API keys:', error);
-      return false;
     }
   }
 
@@ -157,7 +129,14 @@ class SubscriptionManager {
       const status = await subscriptionAPIClient.getSubscriptionStatus();
       return status;
     } catch (error) {
-      console.warn('[SubscriptionManager] Backend unavailable, using local data:', error.message);
+      // Don't log as error if it's auth expired or network error (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[SubscriptionManager] Authentication expired, using local data');
+      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
+        console.warn('[SubscriptionManager] Network error, using local data');
+      } else {
+        console.warn('[SubscriptionManager] Backend unavailable, using local data:', error.message);
+      }
       return null;
     }
   }
@@ -304,8 +283,8 @@ class SubscriptionManager {
 
     const tier = this.cache.tier;
     
-    // Free and BYOK are always active
-    if (tier === SUBSCRIPTION_TIERS.FREE || tier === SUBSCRIPTION_TIERS.BYOK) {
+    // Free tier is always active
+    if (tier === SUBSCRIPTION_TIERS.FREE) {
       return 'active';
     }
 
@@ -364,32 +343,6 @@ class SubscriptionManager {
     return features[featureName] === true;
   }
 
-  /**
-   * Get current mode
-   * @returns {Promise<string>} 'local' | 'server' | 'auto'
-   */
-  async getMode() {
-    await this.ensureInitialized();
-    return this.cache?.mode || 'auto';
-  }
-
-  /**
-   * Set mode
-   * @param {string} mode - 'local' | 'server' | 'auto'
-   */
-  async setMode(mode) {
-    if (!['local', 'server', 'auto'].includes(mode)) {
-      console.warn('[SubscriptionManager] Invalid mode:', mode);
-      return;
-    }
-
-    if (!this.cache) {
-      await this.ensureInitialized();
-    }
-
-    this.cache.mode = mode;
-    await this.saveToStorage();
-  }
 
   /**
    * Sync subscription status with backend

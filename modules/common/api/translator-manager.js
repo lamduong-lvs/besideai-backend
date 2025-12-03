@@ -1,9 +1,72 @@
 /**
  * ┌─────────────────────────────────────────────────────────────────┐
- * │  TRANSLATOR MANAGER - WITH RACING SUPPORT                      │
- * │  Uses RacingHelper for translation with optional racing        │
+ * │  TRANSLATOR MANAGER - SINGLE MODE                              │
+ * │  Uses message passing to background for translation            │
  * └─────────────────────────────────────────────────────────────────┘
  */
+
+// Simple stub for RacingHelper (removed, using single mode)
+class RacingHelper {
+    constructor() {
+        this.enabled = false;
+    }
+    
+    async init() {
+        this.enabled = false;
+    }
+    
+    isRacingEnabled() {
+        return false;
+    }
+    
+    async raceTranslation(text, source, target, options) {
+        // Use message passing to background for translation via processAction
+        try {
+            // Build translation prompt
+            const sourceLabel = source === 'auto' ? 'ngôn ngữ nguồn' : source;
+            const targetLabel = target === 'vi' ? 'tiếng Việt' : target === 'en' ? 'English' : target;
+            const systemPrompt = `You are a professional translator. Translate the following text from ${sourceLabel} to ${targetLabel}. Only return the translated text, no explanations or additional text.`;
+            
+            const messages = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: text }
+            ];
+            
+            // Get AI config
+            const configResponse = await chrome.runtime.sendMessage({ action: 'getAIConfig' });
+            if (!configResponse?.success || !configResponse.config) {
+                throw new Error('Failed to get AI config');
+            }
+            
+            const response = await chrome.runtime.sendMessage({
+                action: 'processAction',
+                messages: messages,
+                config: configResponse.config
+            });
+            
+            if (!response || !response.success) {
+                throw new Error(response?.error?.message || 'Translation failed');
+            }
+            
+            return {
+                response: response.result || '',
+                cached: false,
+                winner: null
+            };
+        } catch (error) {
+            console.error('[TranslatorManager] Translation via message failed:', error);
+            throw error;
+        }
+    }
+    
+    getRacingStats() {
+        return { enabled: false };
+    }
+    
+    clearCache() {
+        // No-op
+    }
+}
 
 // Try to import dependencies - if failed (e.g., loaded as regular script), will use fallback
 let isSupportedLanguageFunc = null;

@@ -230,12 +230,22 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
-  min-width: 320px; /* TÄƒng tá»« 250px lÃªn 320px */
+  min-width: 320px;
+  max-width: 360px;
+  /* TÄƒng tá»« 250px lÃªn 320px */
   z-index: 99999;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  /* Prevent layout shift and flickering */
+  will-change: opacity, visibility;
+  transform: translateZ(0); /* GPU acceleration */
+  /* Prevent content changes from affecting position */
+  contain: layout style paint;
+  /* Ensure stable rendering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .user-popup.show {

@@ -2,11 +2,12 @@
 // Main background service worker - refactored for better maintainability
 
 import { auth, SESSION_EVENTS } from '../modules/auth/auth.js';
-import { apiManager, APIError, checkModelSupportsFiles as checkModelSupportsFilesUtil, callSingleModel as callSingleModelUtil, runRace as runRaceUtil, executeSharedAI as executeSharedAIUtil, handleRaceTest as handleRaceTestUtil } from '../utils/api.js';
+import { apiManager, APIError, checkModelSupportsFiles as checkModelSupportsFilesUtil, callSingleModel as callSingleModelUtil, executeSharedAI as executeSharedAIUtil } from '../utils/api.js';
 import { subscriptionManager } from '../modules/subscription/subscription-manager.js';
 import { onboardingManager } from '../modules/subscription/onboarding-manager.js';
 import { backendInit } from '../modules/subscription/backend-init.js';
-// Don't import api-gateway at top-level - import getApiGateway function when needed
+// Import API Gateway at top-level (Service Worker supports static imports)
+import { getApiGateway } from '../modules/api-gateway/api-gateway.js';
 import { PendingImagesDB } from '../modules/panel/storage/pending-images-db.js';
 import * as panelHandlers from './handlers/panel.js';
 import * as apiHandlers from './handlers/api.js';
@@ -82,19 +83,40 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   
   if (details.reason === 'install') {
     console.log('Extension installed, setting default configuration...');
-    // Cài đặt mặc định ban đầu (có thể điều chỉnh)
+    // Cài đặt mặc định ban đầu
     chrome.storage.local.set({
       theme: 'auto',
       showFloatingIcon: true,
-      // ✅ THAY ĐỔI: Model mặc định có provider
-      aiProvider: 'cerebras/llama-4-scout-17b-16e-instruct',
-      raceSettings: {
-        enabled: false,
-        models: [] // Danh sách model đầy đủ (provider/id)
-      },
-      // Không cần lưu apiConfigs mặc định ở đây, api.js sẽ xử lý
+      // Model sẽ được set từ Backend default
     });
     await auth.initialize();
+    
+    // ✅ Initialize default model from Backend
+    try {
+      const { modelsService } = await import('../modules/subscription/models-service.js');
+      const { modelPreferenceService } = await import('../modules/subscription/model-preference-service.js');
+      
+      await modelsService.initialize();
+      const defaultModelId = await modelsService.getDefaultModel();
+      
+      if (defaultModelId) {
+        // defaultModelId is already formatted as "provider/modelId"
+        await modelPreferenceService.setPreferredModel(defaultModelId);
+        await chrome.storage.local.set({
+          selectedModel: defaultModelId,
+          aiProvider: defaultModelId // Backward compatibility
+        });
+        console.log('[Background] Default model initialized from Backend:', defaultModelId);
+      }
+    } catch (error) {
+      console.warn('[Background] Failed to initialize default model from Backend:', error);
+      // Fallback to a default model
+      const fallbackModel = 'openai/gpt-3.5-turbo';
+      await chrome.storage.local.set({
+        selectedModel: fallbackModel,
+        aiProvider: fallbackModel
+      });
+    }
     
     // ✅ Initialize subscription system
     try {
@@ -442,40 +464,7 @@ async function callSingleModel(fullModelId, messages, signal, ...args) {
         // Old signature: callSingleModel(fullModelId, messages, signal, apiManager, getLang, debugLog, APIError, streamCallback)
         const [apiManagerArg, getLangArg, debugLogArg, APIErrorArg, streamCallback] = args;
         try {
-            // Skip gateway in service worker - use direct API call
-            // Gateway will be used in panel context
-            throw new Error('Gateway not available in service worker');
-            const [providerId, model] = fullModelId.split('/');
-            const text = messages.map(m => m.content).join(' ');
-            const estimatedTokens = Math.ceil(text.length / 4);
-            
-            const result = await gateway.call(messages, {
-                providerId: providerId,
-                model: model,
-                feature: 'chat',
-                estimatedTokens: estimatedTokens,
-                stream: !!streamCallback,
-                streamCallback: streamCallback
-            });
-            
-            return {
-                content: result.content,
-                providerId: result.providerId,
-                modelId: result.modelId,
-                fullModelId: result.fullModelId,
-                streamed: result.streamed || false
-            };
-        } catch (error) {
-            // Fallback to original
-            console.warn('[Background] API Gateway failed, falling back to direct API:', error);
-            return callSingleModelUtil(fullModelId, messages, signal, apiManagerArg, getLangArg, debugLogArg, APIErrorArg, streamCallback);
-        }
-    } else {
-        // New signature: callSingleModel(fullModelId, messages, signal, streamCallback)
-        const streamCallback = args[0] || null;
-        try {
-            // Try new gateway first (import function, not instance)
-            const { getApiGateway } = await import('../modules/api-gateway/api-gateway.js');
+            // Use API Gateway (all calls go through Backend)
             const gateway = getApiGateway();
             await gateway.ensureInitialized();
             const [providerId, model] = fullModelId.split('/');
@@ -499,31 +488,74 @@ async function callSingleModel(fullModelId, messages, signal, ...args) {
                 streamed: result.streamed || false
             };
         } catch (error) {
-            console.warn('[Background] API Gateway failed, falling back to direct API:', error);
-            return callSingleModelUtil(fullModelId, messages, signal, apiManager, getLang, debugLog, APIError, streamCallback);
+            // NO FALLBACK - All calls must go through Backend
+            console.error('[Background] API Gateway failed - Backend required:', error);
+            throw new Error(`Backend unavailable: ${error.message}. Please check your connection and try again.`);
+        }
+    } else {
+        // New signature: callSingleModel(fullModelId, messages, signal, streamCallback)
+        const streamCallback = args[0] || null;
+        try {
+            // Use API Gateway (all calls go through Backend)
+            const gateway = getApiGateway();
+            await gateway.ensureInitialized();
+            const [providerId, model] = fullModelId.split('/');
+            const text = messages.map(m => m.content).join(' ');
+            const estimatedTokens = Math.ceil(text.length / 4);
+            
+            const result = await gateway.call(messages, {
+                providerId: providerId,
+                model: model,
+                feature: 'chat',
+                estimatedTokens: estimatedTokens,
+                stream: !!streamCallback,
+                streamCallback: streamCallback
+            });
+            
+            return {
+                content: result.content,
+                providerId: result.providerId,
+                modelId: result.modelId,
+                fullModelId: result.fullModelId,
+                streamed: result.streamed || false
+            };
+        } catch (error) {
+            // NO FALLBACK - All calls must go through Backend
+            console.error('[Background] API Gateway failed - Backend required:', error);
+            throw new Error(`Backend unavailable: ${error.message}. Please check your connection and try again.`);
         }
     }
 }
 
 /**
- * ✅ UPDATED: Run race mode using API Gateway
+ * ✅ UPDATED: Execute shared AI using API Gateway
+ * Chỉ sử dụng Single Mode - Model được chọn từ user preference hoặc default
  */
-async function runRace(fullModelIds, messages) {
+async function executeSharedAI(messages, feature = 'chat') {
     try {
-        // Initialize apiGateway if needed (import function, not instance)
-        const { getApiGateway } = await import('../modules/api-gateway/api-gateway.js');
+        // Use API Gateway (all calls go through Backend)
         const gateway = getApiGateway();
         await gateway.ensureInitialized();
+        
+        // Get user's selected model (from preference or default)
+        const settings = await chrome.storage.local.get(['selectedModel', 'aiProvider']);
+        const selectedModel = settings.selectedModel || settings.aiProvider;
+        
+        if (!selectedModel) {
+            throw new Error(getLang('errorNoModelConfigured'));
+        }
         
         // Estimate tokens
         const text = messages.map(m => m.content).join(' ');
         const estimatedTokens = Math.ceil(text.length / 4);
         
-        // Call via gateway in race mode
+        // Single model call only
+        debugLog('executeSharedAI', 'Running Single Mode via Gateway', selectedModel);
+        const [providerId, model] = selectedModel.split('/');
         const result = await gateway.call(messages, {
-            isRaceMode: true,
-            models: fullModelIds,
-            feature: 'chat',
+            providerId: providerId,
+            model: model,
+            feature: feature,
             estimatedTokens: estimatedTokens
         });
         
@@ -535,81 +567,10 @@ async function runRace(fullModelIds, messages) {
             streamed: result.streamed || false
         };
     } catch (error) {
-        // Fallback to original implementation if gateway fails
-        console.warn('[Background] API Gateway race mode failed, falling back to direct API:', error);
-        return runRaceUtil(fullModelIds, messages, apiManager, getLang, debugLog, callSingleModel, APIError);
+        // NO FALLBACK - All calls must go through Backend
+        console.error('[Background] API Gateway executeSharedAI failed - Backend required:', error);
+        throw new Error(`Backend unavailable: ${error.message}. Please check your connection and try again.`);
     }
-}
-
-/**
- * ✅ UPDATED: Execute shared AI using API Gateway
- * Tự động đọc cài đặt của người dùng (Race Mode hoặc Model Mặc Định)
- * và gọi hàm AI tương ứng.
- */
-async function executeSharedAI(messages, feature = 'chat') {
-    try {
-        // Initialize apiGateway if needed (import function, not instance)
-        const { getApiGateway } = await import('../modules/api-gateway/api-gateway.js');
-        const gateway = getApiGateway();
-        await gateway.ensureInitialized();
-        
-        // Get user settings
-        await apiManager.loadFromStorage();
-        const settings = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-        const defaultModel = settings.aiProvider;
-        const raceConfig = settings.raceSettings;
-        
-        // Estimate tokens
-        const text = messages.map(m => m.content).join(' ');
-        const estimatedTokens = Math.ceil(text.length / 4);
-        
-        let result;
-        if (raceConfig && raceConfig.enabled && raceConfig.models && raceConfig.models.length >= 2) {
-            // Race mode
-            debugLog('executeSharedAI', 'Running Race Mode via Gateway', raceConfig.models);
-            result = await gateway.call(messages, {
-                isRaceMode: true,
-                models: raceConfig.models,
-                feature: feature,
-                estimatedTokens: estimatedTokens
-            });
-        } else if (defaultModel) {
-            // Single model
-            debugLog('executeSharedAI', 'Running Single Mode via Gateway', defaultModel);
-            const [providerId, model] = defaultModel.split('/');
-            result = await gateway.call(messages, {
-                providerId: providerId,
-                model: model,
-                feature: feature,
-                estimatedTokens: estimatedTokens
-            });
-        } else {
-            throw new Error(getLang('errorNoModelConfigured'));
-        }
-        
-        return {
-            content: result.content,
-            providerId: result.providerId,
-            modelId: result.modelId,
-            fullModelId: result.fullModelId,
-            streamed: result.streamed || false
-        };
-    } catch (error) {
-        // Fallback to original implementation if gateway fails
-        console.warn('[Background] API Gateway executeSharedAI failed, falling back to direct API:', error);
-        return executeSharedAIUtil(messages, apiManager, getLang, debugLog, runRace, callSingleModel, APIError);
-    }
-}
-
-/**
- * ✅ HÀM MỚI: Xử lý yêu cầu Test Race Condition
- * Gọi tất cả model, đo latency và trạng thái, không hủy model chậm.
- * @param {Array} messages - Mảng tin nhắn test (thường chỉ có 1 tin user)
- * @param {Array<string>} fullModelIds - Danh sách ID model đầy đủ để test
- * @returns {Promise<Array<object>>} Mảng kết quả test cho từng model
- */
-async function handleRaceTest(messages, fullModelIds) {
-    return handleRaceTestUtil(messages, fullModelIds, apiManager, getLang, debugLog, callSingleModel, APIError);
 }
 
 // ========================================
@@ -651,9 +612,7 @@ apiHandlers.initializeAPIHandlers({
   getLang,
   debugLog,
   checkModelSupportsFiles,
-  runRace,
   callSingleModel,
-  handleRaceTest,
   APIError
 });
 
@@ -665,7 +624,6 @@ gmailHandlers.initializeGmailHandlers({
   streamingPorts: streamingPorts,
   apiManager,
   callSingleModel,
-  runRace,
   debugLog,
   APIError
 });
@@ -693,7 +651,6 @@ const ACTION_ROUTER = {
   'processAction': apiHandlers.handleProcessAction,
   'processActionStream': apiHandlers.handleProcessActionStream,
   'getAIConfig': apiHandlers.handleGetAIConfig,
-  'testRaceCondition': apiHandlers.handleTestRaceCondition,
   
   // Gmail actions
   'SUMMARIZE_EMAIL': gmailHandlers.handleSummarizeEmail,

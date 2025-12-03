@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNavigation();
     setupEventListeners();
     setupAIProviderConfig();
-    setupRacingMode();
     setupTranslateSettings();
     setupWebAssistantSettings();
     setupContextMenuSettings();
@@ -123,23 +122,33 @@ async function renderAccountInfo() {
         
         // Logout Button
         if (logoutBtn) {
+            logoutBtn.style.display = 'block';
             logoutBtn.textContent = window.Lang ? window.Lang.get('settings_account_logout') : 'Đăng xuất';
             logoutBtn.onclick = handleLogout;
         }
+
+        // Show logged in state, hide logged out state
+        const loggedInState = document.getElementById('account-logged-in');
+        const loggedOutState = document.getElementById('account-logged-out');
+        if (loggedInState) loggedInState.style.display = 'flex';
+        if (loggedOutState) loggedOutState.style.display = 'none';
     } else {
-        // Handle Guest State
-        const guestName = window.Lang ? window.Lang.get('authUserFallback') : 'Guest';
-        const loginText = window.Lang ? window.Lang.get('authLoginButton') : 'Đăng nhập';
-
-        if (nameEl) nameEl.textContent = guestName;
-        if (emailEl) emailEl.textContent = '';
-        
-        if (avatarEl) avatarEl.textContent = '?';
-
+        // Handle Guest State - Show login prompt
         if (logoutBtn) {
-            logoutBtn.textContent = loginText;
-            logoutBtn.onclick = handleLogin;
+            logoutBtn.style.display = 'none';
         }
+
+        // Setup login button
+        const loginBtn = document.getElementById('btn-login-settings');
+        if (loginBtn) {
+            loginBtn.onclick = handleLogin;
+        }
+
+        // Show logged out state, hide logged in state
+        const loggedInState = document.getElementById('account-logged-in');
+        const loggedOutState = document.getElementById('account-logged-out');
+        if (loggedInState) loggedInState.style.display = 'none';
+        if (loggedOutState) loggedOutState.style.display = 'block';
     }
 }
 
@@ -656,16 +665,14 @@ async function populateModelSelectors() {
     }
     
     const defaultSelect = document.getElementById('select-default-model');
-    const racingList = document.getElementById('racing-models-list');
     
-    if (!defaultSelect || !racingList) {
-        console.warn('[Setting] Missing selectors:', { defaultSelect: !!defaultSelect, racingList: !!racingList });
+    if (!defaultSelect) {
+        console.warn('[Setting] Missing selector: defaultSelect');
         return;
     }
     
     // Clear existing options
     defaultSelect.innerHTML = '<option value="" disabled selected>Chọn model...</option>';
-    racingList.innerHTML = '';
     
     if (filteredModels.length === 0) {
         // ✅ Fallback: If no models after filtering but we have models, show all with warning
@@ -673,18 +680,11 @@ async function populateModelSelectors() {
             console.warn('[Setting] No models match tier restrictions, showing all models as fallback');
             filteredModels = allModels;
             
-            // Show warning message
-            const warningDiv = document.createElement('div');
-            warningDiv.className = 'text-sm text-warning mb-sm p-xs bg-warning/10 border border-warning/20 rounded';
-            warningDiv.textContent = '⚠️ Một số model có thể không khả dụng với gói hiện tại của bạn.';
-            racingList.appendChild(warningDiv);
         } else {
             const noModelOption = document.createElement('option');
             noModelOption.textContent = "Chưa có model nào được cấu hình hoặc không có model phù hợp với gói của bạn";
             noModelOption.disabled = true;
             defaultSelect.appendChild(noModelOption);
-            
-            racingList.innerHTML = '<p class="text-sm text-muted italic">Vui lòng thêm và cấu hình API Key cho ít nhất 2 model, hoặc nâng cấp gói để sử dụng các model nâng cao.</p>';
             console.warn('[Setting] No models available after filtering');
             return;
         }
@@ -707,54 +707,6 @@ async function populateModelSelectors() {
         }
     });
     
-    // Populate Racing Checkboxes - Use async/await instead of callback
-    const raceData = await chrome.storage.local.get('raceSettings');
-    const selectedModels = raceData.raceSettings?.models || [];
-    
-    console.log('[Setting] Populating racing checkboxes:', filteredModels.length, 'models');
-    
-    filteredModels.forEach(model => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `race-${model.fullModelId}`;
-        checkbox.value = model.fullModelId;
-        checkbox.checked = selectedModels.includes(model.fullModelId);
-        
-        // Event listener to save changes immediately
-        checkbox.addEventListener('change', async () => {
-            await updateRacingConfig();
-            showToast('Đã lưu cài đặt', 'success');
-        });
-        
-        const label = document.createElement('label');
-        label.htmlFor = `race-${model.fullModelId}`;
-        label.textContent = `${model.providerName} - ${model.displayName || model.id}`;
-        
-        div.appendChild(checkbox);
-        div.appendChild(label);
-        racingList.appendChild(div);
-    });
-    
-    console.log('[Setting] Racing checkboxes populated:', racingList.children.length);
-}
-
-async function updateRacingConfig() {
-    const checkboxes = document.querySelectorAll('#racing-models-list input[type="checkbox"]');
-    const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-    
-    const data = await chrome.storage.local.get('raceSettings');
-    const currentSettings = data.raceSettings || {};
-    
-    await chrome.storage.local.set({
-        raceSettings: {
-            ...currentSettings,
-            models: selected
-        }
-    });
-    console.log('Updated racing models:', selected);
 }
 
 function setupAIProviderConfig() {
@@ -904,124 +856,6 @@ function setupAIProviderConfig() {
     });
 }
 
-async function setupRacingMode() {
-    const toggle = document.getElementById('toggle-racing-mode');
-    const container = document.getElementById('racing-config-container');
-    const testBtn = document.getElementById('btn-test-racing');
-    const resultsDiv = document.getElementById('racing-test-results');
-    
-    if (!toggle) return;
-
-    // Load state
-    try {
-        const data = await chrome.storage.local.get('raceSettings');
-        if (data.raceSettings && data.raceSettings.enabled) {
-            toggle.checked = true;
-            if(container) container.classList.remove('d-none');
-            // ✅ Ensure models are populated when racing mode is already enabled
-            await populateModelSelectors();
-        } else {
-            toggle.checked = false;
-            if(container) container.classList.add('d-none');
-        }
-    } catch (e) {
-        console.error('Error loading racing settings:', e);
-    }
-
-    // Change Handler
-    toggle.addEventListener('change', async (e) => {
-        const enabled = e.target.checked;
-        if(container) {
-            enabled ? container.classList.remove('d-none') : container.classList.add('d-none');
-        }
-        
-        try {
-            const data = await chrome.storage.local.get('raceSettings');
-            const raceSettings = data.raceSettings || {};
-            
-            await chrome.storage.local.set({
-                raceSettings: {
-                    ...raceSettings,
-                    enabled: enabled
-                }
-            });
-            
-            // ✅ Repopulate model selectors when racing mode is enabled
-            if (enabled) {
-                await populateModelSelectors();
-            }
-            
-            showToast('Đã lưu cài đặt', 'success');
-        } catch (e) {
-            console.error('Error saving racing settings:', e);
-            toggle.checked = !enabled;
-            showToast('Không thể lưu cài đặt. Vui lòng thử lại.', 'error');
-        }
-    });
-    
-    // Racing Test Handler
-    if (testBtn) {
-        testBtn.addEventListener('click', async () => {
-            const checkboxes = document.querySelectorAll('#racing-models-list input[type="checkbox"]:checked');
-            const selectedModels = Array.from(checkboxes).map(cb => cb.value);
-            
-            if (selectedModels.length < 2) {
-                alert('Vui lòng chọn ít nhất 2 model để test Racing Mode.');
-                return;
-            }
-            
-            testBtn.disabled = true;
-            testBtn.textContent = 'Đang test...';
-            resultsDiv.innerHTML = '<div class="loading-spinner"></div>';
-            
-            try {
-                // Import runRace from api.js is not enough because it expects specific params.
-                // We should use apiManager.handleRaceTest if available or simulate it.
-                // Since we are in setting.js, we might not have full environment.
-                // Let's use a simple ping to each model.
-                
-                // Since apiManager.handleRaceTest is available via export, let's try to import it or implement simple version
-                // But `apiManager` instance is what we have.
-                
-                // Quick implementation of parallel testing
-                const results = await Promise.all(selectedModels.map(async (fullModelId) => {
-                    const startTime = performance.now();
-                    try {
-                        // Use apiManager to test connection
-                        const [providerId, modelId] = fullModelId.split('/');
-                        const config = apiManager.getProvider(providerId);
-                        const res = await apiManager.testConnection({ ...config, model: modelId });
-                        const duration = Math.round(performance.now() - startTime);
-                        return { id: fullModelId, success: res.success, time: duration, msg: res.message };
-                    } catch (e) {
-                        return { id: fullModelId, success: false, time: 0, msg: e.message };
-                    }
-                }));
-                
-                // Render results
-                resultsDiv.innerHTML = '';
-                results.sort((a, b) => a.time - b.time); // Sort by speed
-                
-                results.forEach(res => {
-                    const div = document.createElement('div');
-                    div.className = `d-flex justify-between text-sm p-xs mb-xs border-b ${res.success ? 'text-success' : 'text-danger'}`;
-                    div.innerHTML = `
-                        <span>${res.id}</span>
-                        <span>${res.success ? `${res.time}ms` : 'Error'}</span>
-                    `;
-                    resultsDiv.appendChild(div);
-                });
-                
-            } catch (e) {
-                console.error('Race test failed', e);
-                resultsDiv.textContent = 'Lỗi khi test: ' + e.message;
-            } finally {
-                testBtn.disabled = false;
-                testBtn.textContent = 'Test Racing';
-            }
-        });
-    }
-}
 
 function setupContextMenuSettings() {
     const contextMenuToggle = document.getElementById('toggle-context-menu');

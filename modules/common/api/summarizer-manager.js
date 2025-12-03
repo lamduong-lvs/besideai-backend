@@ -5,6 +5,102 @@
  * └─────────────────────────────────────────────────────────────────┘
  */
 
+// Simple stub for RacingHelper (removed, using single mode)
+class RacingHelper {
+    constructor() {
+        this.enabled = false;
+    }
+    
+    async init() {
+        this.enabled = false;
+    }
+    
+    isRacingEnabled() {
+        return false;
+    }
+    
+    buildSummaryPrompt(captions, options) {
+        const { language = 'vi', style = 'detailed', includeTimestamps = true, includeSpeakers = true } = options;
+        
+        let prompt = `Hãy tạo một bản tóm tắt cuộc họp từ các đoạn caption sau đây.\n\n`;
+        
+        if (style === 'detailed') {
+            prompt += `Yêu cầu:\n`;
+            prompt += `1. Tóm tắt chính: Mô tả ngắn gọn nội dung cuộc họp\n`;
+            prompt += `2. Điểm chính: Liệt kê các điểm quan trọng được thảo luận\n`;
+            prompt += `3. Quyết định: Các quyết định đã được đưa ra\n`;
+            prompt += `4. Hành động: Các công việc cần thực hiện (nếu có)\n\n`;
+        }
+        
+        prompt += `Captions:\n`;
+        captions.forEach((caption, index) => {
+            let line = '';
+            if (includeSpeakers && caption.speaker) {
+                line += `[${caption.speaker}] `;
+            }
+            if (includeTimestamps && caption.timestamp) {
+                line += `(${caption.timestamp}) `;
+            }
+            line += caption.text;
+            prompt += `${index + 1}. ${line}\n`;
+        });
+        
+        prompt += `\nHãy trả về kết quả dưới dạng JSON với cấu trúc:\n`;
+        prompt += `{\n`;
+        prompt += `  "main": "Tóm tắt chính",\n`;
+        prompt += `  "keyPoints": ["Điểm 1", "Điểm 2"],\n`;
+        prompt += `  "decisions": ["Quyết định 1"],\n`;
+        prompt += `  "actionItems": [{"task": "Công việc", "assignee": "Người phụ trách", "deadline": "Hạn chót"}]\n`;
+        prompt += `}`;
+        
+        return prompt;
+    }
+    
+    async sendSingle(prompt, options) {
+        // Use message passing to background for summarization via processAction
+        try {
+            const messages = [
+                { role: 'system', content: 'You are a professional meeting summarizer. Return only valid JSON, no additional text.' },
+                { role: 'user', content: prompt }
+            ];
+            
+            // Get AI config
+            const configResponse = await chrome.runtime.sendMessage({ action: 'getAIConfig' });
+            if (!configResponse?.success || !configResponse.config) {
+                throw new Error('Failed to get AI config');
+            }
+            
+            const response = await chrome.runtime.sendMessage({
+                action: 'processAction',
+                messages: messages,
+                config: configResponse.config
+            });
+            
+            if (!response || !response.success) {
+                throw new Error(response?.error?.message || 'Summarization failed');
+            }
+            
+            return {
+                response: response.result || '',
+                cached: false,
+                modelId: response.usedFullModelId || 'unknown',
+                provider: response.providerUsed || 'unknown'
+            };
+        } catch (error) {
+            console.error('[SummarizerManager] Summarization via message failed:', error);
+            throw error;
+        }
+    }
+    
+    getRacingStats() {
+        return { enabled: false };
+    }
+    
+    clearCache() {
+        // No-op
+    }
+}
+
 class SummarizerManager {
     constructor() {
         this.racingHelper = null;

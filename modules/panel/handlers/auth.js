@@ -9,6 +9,10 @@ import { backendInit } from '../../subscription/backend-init.js';
 
 export function setupAuthListeners(Lang) {
   auth.on(SESSION_EVENTS.CREATED, async (user) => {
+    // Re-render user menu when user logs in
+    if (window.userMenu) {
+      await window.userMenu.render();
+    }
     console.log('[Panel] User logged in:', user);
     showSuccess(Lang.get("successLogin", { name: user.name || user.email }));
     if (user.picture) {
@@ -29,14 +33,44 @@ export function setupAuthListeners(Lang) {
       console.warn('[Panel] Failed to initialize backend after login:', error);
     }
   });
-  auth.on(SESSION_EVENTS.DESTROYED, () => {
+  auth.on(SESSION_EVENTS.DESTROYED, async () => {
     console.log('[Panel] User logged out');
+    
+    // Close popup first to prevent flickering
+    const userPopup = document.getElementById('userPopup');
+    if (userPopup) {
+      userPopup.classList.remove('show');
+    }
+    
+    // Wait for popup to close before re-rendering
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Re-render user menu when user logs out
+    if (window.userMenu) {
+      await window.userMenu.render();
+    }
+    
     showInfo(Lang.get("infoLoggedOut"));
     resetUserAvatar(Lang);
     disablePremiumFeatures();
   });
-  auth.on(SESSION_EVENTS.EXPIRED, () => {
+  auth.on(SESSION_EVENTS.EXPIRED, async () => {
     console.log('[Panel] Session expired');
+    
+    // Close popup first to prevent flickering
+    const userPopup = document.getElementById('userPopup');
+    if (userPopup) {
+      userPopup.classList.remove('show');
+    }
+    
+    // Wait for popup to close before re-rendering
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Re-render user menu when session expires
+    if (window.userMenu) {
+      await window.userMenu.render();
+    }
+    
     showInfo(Lang.get("infoSessionExpired"));
     resetUserAvatar(Lang);
   });

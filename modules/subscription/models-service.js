@@ -58,10 +58,24 @@ class ModelsService {
       
       if (data.success) {
         this.models = data.models;
+        this.categories = data.categories || {};
         this.defaultModel = data.defaultModel;
         this.recommendedModels = data.recommendedModels;
         this.tier = data.tier;
         this.lastFetch = Date.now();
+        
+        // Cache in local storage
+        try {
+          await chrome.storage.local.set({
+            backendModels: data.models,
+            backendCategories: data.categories || {},
+            backendDefaultModel: data.defaultModel,
+            backendRecommendedModels: data.recommendedModels,
+            backendModelsTimestamp: Date.now()
+          });
+        } catch (error) {
+          console.warn('[ModelsService] Failed to cache models:', error);
+        }
         
         return data.models;
       } else {
@@ -87,19 +101,94 @@ class ModelsService {
       }
     }
 
+    // Try to load from local storage cache first
+    if (!forceRefresh) {
+      try {
+        const cached = await chrome.storage.local.get([
+          'backendModels',
+          'backendCategories',
+          'backendDefaultModel',
+          'backendRecommendedModels',
+          'backendModelsTimestamp'
+        ]);
+        
+        if (cached.backendModels && cached.backendModelsTimestamp) {
+          const cacheAge = Date.now() - cached.backendModelsTimestamp;
+          if (cacheAge < this.cacheTTL) {
+            this.models = cached.backendModels;
+            this.categories = cached.backendCategories || {};
+            this.defaultModel = cached.backendDefaultModel;
+            this.recommendedModels = cached.backendRecommendedModels || [];
+            this.lastFetch = cached.backendModelsTimestamp;
+            return this.models;
+          }
+        }
+      } catch (error) {
+        console.warn('[ModelsService] Failed to load cached models:', error);
+      }
+    }
+
     // Fetch from backend
     return await this.fetchModels();
   }
 
   /**
+   * Get models grouped by category
+   * @returns {Promise<Object>} Models grouped by category
+   */
+  async getModelsByCategory() {
+    if (!this.models) {
+      await this.getModels();
+    }
+    
+    const grouped = {};
+    this.models.forEach(model => {
+      const category = model.category || 'llm';
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(model);
+    });
+    
+    return grouped;
+  }
+
+  /**
+   * Get categories
+   * @returns {Promise<Object>} Categories object
+   */
+  async getCategories() {
+    if (!this.models) {
+      await this.getModels();
+    }
+    return this.categories || {};
+  }
+
+  /**
    * Get default model
-   * @returns {Promise<string|null>} Default model ID
+   * @returns {Promise<string|null>} Default model ID (format: provider/modelId)
    */
   async getDefaultModel() {
     if (!this.models) {
       await this.getModels();
     }
-    return this.defaultModel || (this.models && this.models[0]?.id) || null;
+    
+    if (this.defaultModel) {
+      // Format: provider/modelId
+      const model = this.models.find(m => m.id === this.defaultModel);
+      if (model) {
+        return `${model.provider}/${model.id}`;
+      }
+      return this.defaultModel.includes('/') ? this.defaultModel : null;
+    }
+    
+    // Fallback to first model
+    if (this.models && this.models.length > 0) {
+      const firstModel = this.models[0];
+      return `${firstModel.provider}/${firstModel.id}`;
+    }
+    
+    return null;
   }
 
   /**

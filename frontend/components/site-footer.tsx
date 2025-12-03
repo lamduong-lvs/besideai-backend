@@ -1,8 +1,11 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Github, Mail, Twitter } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
 
 const footerLinks = {
   product: [
@@ -29,12 +32,12 @@ const footerLinks = {
 const socialLinks = [
   {
     name: "Twitter",
-    href: "#",
+    href: siteConfig.links.twitter,
     icon: Twitter,
   },
   {
     name: "GitHub",
-    href: "#",
+    href: siteConfig.links.github,
     icon: Github,
   },
   {
@@ -44,99 +47,68 @@ const socialLinks = [
   },
 ]
 
-export function SiteFooter() {
+export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <footer className="border-t bg-background">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Sản phẩm</h3>
-            <ul className="space-y-2 text-sm">
-              {footerLinks.product.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Công ty</h3>
-            <ul className="space-y-2 text-sm">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Pháp lý</h3>
-            <ul className="space-y-2 text-sm">
-              {footerLinks.legal.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Tài nguyên</h3>
-            <ul className="space-y-2 text-sm">
-              {footerLinks.resources.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <Separator className="my-8" />
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+    <footer className={cn("border-t bg-background", className)}>
+      <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <div className="flex items-center gap-2">
-            <img
+            <Image
               src="/logo.png"
               alt="BesideAI"
+              width={24}
+              height={24}
               className="h-6 w-6"
             />
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} BesideAI. All rights reserved.
-            </p>
+            <span className="font-bold">{siteConfig.name}</span>
           </div>
-          <div className="flex items-center gap-4">
-            {socialLinks.map((link) => {
-              const Icon = link.icon
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label={link.name}
-                >
-                  <Icon className="h-5 w-5" />
-                </Link>
-              )
-            })}
-          </div>
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            Built by{" "}
+            <a
+              href={siteConfig.links.twitter}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4 hover:text-primary"
+            >
+              BesideAI Team
+            </a>
+            . Hosted on{" "}
+            <a
+              href="https://vercel.com"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4 hover:text-primary"
+            >
+              Vercel
+            </a>
+            . The source code is available on{" "}
+            <a
+              href={siteConfig.links.github}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4 hover:text-primary"
+            >
+              GitHub
+            </a>
+            .
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          {socialLinks.map((link) => {
+            const Icon = link.icon
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="text-muted-foreground transition-colors hover:text-primary"
+                aria-label={link.name}
+              >
+                <Icon className="h-5 w-5" />
+              </Link>
+            )
+          })}
         </div>
       </div>
     </footer>

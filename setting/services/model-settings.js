@@ -1,85 +1,59 @@
 // setting/services/model-settings.js - Model settings service
 
-import { apiManager } from '../../utils/api.js';
+import { modelsService } from '../../modules/subscription/models-service.js';
+import { modelPreferenceService } from '../../modules/subscription/model-preference-service.js';
 import { showToast } from '../modules/core/toast.js';
 import { populateSubSidebar } from '../modules/navigation/sub-nav.js';
 import { showPage } from '../modules/core/page-manager.js';
+import { apiManager } from '../../utils/api.js';
 
-// Build allModels from providers with tier filtering
-async function buildAllModels(providers) {
-  const allModels = [];
-  
-  // ✅ Get current tier to filter models
-  let subscriptionManager = null;
-  let currentTier = 'free';
+// Get models from Backend
+async function buildAllModels() {
   try {
-    const { subscriptionManager: sm } = await import('../../modules/subscription/subscription-manager.js');
-    subscriptionManager = sm;
-    await subscriptionManager.ensureInitialized();
-    currentTier = await subscriptionManager.getTier();
+    await modelsService.initialize();
+    const models = await modelsService.getModels();
+    
+    // Transform Backend models to match expected format
+    return models.map(model => ({
+      id: model.id,
+      displayName: model.name,
+      providerName: model.providerName,
+      providerId: model.provider,
+      fullModelId: `${model.provider}/${model.id}`,
+      category: model.category || 'llm',
+      tier: model.tier,
+      description: model.description,
+      maxTokens: model.maxTokens,
+      supportsStreaming: model.supportsStreaming
+    }));
   } catch (error) {
-    console.warn('[ModelSettings] Failed to load subscription manager:', error);
+    console.error('[ModelSettings] Failed to load models from Backend:', error);
+    return [];
   }
-  
-  // ✅ Import model checking function
-  let isModelAllowedForTier = null;
-  try {
-    const { isModelAllowedForTier: checkFn } = await import('../../modules/subscription/subscription-config.js');
-    isModelAllowedForTier = checkFn;
-  } catch (error) {
-    console.warn('[ModelSettings] Failed to load subscription config:', error);
-  }
-  
-  providers.forEach(provider => {
-    if (provider.models && provider.models.length > 0) {
-      provider.models.forEach(model => {
-        const fullModelId = `${provider.providerId}/${model.id}`;
-        
-        // ✅ Filter models based on tier
-        if (isModelAllowedForTier && currentTier !== 'byok') {
-          const isAllowed = isModelAllowedForTier(currentTier, fullModelId);
-          if (!isAllowed) {
-            // Skip this model - not available for current tier
-            return;
-          }
-        }
-        
-        allModels.push({
-          ...model,
-          providerName: provider.name,
-          providerId: provider.providerId,
-          fullModelId: fullModelId
-        });
-      });
-    }
-  });
-  
-  return allModels;
 }
 
 export async function loadModelSettings() {
   try {
     console.log("[Setting] Loading model settings...");
+    
+    // Get models from Backend
+    const allModels = await buildAllModels();
+    console.log("[Setting] Models loaded from Backend:", allModels.length);
+    
+    // Get saved preferences
+    const savedDefaultModel = await modelPreferenceService.getPreferredModel();
+    console.log("[Setting] Saved default model:", savedDefaultModel);
+    
+    // Populate sub-sidebar (still need providers for API key config)
     await apiManager.loadFromStorage();
     const providers = apiManager.getAllProviders();
-    console.log("[Setting] Providers loaded:", providers.length);
-    
-    const allModels = await buildAllModels(providers);
-    console.log("[Setting] All models built (filtered by tier):", allModels.length);
-    
-    const data = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-    console.log("[Setting] Loaded model data:", data);
-    
-    // Populate sub-sidebar
     populateSubSidebar(providers);
-    console.log("[Setting] Sub-sidebar populated");
     
     // Create provider config pages
     populateProviderConfigPages(providers);
-    console.log("[Setting] Provider config pages created");
     
-    // Populate model selection settings
-    await populateModelSelectionSettings(allModels, data.aiProvider, data.raceSettings);
+    // Populate model selection UI
+    await populateModelSelectionSettings(allModels, savedDefaultModel);
     console.log("[Setting] Model selection settings populated");
     
     // Only re-activate page if we're currently on model-settings section
@@ -91,7 +65,6 @@ export async function loadModelSettings() {
         activeSubLink.classList.add('active');
         showPage(currentSubNavPage);
       } else {
-        // Wait a bit for DOM to update, then try again
         setTimeout(() => {
           const firstSubLink = document.querySelector('.menu-item-sub');
           if (firstSubLink) {
@@ -103,73 +76,47 @@ export async function loadModelSettings() {
       }
     }
     
-    // Show/hide race test section
-    const raceToggle = document.getElementById('enableRacingMode');
-    const testSection = document.getElementById('race-test-section');
-    if (raceToggle && testSection) {
-      if (raceToggle.checked) {
-        testSection.classList.remove('d-none');
-      } else {
-        testSection.classList.add('d-none');
-      }
-    }
+    return {
+      models: allModels,
+      defaultModel: savedDefaultModel
+    };
   } catch (error) {
-    console.error('[ModelSettings] Failed to load:', error);
-    showToast(window.Lang?.get('errorLoadSettings') || 'Failed to load settings', 'error');
+    console.error('[ModelSettings] Error loading model settings:', error);
+    showToast('Failed to load models', 'error');
+    return {
+      models: [],
+      defaultModel: null
+    };
   }
 }
 
 export async function saveModelSelectionSettings() {
-  const enableToggle = document.getElementById('enableRacingMode');
-  const enabled = enableToggle?.checked ?? false;
-  const selectedModels = Array.from(
-    document.querySelectorAll('#racingModelChecklist input[name="racingModel"]:checked')
-  ).map(cb => cb.value);
   const defaultModelSelect = document.getElementById('defaultModelSelect');
   const defaultModel = defaultModelSelect?.value || null;
-  const errorEl = document.getElementById('racingModelError');
   
-  // Validate race models
-  if (enabled && (selectedModels.length < 2 || selectedModels.length > 4)) {
-    if (errorEl) {
-      errorEl.textContent = window.Lang?.get('errorRaceModelCount') || 'Please select 2-4 models';
-      errorEl.classList.remove('d-none');
-    }
-    showToast(window.Lang?.get('errorRaceModelCountToast') || 'Please select 2-4 models', 'error');
+  if (!defaultModel) {
+    showToast('Please select a model', 'error');
     return;
   }
   
-  if (errorEl) errorEl.classList.add('d-none');
-  
   try {
+    await modelPreferenceService.setPreferredModel(defaultModel);
     await chrome.storage.local.set({
-      aiProvider: defaultModel,
-      raceSettings: { enabled, models: selectedModels }
+      selectedModel: defaultModel,
+      aiProvider: defaultModel // Backward compatibility
     });
-    // Do not show toast for auto-save
-    // showToast(window.Lang?.get('successSaveResponseSettings') || 'Settings saved', 'success');
-    
-    // Show/hide race test section
-    const testSection = document.getElementById('race-test-section');
-    if (testSection) {
-      if (enabled) {
-        testSection.classList.remove('d-none');
-      } else {
-        testSection.classList.add('d-none');
-      }
-    }
+    showToast('Model preference saved', 'success');
   } catch (error) {
     console.error('[ModelSettings] Failed to save:', error);
-    showToast(window.Lang?.get('errorSaveResponseSettings') || 'Failed to save settings', 'error');
+    showToast('Failed to save model preference', 'error');
   }
 }
 
 export async function refreshModelSelectionSettings() {
   try {
-    const providers = apiManager.getAllProviders();
-    const allModels = await buildAllModels(providers);
-    const data = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-    populateModelSelectionSettings(allModels, data.aiProvider, data.raceSettings);
+    const allModels = await buildAllModels();
+    const savedDefaultModel = await modelPreferenceService.getPreferredModel();
+    await populateModelSelectionSettings(allModels, savedDefaultModel);
   } catch (error) {
     console.error('[ModelSettings] Failed to refresh:', error);
   }
@@ -177,22 +124,15 @@ export async function refreshModelSelectionSettings() {
 
 export async function syncModelSelectionSettings() {
   try {
-    const enableToggle = document.getElementById('enableRacingMode');
     const defaultModelSelect = document.getElementById('defaultModelSelect');
-    const selectedModels = Array.from(
-      document.querySelectorAll('#racingModelChecklist input[name="racingModel"]:checked')
-    ).map(cb => cb.value);
+    const defaultModel = defaultModelSelect?.value || null;
     
-    const currentSettings = {
-      aiProvider: defaultModelSelect?.value || null,
-      raceSettings: {
-        enabled: enableToggle?.checked ?? false,
-        models: selectedModels
-      }
-    };
-    
-    if (currentSettings.aiProvider || currentSettings.raceSettings.models.length > 0) {
-      await chrome.storage.local.set(currentSettings);
+    if (defaultModel) {
+      await modelPreferenceService.setPreferredModel(defaultModel);
+      await chrome.storage.local.set({
+        selectedModel: defaultModel,
+        aiProvider: defaultModel
+      });
     }
   } catch (error) {
     console.error('[ModelSettings] Failed to sync:', error);
@@ -204,27 +144,14 @@ export function populateProviderConfigPages(providers) {
   const contentHost = document.getElementById('content-host');
   const template = document.getElementById('provider-config-template');
   
-  if (!contentHost) {
-    console.error('[ModelSettings] content-host not found');
-    return;
-  }
-  
-  if (!template) {
-    console.error('[ModelSettings] provider-config-template not found');
-    return;
-  }
-  
-  if (!window.Lang) {
-    console.error('[ModelSettings] window.Lang not available');
+  if (!contentHost || !template || !window.Lang) {
     return;
   }
   
   // Remove existing provider pages
   contentHost.querySelectorAll('.setting-page[data-page-id^="provider-"]').forEach(p => p.remove());
-  console.log('[ModelSettings] Removed existing provider pages');
   
   if (!providers || providers.length === 0) {
-    console.warn('[ModelSettings] No providers to create pages for');
     return;
   }
   
@@ -271,14 +198,10 @@ export function populateProviderConfigPages(providers) {
       page.appendChild(content);
       updateModelList(page, provider);
       contentHost.appendChild(page);
-      
-      console.log(`[ModelSettings] Created page for provider: ${provider.providerId}`);
     } catch (error) {
       console.error(`[ModelSettings] Error creating page for provider ${provider.providerId}:`, error);
     }
   });
-  
-  console.log(`[ModelSettings] Created ${providers.length} provider config pages`);
 }
 
 export function updateModelList(pageElement, provider) {
@@ -311,102 +234,76 @@ export function updateModelList(pageElement, provider) {
   });
 }
 
-async function populateModelSelectionSettings(allModels, savedDefaultModel, savedRaceSettings) {
+async function populateModelSelectionSettings(allModels, savedDefaultModel) {
   const defaultSelect = document.getElementById('defaultModelSelect');
-  const raceChecklist = document.getElementById('racingModelChecklist');
-  const raceChecklistPlaceholder = raceChecklist?.querySelector('.checkbox-item-placeholder');
-  const enableToggle = document.getElementById('enableRacingMode');
   
-  if (!defaultSelect || !raceChecklist || !enableToggle || !window.Lang) return;
+  if (!defaultSelect || !window.Lang) return;
   
   defaultSelect.innerHTML = '';
-  raceChecklist.querySelectorAll('.checkbox-item').forEach(item => item.remove());
   
   if (allModels.length === 0) {
     defaultSelect.innerHTML = `<option value="">${window.Lang.get('errorNoModelsConfigured')}</option>`;
     defaultSelect.disabled = true;
-    if (raceChecklistPlaceholder) raceChecklistPlaceholder.classList.remove('d-none');
-    enableToggle.checked = false;
-    enableToggle.disabled = true;
     return;
   }
   
-  if (raceChecklistPlaceholder) raceChecklistPlaceholder.classList.add('d-none');
   defaultSelect.disabled = false;
-  enableToggle.disabled = allModels.length < 2;
   
-  // ✅ Get current tier to show upgrade prompts
-  let subscriptionManager = null;
-  let currentTier = 'free';
-  try {
-    const { subscriptionManager: sm } = await import('../../modules/subscription/subscription-manager.js');
-    subscriptionManager = sm;
-    await subscriptionManager.ensureInitialized();
-    currentTier = await subscriptionManager.getTier();
-  } catch (error) {
-    console.warn('[ModelSettings] Failed to load subscription manager:', error);
-  }
-  
+  // Group models by category
+  const modelsByCategory = {};
   allModels.forEach(model => {
-    const option = new Option(`${model.displayName} (${model.providerName})`, model.fullModelId);
-    defaultSelect.add(option);
-    
-    const div = document.createElement('div');
-    div.className = 'checkbox-item';
-    div.innerHTML = `
-      <input type="checkbox" id="race-${model.fullModelId.replace(/[^a-zA-Z0-9]/g, '-')}" name="racingModel" value="${model.fullModelId}">
-      <label for="race-${model.fullModelId.replace(/[^a-zA-Z0-9]/g, '-')}">${model.displayName} (${model.providerName})</label>
-    `;
-    
-    // ✅ Add click handler to show upgrade prompt if model not available
-    const checkbox = div.querySelector('input[type="checkbox"]');
-    checkbox.addEventListener('change', async (e) => {
-      if (e.target.checked && currentTier !== 'byok') {
-        try {
-          const { isModelAllowedForTier, getRequiredTierForModel } = await import('../../modules/subscription/subscription-config.js');
-          const isAllowed = isModelAllowedForTier(currentTier, model.fullModelId);
-          if (!isAllowed) {
-            e.target.checked = false;
-            const requiredTier = getRequiredTierForModel(model.fullModelId);
-            const { upgradePrompts } = await import('../../modules/features/upgrade-prompts.js');
-            await upgradePrompts.show('model_not_available', {
-              modelId: model.fullModelId,
-              requiredTier: requiredTier
-            });
-          }
-        } catch (error) {
-          console.error('[ModelSettings] Error checking model availability:', error);
-        }
-      }
-    });
-    
-    raceChecklist.appendChild(div);
+    const category = model.category || 'llm';
+    if (!modelsByCategory[category]) {
+      modelsByCategory[category] = [];
+    }
+    modelsByCategory[category].push(model);
   });
   
+  // Category names
+  const categoryNames = {
+    'llm': 'LLM (Text Generation)',
+    'tts': 'TTS (Text-to-Speech)',
+    'image': 'Image Generation',
+    'video': 'Video Generation',
+    'coding': 'Code Generation',
+    'chat': 'Chat'
+  };
+  
+  // Add category optgroups
+  const categoryOrder = ['llm', 'chat', 'coding', 'tts', 'image', 'video'];
+  categoryOrder.forEach(category => {
+    const models = modelsByCategory[category];
+    if (!models || models.length === 0) return;
+    
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = categoryNames[category] || category;
+    
+    models.forEach(model => {
+      const option = new Option(`${model.displayName} (${model.providerName})`, model.fullModelId);
+      optgroup.appendChild(option);
+    });
+    
+    defaultSelect.appendChild(optgroup);
+  });
+  
+  // Set selected value
   if (savedDefaultModel && defaultSelect.querySelector(`option[value="${savedDefaultModel}"]`)) {
     defaultSelect.value = savedDefaultModel;
   } else if (allModels.length > 0) {
     defaultSelect.value = allModels[0].fullModelId;
   }
   
-  if (savedRaceSettings) {
-    enableToggle.checked = savedRaceSettings.enabled && allModels.length >= 2;
-    savedRaceSettings.models.forEach(modelId => {
-      const checkbox = raceChecklist.querySelector(`input[value="${modelId}"]`);
-      if (checkbox) checkbox.checked = true;
-    });
-  } else {
-    enableToggle.checked = false;
-  }
-  
-  const testSection = document.getElementById('race-test-section');
-  if (testSection) {
-    if (enableToggle.checked) {
-      testSection.classList.remove('d-none');
-    } else {
-      testSection.classList.add('d-none');
+  // Save handler
+  defaultSelect.addEventListener('change', async (e) => {
+    const modelId = e.target.value;
+    if (modelId) {
+      try {
+        await modelPreferenceService.setPreferredModel(modelId);
+        showToast('Model preference saved', 'success');
+      } catch (error) {
+        console.error('[ModelSettings] Error saving model preference:', error);
+        showToast('Failed to save model preference', 'error');
+      }
     }
-  }
+  });
 }
-
-

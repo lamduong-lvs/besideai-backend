@@ -2,48 +2,61 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Zap, Shield, Globe, Mail, Video, FileText, Image } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-20 px-4 py-16">
+    <>
       {/* Hero Section */}
-      <section className="flex flex-col items-center gap-8 text-center">
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-muted px-4 py-1.5 text-sm">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span>AI-Powered Chrome Extension</span>
-          </div>
-          <h1 className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+      <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
+        <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+          <Link
+            href="#"
+            className="rounded-2xl bg-muted px-4 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80"
+          >
+            <Sparkles className="mr-2 inline h-4 w-4 text-primary" />
+            AI-Powered Chrome Extension
+          </Link>
+          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
             AI trợ lý cho{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-primary/90 to-primary/60 bg-clip-text text-transparent">
               Gmail, Meet
             </span>{" "}
             và hơn thế nữa
           </h1>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+          <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
             BesideAI kết nối Chrome Extension với backend AI mạnh mẽ, quản lý
             gói trả phí qua Lemon Squeezy và tối ưu chi phí Free Tier.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button asChild size="lg" className="h-12 px-8 text-base">
-              <Link href="/login">Bắt đầu miễn phí</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
-              <Link href="/pricing">Xem bảng giá</Link>
-            </Button>
+          <div className="space-x-4">
+            <Link href="/login" className={cn(buttonVariants({ size: "lg" }))}>
+              Bắt đầu miễn phí
+            </Link>
+            <Link
+              href="/pricing"
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              Xem bảng giá
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="space-y-12">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Tính năng nổi bật</h2>
-          <p className="text-muted-foreground">
+      <section
+        id="features"
+        className="container space-y-6 bg-slate-50 py-8 dark:bg-transparent md:py-12 lg:py-24"
+      >
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+            Tính năng nổi bật
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
             Tất cả những gì bạn cần để làm việc hiệu quả hơn với AI
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-4">
           <FeatureCard
             icon={<Mail className="h-6 w-6" />}
             title="Gmail Integration"
@@ -88,14 +101,16 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="space-y-12">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Bảng giá</h2>
-          <p className="text-muted-foreground">
+      <section id="pricing" className="container py-8 md:py-12 lg:py-24">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+            Bảng giá
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
             Chọn gói phù hợp với nhu cầu của bạn
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
           <PricingCard
             name="Free"
             price="$0"
@@ -154,17 +169,15 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <Card className="group hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          {icon}
+    <div className="relative overflow-hidden rounded-lg border bg-background p-2">
+      <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
+        <div className="text-primary">{icon}</div>
+        <div className="space-y-2">
+          <h3 className="font-bold">{title}</h3>
+          <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        <CardTitle className="text-lg">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="text-base">{description}</CardDescription>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 

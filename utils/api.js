@@ -1165,174 +1165,20 @@ async function callSingleModelOriginal(fullModelId, messages, signal, apiManager
   }
 }
 
-async function runRace(fullModelIds, messages, apiManager, getLang, debugLog, callSingleModelFn, APIError) {
-  // Try to use new dispatcher if available
-  await initializeDispatcher();
-  
-  if (aiDispatcher && dispatcherInitialized) {
-    try {
-      const result = await aiDispatcher.dispatch({
-        mode: 'run-race',
-        messages: messages,
-        config: {
-          models: fullModelIds
-        }
-      });
-      return result;
-    } catch (error) {
-      // If dispatcher fails, fall back to old implementation
-      console.warn('[APIManager] Dispatcher failed, using fallback:', error);
-    }
-  }
-  
-  // Fallback to original implementation
-  return runRaceOriginal(fullModelIds, messages, apiManager, getLang, debugLog, callSingleModelFn, APIError);
-}
-
-async function runRaceOriginal(fullModelIds, messages, apiManager, getLang, debugLog, callSingleModelFn, APIError) {
-  debugLog('runRace', 'Starting race for models:', fullModelIds);
-  const controllers = fullModelIds.map(() => new AbortController());
-  const errors = [];
-  const promises = fullModelIds.map((fullModelId, index) => 
-    callSingleModelFn(fullModelId, messages, controllers[index].signal, apiManager, getLang, debugLog, APIError).catch(error => {
-      errors.push({ fullModelId, error });
-      debugLog('runRace', `Model ${fullModelId} failed or was aborted`, error.message);
-      return new Promise(() => {});
-    })
-  );
-  
-  try {
-    const winner = await Promise.any(promises);
-    controllers.forEach((controller, index) => {
-      if (!controllers[index].signal.aborted) {
-        controller.abort();
-      }
-    });
-    debugLog('runRace', `Winner is: ${winner.providerId} (from ${fullModelIds.find(id => id.startsWith(winner.providerId))})`);
-    return winner;
-  } catch (aggregateError) {
-    console.error('Race Mode failed: All models failed or were aborted.', aggregateError);
-    const hasImages = messages.some(msg => msg.images && msg.images.length > 0);
-    const hasAttachedFiles = messages.some(msg => msg.attachedFiles && msg.attachedFiles.length > 0);
-    const hasFiles = hasImages || hasAttachedFiles;
-    if (hasFiles && errors.length > 0) {
-      const allFileErrors = errors.every(({ error }) => {
-        const msg = (error?.message || '').toLowerCase();
-        return msg.includes('hình ảnh') || 
-               msg.includes('file') ||
-               msg.includes('attachment') ||
-               msg.includes('document') ||
-               msg.includes('image') || 
-               msg.includes('multimodal') ||
-               msg.includes('unsupported') ||
-               msg.includes('not support');
-      });
-      if (allFileErrors) {
-        throw new Error(getLang('errorModelNotSupportImagesRaceMode'));
-      }
-    }
-    throw new Error(getLang('errorRaceModeFailed'));
-  }
-}
-
-async function executeSharedAI(messages, apiManager, getLang, debugLog, runRaceFn, callSingleModelFn, APIError) {
+async function executeSharedAI(messages, apiManager, getLang, debugLog, callSingleModelFn, APIError) {
   await apiManager.loadFromStorage();
-  const settings = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-  const defaultModel = settings.aiProvider;
-  const raceConfig = settings.raceSettings;
-  let result;
-  if (raceConfig && raceConfig.enabled && raceConfig.models && raceConfig.models.length >= 2) {
-    debugLog('executeSharedAI', 'Running Race Mode', raceConfig.models);
-    result = await runRaceFn(raceConfig.models, messages, apiManager, getLang, debugLog, callSingleModelFn, APIError);
-  } else if (defaultModel) {
-    debugLog('executeSharedAI', 'Running Single Mode', defaultModel);
-    result = await callSingleModelFn(defaultModel, messages, null, apiManager, getLang, debugLog, APIError);
-  } else {
-    debugLog('executeSharedAI', 'AI execution failed', 'No default model or race mode configured');
+  const settings = await chrome.storage.local.get(['selectedModel', 'aiProvider']);
+  const selectedModel = settings.selectedModel || settings.aiProvider;
+  
+  if (!selectedModel) {
+    debugLog('executeSharedAI', 'AI execution failed', 'No model configured');
     throw new Error(getLang('errorNoModelConfigured'));
   }
-  return result;
+  
+  debugLog('executeSharedAI', 'Running Single Mode', selectedModel);
+  return await callSingleModelFn(selectedModel, messages, null, apiManager, getLang, debugLog, APIError);
 }
 
-async function handleRaceTest(messages, fullModelIds, apiManager, getLang, debugLog, callSingleModelFn, APIError) {
-  // Try to use new dispatcher if available
-  await initializeDispatcher();
-  
-  if (aiDispatcher && dispatcherInitialized) {
-    try {
-      const results = await aiDispatcher.dispatch({
-        mode: 'test-race',
-        messages: messages,
-        config: {
-          models: fullModelIds
-        }
-      });
-      return results;
-    } catch (error) {
-      // If dispatcher fails, fall back to old implementation
-      console.warn('[APIManager] Dispatcher failed, using fallback:', error);
-    }
-  }
-  
-  // Fallback to original implementation
-  return handleRaceTestOriginal(messages, fullModelIds, apiManager, getLang, debugLog, callSingleModelFn, APIError);
-}
-
-async function handleRaceTestOriginal(messages, fullModelIds, apiManager, getLang, debugLog, callSingleModelFn, APIError) {
-  const testPromises = fullModelIds.map(async (fullModelId) => {
-    const startTime = performance.now();
-    let status = 'Pending';
-    let latency = null;
-    let errorMsg = null;
-    let providerName = 'Unknown';
-    let modelDisplayName = 'Unknown';
-    const separatorIndex = fullModelId.indexOf('/');
-    const providerId = separatorIndex !== -1 ? fullModelId.substring(0, separatorIndex) : null;
-    const modelId = separatorIndex !== -1 ? fullModelId.substring(separatorIndex + 1) : fullModelId;
-    if (providerId) {
-      const providerConfig = apiManager.getProvider(providerId);
-      if (providerConfig) {
-        providerName = providerConfig.name;
-        const modelInfo = providerConfig.models.find(m => m.id === modelId);
-        if (modelInfo) {
-          modelDisplayName = modelInfo.displayName;
-        } else {
-          modelDisplayName = modelId;
-        }
-      }
-    }
-    try {
-      const result = await callSingleModelFn(fullModelId, messages, null, apiManager, getLang, debugLog, APIError);
-      const endTime = performance.now();
-      latency = Math.round(endTime - startTime);
-      status = 'OK';
-    } catch (error) {
-      const endTime = performance.now();
-      latency = Math.round(endTime - startTime);
-      if (error instanceof APIError) {
-        status = `Error (${error.statusCode || 'API'})`;
-        errorMsg = error.message;
-      } else if (error.name === 'AbortError') {
-        status = 'Aborted';
-        errorMsg = 'Request aborted unexpectedly';
-      } else {
-        status = 'Error (Network/Other)';
-        errorMsg = error.message;
-      }
-      console.warn(`[TestRace] Model ${fullModelId} failed: ${status} - ${errorMsg}`);
-    }
-    return {
-      fullModelId: fullModelId,
-      name: modelDisplayName,
-      provider: providerName,
-      latency: latency,
-      status: status,
-      error: errorMsg
-    };
-  });
-  const results = await Promise.all(testPromises);
-  return results;
-}
 
 class APIError extends Error {
   constructor(message, statusCode, provider) {
@@ -1367,9 +1213,7 @@ export {
   ValidationError,
   checkModelSupportsFiles,
   callSingleModel,
-  runRace,
-  executeSharedAI,
-  handleRaceTest
+  executeSharedAI
 };
 
 if (typeof window !== 'undefined') {

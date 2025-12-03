@@ -27,12 +27,21 @@ export class APIClient {
    * @returns {Promise<any>}
    */
   async request(endpoint, options = {}) {
-    // Thoát sớm nếu i18n.js chưa sẵn sàng
-    if (!window.Lang) {
-      console.error("APIClient: window.Lang (i18n.js) is not ready.");
-      // Ném lỗi bằng tiếng Anh (vì không thể dịch)
-      throw new Error("i18n service not loaded.");
-    }
+    // Check if window is available (Service Worker doesn't have window)
+    const hasWindow = typeof window !== 'undefined';
+    const hasLang = hasWindow && window.Lang;
+    
+    // Helper to get error message
+    const getErrorMsg = (key, fallback) => {
+      if (hasLang) {
+        try {
+          return window.Lang.get(key);
+        } catch (e) {
+          return fallback;
+        }
+      }
+      return fallback;
+    };
     
     try {
       // Get auth token (✅ Logic này giờ đã tự động refresh)
@@ -40,8 +49,7 @@ export class APIClient {
       
       if (!token) {
         // Điều này xảy ra nếu getAuthToken(interactive: false) thất bại
-        // CẬP NHẬT i18n
-        throw new Error(window.Lang.get('errorNoToken'));
+        throw new Error(getErrorMsg('errorNoToken', 'No authentication token available'));
       }
       
       // Build full URL
@@ -78,8 +86,7 @@ export class APIClient {
         
         // Đăng xuất người dùng khỏi session local
         await sessionManager.destroySession();
-        // CẬP NHẬT i18n
-        throw new Error(window.Lang.get('errorSessionExpired'));
+        throw new Error(getErrorMsg('errorSessionExpired', 'Authentication expired. Please login again.'));
       }
       
       // Handle other error status codes
@@ -173,9 +180,10 @@ export class APIClient {
     const token = await sessionManager.getToken();
     
     if (!token) {
-      // CẬP NHẬT i18n
-      if (!window.Lang) throw new Error("i18n service not loaded.");
-      throw new Error(window.Lang.get('errorNoToken'));
+      const hasWindow = typeof window !== 'undefined';
+      const hasLang = hasWindow && window.Lang;
+      const errorMsg = hasLang ? window.Lang.get('errorNoToken') : 'No authentication token available';
+      throw new Error(errorMsg);
     }
     
     const url = `${this.baseURL}${endpoint}`;
@@ -203,8 +211,9 @@ export class APIClient {
   fetchWithTimeout(url, options, timeout) {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        // CẬP NHẬT i18n
-        const errorMsg = window.Lang ? window.Lang.get('errorRequestTimeout') : 'Request timeout';
+        const hasWindow = typeof window !== 'undefined';
+        const hasLang = hasWindow && window.Lang;
+        const errorMsg = hasLang ? window.Lang.get('errorRequestTimeout') : 'Request timeout';
         reject(new Error(errorMsg));
       }, timeout);
       

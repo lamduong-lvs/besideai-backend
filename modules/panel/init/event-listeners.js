@@ -427,6 +427,7 @@ export function setupEventListeners(Lang) {
     const userPopup = document.getElementById('userPopup');
     if (userBtn && userPopup) {
       console.log('[EventListeners] Setting up user popup toggle');
+      
       userBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -434,7 +435,10 @@ export function setupEventListeners(Lang) {
         if (isShowing) {
           userPopup.classList.remove('show');
         } else {
-          userPopup.classList.add('show');
+          // Use requestAnimationFrame to ensure DOM is ready
+          requestAnimationFrame(() => {
+            userPopup.classList.add('show');
+          });
         }
         console.log('[EventListeners] User popup toggled, showing:', !isShowing);
       });

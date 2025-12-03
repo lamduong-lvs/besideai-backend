@@ -5,6 +5,7 @@
 
 import { modelsService } from '../../subscription/models-service.js';
 import { subscriptionManager } from '../../subscription/subscription-manager.js';
+import { modelPreferenceService } from '../../subscription/model-preference-service.js';
 
 export class ModelsSelector {
   constructor(containerId) {
@@ -56,17 +57,15 @@ export class ModelsSelector {
   }
 
   /**
-   * Save selected model to storage
+   * Save selected model to storage and Backend
    */
   async saveSelectedModel(modelId) {
     try {
-      await chrome.storage.local.set({
-        selectedModel: modelId,
-        aiProvider: modelId // Keep for backward compatibility
-      });
+      await modelPreferenceService.setPreferredModel(modelId);
       this.selectedModel = modelId;
     } catch (error) {
       console.error('[ModelsSelector] Error saving model:', error);
+      throw error;
     }
   }
 
@@ -75,19 +74,6 @@ export class ModelsSelector {
    */
   async render() {
     if (!this.container) return;
-
-    // Group models by tier
-    const modelsByTier = {
-      free: [],
-      pro: [],
-      premium: []
-    };
-
-    this.models.forEach(model => {
-      if (modelsByTier[model.tier]) {
-        modelsByTier[model.tier].push(model);
-      }
-    });
 
     // Get current tier
     let currentTier = 'free';
@@ -98,52 +84,77 @@ export class ModelsSelector {
       console.warn('[ModelsSelector] Could not get tier:', error);
     }
 
+    // Group models by category
+    const modelsByCategory = await modelsService.getModelsByCategory();
+    const categories = await modelsService.getCategories();
+    
+    // Category display names
+    const categoryNames = {
+      'llm': 'LLM (Text Generation)',
+      'tts': 'TTS (Text-to-Speech)',
+      'image': 'Image Generation',
+      'video': 'Video Generation',
+      'coding': 'Code Generation',
+      'chat': 'Chat'
+    };
+
+    // Get recommended and default models
+    const recommendedModels = await modelsService.getRecommendedModels();
+    const defaultModel = await modelsService.getDefaultModel();
+
     // Build HTML
     let html = `
       <div class="models-selector">
         <h3 class="models-selector-title">Select AI Model</h3>
-        <p class="models-selector-description">Choose your preferred AI model. Available models depend on your subscription tier.</p>
+        <p class="models-selector-description">Choose your preferred AI model. Models are grouped by category.</p>
         
         <div class="models-selector-current-tier">
           <span class="tier-badge tier-${currentTier}">${currentTier.toUpperCase()}</span>
           <span class="tier-description">Current subscription tier</span>
         </div>
 
+        <div class="models-category-tabs">
+    `;
+
+    // Category tabs
+    const categoryOrder = ['llm', 'chat', 'coding', 'tts', 'image', 'video'];
+    categoryOrder.forEach(cat => {
+      if (modelsByCategory[cat] && modelsByCategory[cat].length > 0) {
+        html += `<button class="category-tab" data-category="${cat}">${categoryNames[cat] || cat}</button>`;
+      }
+    });
+
+    html += `
+        </div>
+
         <div class="models-list">
     `;
 
-    // Render models by tier
-    const tierOrder = ['free', 'pro', 'premium'];
-    tierOrder.forEach(tier => {
-      const models = modelsByTier[tier];
-      if (models.length === 0) return;
+    // Render models by category
+    categoryOrder.forEach(category => {
+      const models = modelsByCategory[category];
+      if (!models || models.length === 0) return;
 
-      const canAccess = ['free', 'pro', 'premium'].slice(0, tierOrder.indexOf(tier) + 1).includes(currentTier);
-      
       html += `
-        <div class="models-tier-section ${!canAccess ? 'tier-locked' : ''}">
-          <h4 class="tier-section-title">
-            ${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier
-            ${!canAccess ? '<span class="upgrade-badge">Upgrade Required</span>' : ''}
-          </h4>
+        <div class="models-category-section" data-category="${category}">
+          <h4 class="category-section-title">${categoryNames[category] || category}</h4>
           <div class="models-grid">
       `;
-
+      
       models.forEach(model => {
         const isSelected = this.selectedModel === model.id;
-        const isRecommended = (await modelsService.getRecommendedModels()).includes(model.id);
-        const isDefault = (await modelsService.getDefaultModel()) === model.id;
+        const isRecommended = recommendedModels.includes(model.id);
+        const isDefault = defaultModel === model.id;
         
         html += `
-          <div class="model-card ${isSelected ? 'selected' : ''} ${!canAccess ? 'disabled' : ''}" 
+          <div class="model-card ${isSelected ? 'selected' : ''}" 
                data-model-id="${model.id}">
             <div class="model-card-header">
               <input type="radio" 
                      name="selectedModel" 
                      value="${model.id}" 
                      id="model-${model.id}"
-                     ${isSelected ? 'checked' : ''}
-                     ${!canAccess ? 'disabled' : ''}>
+                     ${isSelected ? 'checked' : ''}>
               <label for="model-${model.id}" class="model-name">${model.name}</label>
               ${isRecommended ? '<span class="recommended-badge">Recommended</span>' : ''}
               ${isDefault ? '<span class="default-badge">Default</span>' : ''}
@@ -152,7 +163,7 @@ export class ModelsSelector {
               <div class="model-provider">${model.providerName}</div>
               ${model.description ? `<div class="model-description">${model.description}</div>` : ''}
               <div class="model-specs">
-                <span class="spec-item">Max tokens: ${model.maxTokens.toLocaleString()}</span>
+                <span class="spec-item">Max tokens: ${model.maxTokens?.toLocaleString() || 'N/A'}</span>
                 ${model.supportsStreaming ? '<span class="spec-item">Streaming</span>' : ''}
               </div>
             </div>
@@ -183,6 +194,32 @@ export class ModelsSelector {
    * Attach event listeners
    */
   attachEventListeners() {
+    // Category tabs
+    const categoryTabs = this.container.querySelectorAll('.category-tab');
+    categoryTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const category = tab.dataset.category;
+        
+        // Update active tab
+        categoryTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Show/hide category sections
+        this.container.querySelectorAll('.models-category-section').forEach(section => {
+          if (section.dataset.category === category) {
+            section.style.display = 'block';
+          } else {
+            section.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Activate first category by default
+    if (categoryTabs.length > 0) {
+      categoryTabs[0].click();
+    }
+
     // Model selection
     const radioButtons = this.container.querySelectorAll('input[name="selectedModel"]');
     radioButtons.forEach(radio => {

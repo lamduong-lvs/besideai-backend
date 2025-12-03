@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  /* Backgrounds - Light Theme */
-  --background: 0 0% 100%;
-  --foreground: 0 0% 10.2%;
-  --card: 0 0% 100%;
+  /* Backgrounds - Light Theme (from extension) */
+  --background: 0 0% 100%; /* #FFFFFF */
+  --foreground: 0 0% 10.2%; /* #1A1A1A */
+  --card: 0 0% 100%; /* #FFFFFF */
   --card-foreground: 0 0% 10.2%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 10.2%;
   
   /* Primary Colors - Extension Theme (#f86a01) */
   --primary: 24 100% 49%; /* #f86a01 */
-  --primary-foreground: 0 0% 100%;
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
   --primary-hover: 24 100% 43%; /* #d45a01 */
+  --primary-dark: 24 100% 38%; /* #b84a01 */
   --primary-light: 24 100% 58%; /* #ff8a2e */
   --primary-lighter: 24 100% 68%; /* #ffaa5c */
   --primary-alpha: 24 100% 49% / 0.1;
@@ -20,49 +21,54 @@
   --primary-alpha-medium: 24 100% 49% / 0.15;
   
   /* Secondary */
-  --secondary: 0 0% 96.1%;
+  --secondary: 0 0% 98%; /* #FAFAFA */
   --secondary-foreground: 0 0% 9%;
   
   /* Muted */
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
+  --muted: 0 0% 96.1%; /* #F5F5F5 */
+  --muted-foreground: 0 0% 29.4%; /* #4A4A4A */
   
-  /* Accent */
-  --accent: 24 100% 97%; /* Light orange tint */
+  /* Accent - Light orange tint for hover states */
+  --accent: 24 100% 98%; /* #FFF5ED */
   --accent-foreground: 24 100% 10%;
   
   /* Destructive */
-  --destructive: 0 84.2% 60.2%;
+  --destructive: 0 72% 51%; /* #F44336 */
   --destructive-foreground: 0 0% 98%;
   
   /* Borders & Inputs */
-  --border: 0 0% 89.8%;
+  --border: 0 0% 89.8%; /* #E5E5E5 */
   --input: 0 0% 89.8%;
-  --ring: 24 100% 49%;
+  --ring: 24 100% 49%; /* Focus ring uses primary */
   
   /* Radius */
   --radius: 0.5rem;
   
-  /* Status Colors */
-  --success: 142 71% 45%;
-  --error: 0 84.2% 60.2%;
-  --warning: 38 92% 50%;
-  --info: 199 89% 48%;
+  /* Status Colors (from extension) */
+  --success: 142 71% 45%; /* #4CAF50 */
+  --error: 0 72% 51%; /* #F44336 */
+  --warning: 38 92% 50%; /* #FF9800 */
+  --info: 199 89% 48%; /* #2196F3 */
+  
+  /* Link Colors */
+  --link: 24 100% 49%; /* #f86a01 */
+  --link-hover: 24 100% 43%; /* #d45a01 */
 }
 
 .dark {
-  /* Backgrounds - Dark Theme */
+  /* Backgrounds - Dark Theme (from extension) */
   --background: 0 0% 11.8%; /* #1E1E1E */
-  --foreground: 0 0% 98%;
+  --foreground: 0 0% 100%; /* #FFFFFF */
   --card: 0 0% 11.8%;
-  --card-foreground: 0 0% 98%;
+  --card-foreground: 0 0% 100%;
   --popover: 0 0% 11.8%;
-  --popover-foreground: 0 0% 98%;
+  --popover-foreground: 0 0% 100%;
   
   /* Primary Colors - Same orange in dark mode */
   --primary: 24 100% 49%; /* #f86a01 */
   --primary-foreground: 0 0% 100%;
   --primary-hover: 24 100% 43%; /* #d45a01 */
+  --primary-dark: 24 100% 38%; /* #b84a01 */
   --primary-light: 24 100% 58%; /* #ff8a2e */
   --primary-lighter: 24 100% 68%; /* #ffaa5c */
   --primary-alpha: 24 100% 49% / 0.15;
@@ -71,30 +77,34 @@
   
   /* Secondary */
   --secondary: 0 0% 17.6%; /* #2D2D2D */
-  --secondary-foreground: 0 0% 98%;
+  --secondary-foreground: 0 0% 100%;
   
   /* Muted */
   --muted: 0 0% 17.6%;
-  --muted-foreground: 0 0% 63.9%;
+  --muted-foreground: 0 0% 69%; /* #B0B0B0 */
   
-  /* Accent */
-  --accent: 24 100% 15%; /* Dark orange tint */
+  /* Accent - Dark orange tint */
+  --accent: 24 100% 15%; /* rgba(248, 106, 1, 0.15) */
   --accent-foreground: 24 100% 90%;
   
   /* Destructive */
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 72% 51%; /* #EF5350 */
+  --destructive-foreground: 0 0% 100%;
   
   /* Borders & Inputs */
   --border: 0 0% 25.1%; /* #404040 */
   --input: 0 0% 25.1%;
   --ring: 24 100% 49%;
   
-  /* Status Colors - Dark Theme */
-  --success: 142 71% 55%;
-  --error: 0 72% 51%;
-  --warning: 38 92% 60%;
-  --info: 199 89% 58%;
+  /* Status Colors - Dark Theme (from extension) */
+  --success: 142 71% 55%; /* #66BB6A */
+  --error: 0 72% 51%; /* #EF5350 */
+  --warning: 38 92% 60%; /* #FFA726 */
+  --info: 199 89% 58%; /* #42A5F5 */
+  
+  /* Link Colors */
+  --link: 24 100% 49%; /* #f86a01 */
+  --link-hover: 24 100% 58%; /* #ff8a2e */
 }
 
 @layer base {
@@ -105,5 +115,11 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  a {
+    color: hsl(var(--link));
+  }
+  a:hover {
+    color: hsl(var(--link-hover));
   }
 }

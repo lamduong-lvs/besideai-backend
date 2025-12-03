@@ -428,6 +428,10 @@ class TooltipManager {
     const elements = root.querySelectorAll(selectors.join(','));
     
     elements.forEach(element => {
+      // Skip user button to prevent flickering
+      if (element.id === 'userBtn' || element.classList.contains('user-btn')) {
+        return;
+      }
       if (!element.hasAttribute('data-tooltip-initialized')) {
         this.attach(element);
       }
@@ -476,6 +480,10 @@ class TooltipManager {
    * Check if element should have tooltip
    */
   shouldHaveTooltip(element) {
+    // Skip user button to prevent flickering
+    if (element.id === 'userBtn' || element.classList.contains('user-btn')) {
+      return false;
+    }
     return element.hasAttribute('data-tooltip') ||
            element.hasAttribute('data-tooltip-text') ||
            element.hasAttribute('data-i18n-title') ||

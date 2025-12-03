@@ -4,7 +4,7 @@
 import { simulateStreaming } from '../helpers/streaming-simulator.js';
 
 // These will be imported from background.js
-let getLang, executeSharedAI, buildTranslationPrompt, buildRewritePrompt, streamingPorts, apiManager, callSingleModel, runRace, debugLog, APIError;
+let getLang, executeSharedAI, buildTranslationPrompt, buildRewritePrompt, streamingPorts, apiManager, callSingleModel, debugLog, APIError;
 
 export function initializeGmailHandlers(dependencies) {
   getLang = dependencies.getLang;
@@ -14,7 +14,6 @@ export function initializeGmailHandlers(dependencies) {
   streamingPorts = dependencies.streamingPorts;
   apiManager = dependencies.apiManager;
   callSingleModel = dependencies.callSingleModel;
-  runRace = dependencies.runRace;
   debugLog = dependencies.debugLog;
   APIError = dependencies.APIError;
 }
@@ -75,17 +74,11 @@ export async function handleSummarizeEmail(request, sender, sendResponse) {
       
       // Get AI config for streaming
       await apiManager.loadFromStorage();
-      const settings = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-      const defaultModel = settings.aiProvider;
-      const raceConfig = settings.raceSettings;
+      const settings = await chrome.storage.local.get(['aiProvider', 'selectedModel']);
+      const defaultModel = settings.selectedModel || settings.aiProvider;
       
       let config;
-      if (raceConfig && raceConfig.enabled && Array.isArray(raceConfig.models) && raceConfig.models.length >= 2) {
-        config = {
-          isRaceMode: true,
-          models: raceConfig.models
-        };
-      } else if (defaultModel) {
+      if (defaultModel) {
         config = {
           isRaceMode: false,
           models: [defaultModel]
@@ -110,17 +103,8 @@ export async function handleSummarizeEmail(request, sender, sendResponse) {
       }
       
       let result;
-      if (config.isRaceMode && config.models && config.models.length >= 2) {
-        // Race mode - use simulated streaming
-        debugLog('GmailSummary', 'Running Race Mode (simulated streaming)', config.models);
-        result = await runRace(config.models, messages);
-        await simulateStreaming(result.content, streamCallback, {
-          chunkSize: 4,
-          delay: 8,
-          minDelay: 5,
-          maxDelay: 15
-        });
-      } else if (config.models && config.models.length > 0) {
+      // Single mode only - no race mode
+      if (config.models && config.models.length > 0) {
         // Single mode - try native streaming first
         const fullModelId = config.models[0];
         debugLog('GmailSummary', 'Running Single Mode (streaming)', fullModelId);

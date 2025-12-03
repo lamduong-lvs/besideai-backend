@@ -4,16 +4,14 @@
 import { simulateStreaming } from '../helpers/streaming-simulator.js';
 
 // These will be imported from background.js
-let apiManager, getLang, debugLog, checkModelSupportsFiles, runRace, callSingleModel, handleRaceTest, APIError, streamingPorts;
+let apiManager, getLang, debugLog, checkModelSupportsFiles, callSingleModel, APIError, streamingPorts;
 
 export function initializeAPIHandlers(dependencies) {
   apiManager = dependencies.apiManager;
   getLang = dependencies.getLang;
   debugLog = dependencies.debugLog;
   checkModelSupportsFiles = dependencies.checkModelSupportsFiles;
-  runRace = dependencies.runRace;
   callSingleModel = dependencies.callSingleModel;
-  handleRaceTest = dependencies.handleRaceTest;
   APIError = dependencies.APIError;
   streamingPorts = dependencies.streamingPorts;
 }
@@ -37,15 +35,10 @@ export async function handleProcessAction(request, sender, sendResponse) {
     if (!config || !config.models || config.models.length === 0) { 
       throw new Error(getLang('errorNoConfig') || 'No configuration provided'); 
     }
-    let result;
-    if (config.isRaceMode && config.models.length >= 2) {
-      debugLog('ProcessAction', 'Running Race Mode', config.models);
-      result = await runRace(config.models, messages);
-    } else {
-      const fullModelId = config.models[0];
-      debugLog('ProcessAction', 'Running Single Mode', fullModelId);
-      result = await callSingleModel(fullModelId, messages, null);
-    }
+    // Single mode only
+    const fullModelId = config.models[0];
+    debugLog('ProcessAction', 'Running Single Mode', fullModelId);
+    const result = await callSingleModel(fullModelId, messages, null);
     safeSendResponse({
       success: true,
       result: result.content,
@@ -121,25 +114,17 @@ export async function handleProcessActionStream(request, sender, sendResponse) {
       }
       
       if (modelsSupportFiles.length === 0 && modelsNotSupportFiles.length > 0) {
-        const errorMessage = config.isRaceMode && config.models.length >= 2
-          ? getLang('errorModelNotSupportImagesRaceMode')
-          : getLang('errorModelNotSupportImages');
-        
         safeSendResponse({ 
           success: false, 
-          error: errorMessage 
+          error: getLang('errorModelNotSupportImages')
         });
         return;
       }
       
-      if (config.isRaceMode && modelsNotSupportFiles.length > 0 && modelsSupportFiles.length > 0) {
+      // Single mode only - filter to models that support files
+      if (modelsNotSupportFiles.length > 0 && modelsSupportFiles.length > 0) {
         config.models = modelsSupportFiles;
         console.log('[Background] Filtered models to only those supporting files:', config.models);
-        
-        if (config.models.length < 2) {
-          config.isRaceMode = false;
-          console.log('[Background] Switched to single mode after filtering (only 1 model supports files)');
-        }
       }
     }
     
@@ -202,35 +187,8 @@ export async function handleProcessActionStream(request, sender, sendResponse) {
       };
       
       let result;
-      if (config.isRaceMode && config.models && config.models.length >= 2) {
-        // Race mode doesn't support native streaming, use simulated streaming
-        debugLog('ProcessActionStream', 'Running Race Mode (simulated streaming)', config.models);
-        result = await runRace(config.models, processedMessages);
-        
-        // Create a wrapper callback that includes usedFullModelId in done message
-        const wrappedCallback = (message) => {
-          if (message.type === 'done') {
-            message.usedFullModelId = result.fullModelId;
-            message.providerUsed = result.providerId;
-          }
-          streamCallback(message);
-        };
-        
-        // Simulate streaming for race mode results
-        await simulateStreaming(result.content, wrappedCallback, {
-          chunkSize: 4, // Larger chunks for faster streaming
-          delay: 8, // 8ms delay = ~125fps for faster streaming
-          minDelay: 5,
-          maxDelay: 15
-        });
-        
-        safeSendResponse({
-          success: true,
-          streaming: true,
-          providerUsed: result.providerId,
-          usedFullModelId: result.fullModelId
-        });
-      } else if (config.models && config.models.length > 0) {
+      // Single mode only - no race mode
+      if (config.models && config.models.length > 0) {
         const fullModelId = config.models[0];
         debugLog('ProcessActionStream', 'Running Single Mode (streaming)', fullModelId);
         
@@ -288,10 +246,8 @@ export async function handleProcessActionStream(request, sender, sendResponse) {
     } else {
       // Non-streaming (original logic)
       let result;
-      if (config.isRaceMode && config.models && config.models.length >= 2) {
-        debugLog('ProcessActionStream', 'Running Race Mode', config.models);
-        result = await runRace(config.models, processedMessages);
-      } else if (config.models && config.models.length > 0) {
+      // Single mode only - no race mode
+      if (config.models && config.models.length > 0) {
         const fullModelId = config.models[0];
         debugLog('ProcessActionStream', 'Running Single Mode', fullModelId);
         result = await callSingleModel(fullModelId, processedMessages, null);
@@ -336,11 +292,7 @@ export async function handleProcessActionStream(request, sender, sendResponse) {
         errorMsgLower.includes('not support') ||
         errorMessage.includes('errorModelNotSupportImages')) {
         
-        if (config.isRaceMode && config.models.length >= 2) {
-          errorMessage = getLang('errorModelNotSupportImagesRaceMode');
-        } else {
-          errorMessage = getLang('errorModelNotSupportImages');
-        }
+        errorMessage = getLang('errorModelNotSupportImages');
       }
     }
     
@@ -354,19 +306,13 @@ export async function handleProcessActionStream(request, sender, sendResponse) {
 export async function handleGetAIConfig(request, sender, sendResponse) {
   try {
     await apiManager.loadFromStorage();
-    const settings = await chrome.storage.local.get(['aiProvider', 'raceSettings']);
-    const defaultModel = settings.aiProvider;
-    const raceConfig = settings.raceSettings;
+    const settings = await chrome.storage.local.get(['aiProvider', 'selectedModel']);
+    const defaultModel = settings.selectedModel || settings.aiProvider;
     
-    console.log('[Background] getAIConfig - settings:', { defaultModel, raceConfig });
+    console.log('[Background] getAIConfig - settings:', { defaultModel });
     
     let config;
-    if (raceConfig && raceConfig.enabled && Array.isArray(raceConfig.models) && raceConfig.models.length >= 2) {
-      config = {
-        isRaceMode: true,
-        models: raceConfig.models
-      };
-    } else if (defaultModel) {
+    if (defaultModel) {
       config = {
         isRaceMode: false,
         models: [defaultModel]
@@ -398,25 +344,6 @@ export async function handleGetAIConfig(request, sender, sendResponse) {
   }
 }
 
-export async function handleTestRaceCondition(request, sender, sendResponse) {
-  try {
-    await apiManager.loadFromStorage();
-    const { text, models } = request;
-    if (!text || !models || models.length === 0) {
-      throw new Error(getLang('errorTestRaceMissing'));
-    }
-    const testMessages = [{ role: 'user', content: text }];
-    
-    debugLog('TestRace', 'Starting race test for models:', models);
-    const results = await handleRaceTest(testMessages, models);
-    debugLog('TestRace', 'Race test completed. Results:', results);
-    
-    sendResponse({ success: true, results: results });
-  } catch (error) {
-    console.error('[APIHandler] testRaceCondition error:', error);
-    sendResponse({ success: false, error: error.message });
-  }
-}
 
 function selectFallbackModel() {
   if (!apiManager || typeof apiManager.getAllProviders !== 'function') {

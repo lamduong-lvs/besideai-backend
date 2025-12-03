@@ -8,8 +8,7 @@ export function removeBrowserTooltips() {
     .send-btn[data-i18n-title],
     .menu-icon[data-i18n-title],
     .settings-btn[data-i18n-title],
-    .header-btn[data-i18n-title],
-    .user-btn[data-i18n-title]
+    .header-btn[data-i18n-title]
   `);
   const attachTooltipHandlers = (btn) => {
     if (!btn || btn._smartTooltipBound) return;
@@ -60,8 +59,7 @@ export function removeBrowserTooltips() {
               .send-btn,
               .menu-icon,
               .settings-btn,
-              .header-btn,
-              .user-btn
+              .header-btn
             `);
             if (isTarget && el.getAttribute('title')) {
               el.dataset.tooltipText = el.getAttribute('title');

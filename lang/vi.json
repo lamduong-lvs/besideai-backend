@@ -1388,5 +1388,6 @@
   "subscription.metric.tokens": "Token",
   "subscription.metric.time": "Thời gian",
   "subscription.metric.requests": "Truy vấn",
-  "subscription.metric.minutes": "phút"
+  "subscription.metric.minutes": "phút",
+  "settingsModels": "Models"
 }

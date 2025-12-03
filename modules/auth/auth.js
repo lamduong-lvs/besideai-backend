@@ -62,6 +62,36 @@ class AuthModule {
       // Step 2: "Establish" session (chỉ lưu user info)
       await this.sessionManager.establishSession(user);
       
+      // Step 3: Verify token is cached in Chrome Identity API
+      // Small delay to ensure token is cached
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Step 4: Verify token can be retrieved (non-interactive)
+      try {
+        const verifyToken = await new Promise((resolve, reject) => {
+          chrome.identity.getAuthToken({ interactive: false }, (verifyToken) => {
+            if (chrome.runtime.lastError) {
+              console.warn('[Auth] Token verification failed (non-interactive):', chrome.runtime.lastError.message);
+              // Token might not be cached yet, but that's okay - it will be cached on next use
+              resolve(null);
+            } else {
+              resolve(verifyToken);
+            }
+          });
+        });
+        
+        if (verifyToken && verifyToken === token) {
+          console.log('[Auth] ✅ Token verified and cached');
+        } else if (verifyToken) {
+          console.log('[Auth] ⚠️ Token retrieved but different (might be refreshed)');
+        } else {
+          console.log('[Auth] ⚠️ Token not yet cached, will be cached on next API call');
+        }
+      } catch (verifyError) {
+        console.warn('[Auth] Token verification error (non-critical):', verifyError);
+        // Non-critical - token will be cached on next use
+      }
+      
       console.log('[Auth] ✅ Login successful:', user.email);
       
       return user;

@@ -46,7 +46,17 @@ class UserSync {
       
       return null;
     } catch (error) {
-      console.error('[UserSync] Failed to sync from backend:', error);
+      // Don't log as error if it's auth expired or network error (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[UserSync] Authentication expired, using local data');
+      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
+        console.warn('[UserSync] Network error, using local data:', error.message);
+      } else if (error.message?.includes('window is not defined')) {
+        // Service Worker context - this is expected
+        console.warn('[UserSync] Service Worker context, using local data');
+      } else {
+        console.error('[UserSync] Failed to sync from backend:', error);
+      }
       
       // If backend unavailable, return local data
       const localUser = await tokenStorage.getUser();
@@ -82,7 +92,17 @@ class UserSync {
       
       return true;
     } catch (error) {
-      console.error('[UserSync] Failed to sync to backend:', error);
+      // Don't log as error if it's auth expired or network error (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[UserSync] Authentication expired, skipping sync');
+      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
+        console.warn('[UserSync] Network error, skipping sync:', error.message);
+      } else if (error.message?.includes('window is not defined')) {
+        // Service Worker context - this is expected
+        console.warn('[UserSync] Service Worker context, skipping sync');
+      } else {
+        console.error('[UserSync] Failed to sync to backend:', error);
+      }
       return false;
     } finally {
       this.syncing = false;

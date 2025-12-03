@@ -172,9 +172,10 @@ function updateLoggedInState(user) {
 
 function updateLoggedOutState() {
     domElements.headerLoggedIn.classList.add('hidden');
-    domElements.headerLoggedOut.classList.add('hidden');
+    domElements.headerLoggedOut.classList.remove('hidden'); // Show login button
     domElements.popupTabs.classList.add('hidden');
     domElements.contentPanels.forEach(panel => panel.classList.remove('active'));
+    domElements.mainMenuPanel.classList.add('active');
 }
 
 // ===== 4.5. LANGUAGE SELECTOR =====

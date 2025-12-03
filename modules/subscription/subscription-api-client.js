@@ -83,6 +83,8 @@ class SubscriptionAPIClient {
 
       if (!response.ok) {
         if (response.status === 401) {
+          // Don't throw immediately - log and return null for graceful degradation
+          console.warn('[SubscriptionAPIClient] Authentication expired (401)');
           throw new Error('Authentication expired');
         }
         const errorData = await response.json().catch(() => ({}));
@@ -107,7 +109,12 @@ class SubscriptionAPIClient {
     try {
       return await this.request('/api/subscription/status');
     } catch (error) {
-      console.error('[SubscriptionAPIClient] Failed to get subscription status:', error);
+      // Don't log as error if it's auth expired (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[SubscriptionAPIClient] Authentication expired, user needs to login');
+      } else {
+        console.error('[SubscriptionAPIClient] Failed to get subscription status:', error);
+      }
       throw error;
     }
   }
@@ -138,8 +145,14 @@ class SubscriptionAPIClient {
         body: JSON.stringify(usageData)
       });
     } catch (error) {
-      console.error('[SubscriptionAPIClient] Failed to sync usage:', error);
-      throw error;
+      // Don't log as error if it's auth expired (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[SubscriptionAPIClient] Authentication expired, skipping usage sync');
+      } else {
+        console.error('[SubscriptionAPIClient] Failed to sync usage:', error);
+      }
+      // Don't throw - usage sync is non-critical
+      // throw error;
     }
   }
 
@@ -214,7 +227,8 @@ class SubscriptionAPIClient {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconds for health check
 
-      const response = await fetch(`${this.baseURL}/health`, {
+      // Health endpoint is at /api/health (Vercel serverless function)
+      const response = await fetch(`${this.baseURL}/api/health`, {
         method: 'GET',
         signal: controller.signal
       });

@@ -218,14 +218,29 @@ class UsageTracker {
         timestamp: Date.now()
       };
 
-      await subscriptionAPIClient.syncUsage(usageData);
+      // Sync to backend (non-blocking, don't throw on error)
+      subscriptionAPIClient.syncUsage(usageData).catch(err => {
+        // Don't log as error if it's auth expired (expected)
+        if (err.message?.includes('Authentication expired')) {
+          console.warn('[UsageTracker] Authentication expired, skipping sync');
+        } else {
+          console.warn('[UsageTracker] Failed to sync to backend:', err.message);
+        }
+      });
       
       this.lastSyncTime = Date.now();
       console.log('[UsageTracker] Usage synced to backend');
       
       return true;
     } catch (error) {
-      console.error('[UsageTracker] Failed to sync to backend:', error);
+      // Don't log as error if it's auth expired or network error (expected)
+      if (error.message?.includes('Authentication expired')) {
+        console.warn('[UsageTracker] Authentication expired, skipping sync');
+      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
+        console.warn('[UsageTracker] Network error, skipping sync:', error.message);
+      } else {
+        console.error('[UsageTracker] Failed to sync to backend:', error);
+      }
       return false;
     } finally {
       this.syncing = false;

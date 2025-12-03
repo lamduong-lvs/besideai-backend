@@ -64,7 +64,7 @@ let currentTargetLanguage = 'vi'; // Current target language for translation
  
 
 /**
- * Initialize Racing Mode managers
+ * Initialize Translation & Summarization managers
  */
 async function initializeManagers() {
     if (isInitialized) {
@@ -129,14 +129,14 @@ async function initializeManagers() {
         window.summarizerManager = summarizerManager;
 		window.captionCapture = captionCapture;
 
-        console.log('[MeetExt] 🏎️ Racing Mode ready!');
+        console.log('[MeetExt] ✓ Translation & Summarization ready!');
         
         // Show success notification
-        showNotification('Racing Mode activated!', 'success');
+        showNotification('Translation & Summarization activated!', 'success');
 
     } catch (error) {
         console.error('[MeetExt] ✗ Initialization failed:', error);
-        showNotification('Failed to initialize Racing Mode: ' + error.message, 'error');
+        showNotification('Failed to initialize Translation & Summarization: ' + error.message, 'error');
     }
 }
 
