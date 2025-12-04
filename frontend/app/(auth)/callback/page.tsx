@@ -60,22 +60,42 @@ function OAuthCallbackContent() {
     // Exchange code for token via backend
     const exchangeCodeForToken = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://besideai-backend.vercel.app";
-        const response = await fetch(`${apiUrl}/api/auth/callback`, {
+        // Always call backend API directly (not through frontend proxy)
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://besideai-backend.vercel.app";
+        const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
+          `${window.location.origin}/callback`;
+        
+        console.log('[OAuth Callback] Calling backend:', {
+          backendUrl,
+          redirectUri,
+          hasCode: !!code
+        });
+        
+        const response = await fetch(`${backendUrl}/api/auth/callback`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             code,
-            redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
-              `${window.location.origin}/callback`,
+            redirect_uri: redirectUri,
           }),
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || "Failed to exchange code for token");
+          let errorData: { message?: string; error?: string } = {};
+          try {
+            errorData = await response.json();
+          } catch (e) {
+            const text = await response.text().catch(() => '');
+            errorData = { message: text || `HTTP ${response.status}: ${response.statusText}` };
+          }
+          console.error('[OAuth Callback] Backend error:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorData
+          });
+          throw new Error(errorData.message || errorData.error || `Failed to exchange code for token (${response.status})`);
         }
 
         const data = await response.json();
@@ -106,10 +126,20 @@ function OAuthCallbackContent() {
         }
       } catch (err) {
         console.error("OAuth callback error:", err);
-        setError(err instanceof Error ? err.message : "Lỗi khi xử lý đăng nhập.");
+        let errorMessage = "Lỗi khi xử lý đăng nhập.";
+        
+        if (err instanceof Error) {
+          errorMessage = err.message;
+          // Check for network errors
+          if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+            errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng và thử lại.";
+          }
+        }
+        
+        setError(errorMessage);
         setTimeout(() => {
           router.replace("/login");
-        }, 3000);
+        }, 5000); // Increased timeout to 5 seconds
       }
     };
 
