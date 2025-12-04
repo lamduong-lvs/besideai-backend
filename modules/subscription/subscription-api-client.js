@@ -3,7 +3,7 @@
  * Communicates with backend server for subscription management
  */
 
-const DEFAULT_BACKEND_URL = 'https://besideai.work';
+const DEFAULT_BACKEND_URL = 'https://besideai-backend.vercel.app';
 const REQUEST_TIMEOUT = 30000; // 30 seconds
 
 class SubscriptionAPIClient {

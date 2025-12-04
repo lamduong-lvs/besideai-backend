@@ -6,7 +6,7 @@
 set -e
 
 FRONTEND_URL="${FRONTEND_URL:-https://your-frontend-domain.vercel.app}"
-BACKEND_URL="${BACKEND_URL:-https://besideai.work}"
+BACKEND_URL="${BACKEND_URL:-https://besideai-backend.vercel.app}"
 
 check_frontend() {
     echo "🔍 Checking Frontend Deployment..."

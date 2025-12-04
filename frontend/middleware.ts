@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
   // For admin routes, verify user has admin role
   if (pathname.startsWith("/admin")) {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://besideai.work";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://besideai-backend.vercel.app";
       const response = await fetch(`${apiUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });

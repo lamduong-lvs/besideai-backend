@@ -14,7 +14,7 @@ const isDevelopment = !('update_url' in chrome.runtime.getManifest());
 export const API_BASE_URLS = {
   development: 'http://localhost:3000',
   staging: 'https://besideai-backend.vercel.app',
-  production: 'https://besideai.work'
+  production: 'https://besideai-backend.vercel.app'
 };
 
 /**

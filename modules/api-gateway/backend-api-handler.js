@@ -151,9 +151,9 @@ class BackendAPIHandler {
   async getBackendURL() {
     try {
       const data = await chrome.storage.local.get(['backend_config']);
-      return data.backend_config?.url || 'https://besideai.work';
+      return data.backend_config?.url || 'https://besideai-backend.vercel.app';
     } catch (error) {
-      return 'https://besideai.work';
+      return 'https://besideai-backend.vercel.app';
     }
   }
 

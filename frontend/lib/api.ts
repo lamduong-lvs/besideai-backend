@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://besideai.work";
+  process.env.NEXT_PUBLIC_API_URL || "https://besideai-backend.vercel.app";
 
 export type ApiMethod = "GET" | "POST" | "PUT" | "DELETE";
 

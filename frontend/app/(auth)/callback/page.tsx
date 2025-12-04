@@ -60,7 +60,7 @@ function OAuthCallbackContent() {
     // Exchange code for token via backend
     const exchangeCodeForToken = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://besideai.work";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://besideai-backend.vercel.app";
         const response = await fetch(`${apiUrl}/api/auth/callback`, {
           method: "POST",
           headers: {

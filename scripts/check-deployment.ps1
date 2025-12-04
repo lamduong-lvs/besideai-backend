@@ -8,7 +8,7 @@ param(
 )
 
 $FrontendUrl = if ($env:FRONTEND_URL) { $env:FRONTEND_URL } else { "https://your-frontend-domain.vercel.app" }
-$BackendUrl = if ($env:BACKEND_URL) { $env:BACKEND_URL } else { "https://besideai.work" }
+$BackendUrl = if ($env:BACKEND_URL) { $env:BACKEND_URL } else { "https://besideai-backend.vercel.app" }
 
 function Check-Frontend {
     Write-Host "🔍 Checking Frontend Deployment..." -ForegroundColor Cyan
