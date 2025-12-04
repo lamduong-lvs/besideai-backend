@@ -3,7 +3,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["sin1"],
-  "rootDirectory": "frontend"
+  "regions": ["sin1"]
 }
 
