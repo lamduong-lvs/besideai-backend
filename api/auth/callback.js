@@ -4,8 +4,17 @@
  */
 
 import { User } from '../../src/models/index.js';
+import { setCorsHeaders, handleCorsPreflight } from '../../src/middleware/cors-helper.js';
 
 export default async function handler(req, res) {
+  // Set CORS headers
+  setCorsHeaders(req, res);
+
+  // Handle preflight
+  if (handleCorsPreflight(req, res)) {
+    return;
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({
       success: false,
@@ -17,6 +26,12 @@ export default async function handler(req, res) {
   try {
     const { code, redirect_uri } = req.body;
 
+    console.log('[OAuth Callback] Received request:', {
+      hasCode: !!code,
+      hasRedirectUri: !!redirect_uri,
+      redirectUri: redirect_uri
+    });
+
     if (!code) {
       return res.status(400).json({
         success: false,
@@ -27,7 +42,15 @@ export default async function handler(req, res) {
 
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const finalRedirectUri = redirect_uri || process.env.GOOGLE_REDIRECT_URI;
+    const envRedirectUri = process.env.GOOGLE_REDIRECT_URI;
+    const finalRedirectUri = redirect_uri || envRedirectUri;
+
+    console.log('[OAuth Callback] OAuth config:', {
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+      envRedirectUri: envRedirectUri,
+      finalRedirectUri: finalRedirectUri
+    });
 
     if (!clientId || !clientSecret) {
       console.error('[OAuth Callback] Missing Google OAuth credentials');
@@ -38,8 +61,17 @@ export default async function handler(req, res) {
       });
     }
 
+    if (!finalRedirectUri) {
+      console.error('[OAuth Callback] Missing redirect URI');
+      return res.status(400).json({
+        success: false,
+        error: 'invalid_request',
+        message: 'Redirect URI is required'
+      });
+    }
+
     // Exchange authorization code for access token
-    console.log('[OAuth Callback] Exchanging code for token...');
+    console.log('[OAuth Callback] Exchanging code for token with redirect_uri:', finalRedirectUri);
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -55,12 +87,25 @@ export default async function handler(req, res) {
     });
 
     if (!tokenResponse.ok) {
-      const errorData = await tokenResponse.json().catch(() => ({}));
-      console.error('[OAuth Callback] Token exchange failed:', errorData);
+      const errorText = await tokenResponse.text();
+      let errorData = {};
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        console.error('[OAuth Callback] Failed to parse error response:', errorText);
+      }
+      
+      console.error('[OAuth Callback] Token exchange failed:', {
+        status: tokenResponse.status,
+        statusText: tokenResponse.statusText,
+        error: errorData
+      });
+      
       return res.status(400).json({
         success: false,
         error: 'token_exchange_failed',
-        message: errorData.error_description || 'Failed to exchange code for token'
+        message: errorData.error_description || errorData.error || 'Failed to exchange code for token',
+        details: process.env.NODE_ENV === 'development' ? errorData : undefined
       });
     }
 

@@ -9,8 +9,17 @@ import { canAccessModel } from '../../src/services/models-service.js';
 import { call, stream } from '../../src/lib/ai-providers/index.js';
 import { Usage } from '../../src/models/index.js';
 import { limitsEnforcer } from '../../src/middleware/limits-enforcer.js';
+import { setCorsHeaders, handleCorsPreflight } from '../../src/middleware/cors-helper.js';
 
 export default async function handler(req, res) {
+  // Set CORS headers
+  setCorsHeaders(req, res);
+
+  // Handle preflight
+  if (handleCorsPreflight(req, res)) {
+    return;
+  }
+
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({
