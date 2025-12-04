@@ -1,18 +1,27 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 function LoginContent() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/account";
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {
+    setIsLoading(true);
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
       `${window.location.origin}/callback`;
     
-    if (!clientId) {
+    console.log('[Login] OAuth Config:', {
+      hasClientId: !!clientId,
+      clientIdLength: clientId?.length,
+      redirectUri: redirectUri,
+      origin: window.location.origin
+    });
+    
+    if (!clientId || clientId.trim() === '') {
       console.error("Google Client ID is not configured");
       alert("Google OAuth chưa được cấu hình. Vui lòng liên hệ admin.");
       return;
@@ -24,18 +33,18 @@ function LoginContent() {
     const extensionId = urlParams.get('extension_id');
     const promiseId = urlParams.get('promise_id');
 
-    // Build Google OAuth URL
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: "code",
-      scope: "openid email profile",
-      access_type: "offline",
-      prompt: "consent",
-      state: redirect, // Store redirect path in state
-    });
-
-    // If extension callback, add it to state so callback page can access it
+    // Build Google OAuth URL - ensure all required parameters are present
+    const params = new URLSearchParams();
+    
+    // Required parameters
+    params.set('client_id', clientId.trim());
+    params.set('redirect_uri', redirectUri);
+    params.set('response_type', 'code');
+    params.set('scope', 'openid email profile');
+    params.set('access_type', 'offline');
+    params.set('prompt', 'consent');
+    
+    // State parameter
     if (extensionCallback && extensionId) {
       // Store extension info in state (will be passed back via callback)
       const stateData = {
@@ -45,9 +54,20 @@ function LoginContent() {
         promise_id: promiseId
       };
       params.set('state', btoa(JSON.stringify(stateData)));
+    } else {
+      params.set('state', redirect);
     }
 
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+    
+    console.log('[Login] Redirecting to Google OAuth:', {
+      url: googleAuthUrl.substring(0, 100) + '...',
+      hasClientId: params.has('client_id'),
+      hasRedirectUri: params.has('redirect_uri'),
+      hasResponseType: params.has('response_type'),
+      responseType: params.get('response_type'),
+      allParams: Array.from(params.entries())
+    });
     
     // Redirect to Google OAuth
     window.location.href = googleAuthUrl;
@@ -65,8 +85,9 @@ function LoginContent() {
         <div className="mt-6 space-y-4">
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleGoogleLogin}
+            disabled={isLoading}
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -86,7 +107,7 @@ function LoginContent() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>Đăng nhập với Google</span>
+            <span>{isLoading ? "Đang chuyển hướng..." : "Đăng nhập với Google"}</span>
           </button>
           <p className="text-xs text-zinc-500">
             Sau khi đăng nhập, bạn sẽ được chuyển hướng tới trang: <code className="text-primary">{redirect}</code>.
