@@ -50,6 +50,12 @@ function makeRequest(url, options = {}) {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
+        // Handle redirects (3xx status codes)
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          // Follow redirect
+          return makeRequest(res.headers.location, options).then(resolve).catch(reject);
+        }
+        
         try {
           const jsonData = JSON.parse(data);
           resolve({
@@ -59,10 +65,11 @@ function makeRequest(url, options = {}) {
             text: () => Promise.resolve(data)
           });
         } catch (e) {
+          // If not JSON, return text response
           resolve({
             ok: res.statusCode >= 200 && res.statusCode < 300,
             status: res.statusCode,
-            json: () => Promise.reject(e),
+            json: () => Promise.reject(new Error(`Not JSON: ${data.substring(0, 100)}`)),
             text: () => Promise.resolve(data)
           });
         }
@@ -111,10 +118,19 @@ async function runMigration() {
       body: JSON.stringify({ secret: CRON_SECRET }),
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      const text = await response.text();
+      console.error('Response status:', response.status);
+      console.error('Response headers:', JSON.stringify(response.headers || {}));
+      console.error('Response body:', text.substring(0, 500));
+      throw new Error(`Failed to parse JSON (status ${response.status}): ${text.substring(0, 200)}`);
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || 'Migration failed');
+      throw new Error(data.message || data.error || `Migration failed with status ${response.status}`);
     }
 
     console.log('✅ Migrations completed successfully');
@@ -141,10 +157,16 @@ async function setAdminUser() {
       }),
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      const text = await response.text();
+      throw new Error(`Failed to parse JSON: ${text.substring(0, 200)}`);
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to set admin user');
+      throw new Error(data.message || data.error || `Failed to set admin user with status ${response.status}`);
     }
 
     console.log('✅ Admin user set successfully');
