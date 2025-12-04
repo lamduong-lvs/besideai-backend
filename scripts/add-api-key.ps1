@@ -10,7 +10,7 @@ param(
     
     [string]$KeyName = "Default",
     
-    [string]$BaseUrl = "https://besideai.work",
+    [string]$BaseUrl = "https://besideai-backend.vercel.app",
     
     [string]$CronSecret = $env:CRON_SECRET
 )

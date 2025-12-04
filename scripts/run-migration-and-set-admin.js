@@ -21,7 +21,7 @@ const __dirname = dirname(__filename);
 // Load environment variables
 config({ path: join(__dirname, '../.env') });
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://besideai.work';
+const API_BASE_URL = process.env.API_BASE_URL || 'https://besideai-backend.vercel.app';
 const CRON_SECRET = process.argv[3] || process.env.CRON_SECRET;
 const ADMIN_EMAIL = process.argv[2];
 

@@ -43,7 +43,7 @@ if (-not $cronSecret) {
     $cronSecret = Read-Host "Enter CRON_SECRET"
 }
 
-$apiBaseUrl = "https://besideai.work"
+$apiBaseUrl = "https://besideai-backend.vercel.app"
 Write-Host "`n📡 Calling migration endpoint: $apiBaseUrl/api/migrate" -ForegroundColor Yellow
 
 try {

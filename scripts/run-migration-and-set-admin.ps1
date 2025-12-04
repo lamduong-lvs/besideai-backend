@@ -12,7 +12,7 @@ param(
 # Get API URL from environment or use default
 $apiUrl = $env:API_BASE_URL
 if (-not $apiUrl) {
-    $apiUrl = "https://besideai.work"
+    $apiUrl = "https://besideai-backend.vercel.app"
 }
 
 # Get CRON_SECRET from parameter, environment, or .env file
