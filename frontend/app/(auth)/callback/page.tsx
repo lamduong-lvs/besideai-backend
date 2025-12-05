@@ -131,8 +131,15 @@ function OAuthCallbackContent() {
         if (err instanceof Error) {
           errorMessage = err.message;
           // Check for network errors
-          if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
-            errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng và thử lại.";
+          if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError") || err.message.includes("Network request failed")) {
+            // More detailed error message
+            console.error('[OAuth Callback] Network error details:', {
+              backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL || "https://besideai-backend.vercel.app",
+              hasBackendUrl: !!process.env.NEXT_PUBLIC_BACKEND_URL,
+              error: err.message,
+              stack: err.stack
+            });
+            errorMessage = `Không thể kết nối đến server (${process.env.NEXT_PUBLIC_BACKEND_URL || "https://besideai-backend.vercel.app"}). Vui lòng kiểm tra kết nối mạng và thử lại.`;
           }
         }
         
