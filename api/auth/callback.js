@@ -73,19 +73,30 @@ export default async function handler(req, res) {
     }
 
     // Exchange authorization code for access token
-    console.log('[OAuth Callback] Exchanging code for token with redirect_uri:', finalRedirectUri);
+    const tokenRequestParams = {
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: finalRedirectUri,
+      grant_type: 'authorization_code',
+    };
+    
+    console.log('[OAuth Callback] Exchanging code for token:', {
+      redirect_uri: finalRedirectUri,
+      client_id: clientId,
+      client_id_length: clientId?.length,
+      client_secret_length: clientSecret?.length,
+      code_length: code?.length,
+      code_prefix: code ? code.substring(0, 20) + '...' : null,
+      request_url: 'https://oauth2.googleapis.com/token'
+    });
+    
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: finalRedirectUri,
-        grant_type: 'authorization_code',
-      }),
+      body: new URLSearchParams(tokenRequestParams),
     });
 
     if (!tokenResponse.ok) {
@@ -102,7 +113,15 @@ export default async function handler(req, res) {
         statusText: tokenResponse.statusText,
         error: errorData,
         clientId: clientId ? `${clientId.substring(0, 20)}...` : null,
-        redirectUri: finalRedirectUri
+        clientId_full: clientId, // Log full client ID for debugging
+        redirectUri: finalRedirectUri,
+        code_prefix: code ? code.substring(0, 20) + '...' : null,
+        request_body: {
+          code: code ? code.substring(0, 20) + '...' : null,
+          client_id: clientId,
+          redirect_uri: finalRedirectUri,
+          grant_type: 'authorization_code'
+        }
       });
       
       return res.status(400).json({

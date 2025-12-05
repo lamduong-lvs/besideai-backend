@@ -48,6 +48,10 @@
       "dest": "/api/auth/callback.js"
     },
     {
+      "src": "/api/auth/test-config",
+      "dest": "/api/auth/test-config.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
