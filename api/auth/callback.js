@@ -74,22 +74,28 @@ export default async function handler(req, res) {
     }
 
     // Exchange authorization code for access token
+    // Ensure all values are trimmed before sending to Google
     const tokenRequestParams = {
-      code,
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uri: finalRedirectUri,
+      code: code?.trim(),
+      client_id: clientId?.trim(),
+      client_secret: clientSecret?.trim(),
+      redirect_uri: finalRedirectUri?.trim(),
       grant_type: 'authorization_code',
     };
     
     console.log('[OAuth Callback] Exchanging code for token:', {
-      redirect_uri: finalRedirectUri,
-      client_id: clientId,
-      client_id_length: clientId?.length,
-      client_secret_length: clientSecret?.length,
-      code_length: code?.length,
-      code_prefix: code ? code.substring(0, 20) + '...' : null,
-      request_url: 'https://oauth2.googleapis.com/token'
+      redirect_uri: tokenRequestParams.redirect_uri,
+      redirect_uri_length: tokenRequestParams.redirect_uri?.length,
+      client_id: tokenRequestParams.client_id,
+      client_id_length: tokenRequestParams.client_id?.length,
+      client_secret_length: tokenRequestParams.client_secret?.length,
+      code_length: tokenRequestParams.code?.length,
+      code_prefix: tokenRequestParams.code ? tokenRequestParams.code.substring(0, 20) + '...' : null,
+      request_url: 'https://oauth2.googleapis.com/token',
+      // Debug: show if there were trailing newlines
+      original_client_id_length: clientId?.length,
+      original_redirect_uri_length: finalRedirectUri?.length,
+      had_trailing_newlines: (clientId?.length !== clientId?.trim()?.length) || (finalRedirectUri?.length !== finalRedirectUri?.trim()?.length)
     });
     
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
