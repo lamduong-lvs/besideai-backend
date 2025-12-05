@@ -47,7 +47,9 @@ export default async function handler(req, res) {
 
     console.log('[OAuth Callback] OAuth config:', {
       hasClientId: !!clientId,
+      clientId: clientId ? `${clientId.substring(0, 20)}...` : null,
       hasClientSecret: !!clientSecret,
+      clientSecret: clientSecret ? `${clientSecret.substring(0, 10)}...` : null,
       envRedirectUri: envRedirectUri,
       finalRedirectUri: finalRedirectUri
     });
@@ -98,14 +100,16 @@ export default async function handler(req, res) {
       console.error('[OAuth Callback] Token exchange failed:', {
         status: tokenResponse.status,
         statusText: tokenResponse.statusText,
-        error: errorData
+        error: errorData,
+        clientId: clientId ? `${clientId.substring(0, 20)}...` : null,
+        redirectUri: finalRedirectUri
       });
       
       return res.status(400).json({
         success: false,
         error: 'token_exchange_failed',
         message: errorData.error_description || errorData.error || 'Failed to exchange code for token',
-        details: process.env.NODE_ENV === 'development' ? errorData : undefined
+        details: errorData // Always include details for debugging
       });
     }
 
