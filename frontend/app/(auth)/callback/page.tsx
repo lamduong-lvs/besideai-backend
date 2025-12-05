@@ -116,8 +116,23 @@ function OAuthCallbackContent() {
             return;
           }
           
-          // Normal web flow: Save token to localStorage
+          // Normal web flow: Save token to both localStorage and cookie
+          // localStorage for client-side access
           setAuthToken(data.token);
+          
+          // Set cookie for middleware (server-side access)
+          try {
+            await fetch("/api/auth/set-cookie", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ token: data.token }),
+            });
+          } catch (cookieError) {
+            console.error("[OAuth Callback] Failed to set cookie:", cookieError);
+            // Continue anyway - localStorage is set
+          }
           
           // Redirect to account page
           router.replace(redirect);

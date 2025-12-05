@@ -17,7 +17,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get("auth_token")?.value;
+  // Check for auth_token cookie (preferred) or try to get from Authorization header
+  let token = req.cookies.get("auth_token")?.value;
+  
+  // If no cookie, check Authorization header (for API calls)
+  if (!token) {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    }
+  }
 
   if (!token) {
     const loginUrl = new URL("/login", req.url);
