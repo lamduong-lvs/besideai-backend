@@ -10,8 +10,10 @@
  */
 export function setCorsHeaders(req, res) {
   const origin = req.headers.origin || req.headers.Origin;
-  const allowedOrigins = process.env.CORS_ORIGIN ? 
-    process.env.CORS_ORIGIN.split(',').map(o => o.trim()) : 
+  // Trim CORS_ORIGIN to remove trailing newlines
+  const corsOrigin = process.env.CORS_ORIGIN?.trim();
+  const allowedOrigins = corsOrigin ? 
+    corsOrigin.split(',').map(o => o.trim()) : 
     ['*'];
   
   // Helper function to normalize domain (remove www or add www for comparison)

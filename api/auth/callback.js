@@ -40,10 +40,11 @@ export default async function handler(req, res) {
       });
     }
 
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const envRedirectUri = process.env.GOOGLE_REDIRECT_URI;
-    const finalRedirectUri = redirect_uri || envRedirectUri;
+    // Trim whitespace from environment variables (fix trailing newlines)
+    const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+    const envRedirectUri = process.env.GOOGLE_REDIRECT_URI?.trim();
+    const finalRedirectUri = (redirect_uri || envRedirectUri)?.trim();
 
     console.log('[OAuth Callback] OAuth config:', {
       hasClientId: !!clientId,

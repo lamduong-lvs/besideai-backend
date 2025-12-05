@@ -24,10 +24,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI;
-    const corsOrigin = process.env.CORS_ORIGIN;
+    // Trim whitespace from environment variables (fix trailing newlines)
+    const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI?.trim();
+    const corsOrigin = process.env.CORS_ORIGIN?.trim();
 
     return res.status(200).json({
       success: true,
