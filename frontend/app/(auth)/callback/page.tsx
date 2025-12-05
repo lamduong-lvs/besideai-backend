@@ -62,8 +62,16 @@ function OAuthCallbackContent() {
       try {
         // Always call backend API directly (not through frontend proxy)
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://besideai-backend.vercel.app";
-        const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
-          `${window.location.origin}/callback`;
+        
+        // Always use NEXT_PUBLIC_GOOGLE_REDIRECT_URI if set, otherwise normalize origin
+        // Normalize to remove www to ensure consistency with Google Cloud Console
+        let redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
+        if (!redirectUri) {
+          const origin = window.location.origin;
+          // Remove www prefix to ensure consistency
+          const normalizedOrigin = origin.replace(/^https?:\/\/www\./, 'https://');
+          redirectUri = `${normalizedOrigin}/callback`;
+        }
         
         console.log('[OAuth Callback] Calling backend:', {
           backendUrl,
