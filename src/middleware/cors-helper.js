@@ -14,42 +14,35 @@ export function setCorsHeaders(req, res) {
     process.env.CORS_ORIGIN.split(',').map(o => o.trim()) : 
     ['*'];
   
-  // Normalize origins (handle www and non-www variants)
-  const normalizedOrigins = [];
-  allowedOrigins.forEach(orig => {
-    if (orig === '*') {
-      normalizedOrigins.push('*');
-    } else {
-      normalizedOrigins.push(orig);
-      // Add www variant if not already present
-      if (orig.startsWith('https://') && !orig.includes('www.')) {
-        normalizedOrigins.push(orig.replace('https://', 'https://www.'));
-      } else if (orig.startsWith('https://www.') && !normalizedOrigins.includes(orig.replace('www.', ''))) {
-        normalizedOrigins.push(orig.replace('www.', ''));
-      }
-    }
-  });
+  // Helper function to normalize domain (remove www or add www for comparison)
+  const normalizeDomain = (url) => {
+    if (!url || url === '*') return url;
+    // Remove protocol and normalize www
+    return url.replace(/^https?:\/\//, '').replace(/^www\./, '');
+  };
   
   // Determine allowed origin
   let allowedOrigin = '*';
-  if (normalizedOrigins.includes('*')) {
+  
+  if (allowedOrigins.includes('*')) {
     allowedOrigin = '*';
-  } else if (origin && normalizedOrigins.includes(origin)) {
-    allowedOrigin = origin;
   } else if (!origin) {
     // Allow requests without origin (e.g., from extensions, server-to-server)
     allowedOrigin = '*';
   } else {
-    // Try to match www/non-www variants
-    const normalizedOrigin = origin.replace(/^https:\/\/(www\.)?/, 'https://');
-    const matchingOrigin = normalizedOrigins.find(o => 
-      o.replace(/^https:\/\/(www\.)?/, 'https://') === normalizedOrigin
-    );
+    // Check if origin matches any allowed origin (including www/non-www variants)
+    const originNormalized = normalizeDomain(origin);
+    const matchingOrigin = allowedOrigins.find(allowed => {
+      const allowedNormalized = normalizeDomain(allowed);
+      return allowedNormalized === originNormalized;
+    });
+    
     if (matchingOrigin) {
-      allowedOrigin = origin; // Use the actual origin from request
+      // Use the actual origin from request (preserve www or non-www)
+      allowedOrigin = origin;
     } else {
       // Default to first allowed origin if origin doesn't match
-      allowedOrigin = normalizedOrigins[0] || '*';
+      allowedOrigin = allowedOrigins[0] || '*';
     }
   }
 
