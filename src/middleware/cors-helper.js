@@ -14,18 +14,43 @@ export function setCorsHeaders(req, res) {
     process.env.CORS_ORIGIN.split(',').map(o => o.trim()) : 
     ['*'];
   
+  // Normalize origins (handle www and non-www variants)
+  const normalizedOrigins = [];
+  allowedOrigins.forEach(orig => {
+    if (orig === '*') {
+      normalizedOrigins.push('*');
+    } else {
+      normalizedOrigins.push(orig);
+      // Add www variant if not already present
+      if (orig.startsWith('https://') && !orig.includes('www.')) {
+        normalizedOrigins.push(orig.replace('https://', 'https://www.'));
+      } else if (orig.startsWith('https://www.') && !normalizedOrigins.includes(orig.replace('www.', ''))) {
+        normalizedOrigins.push(orig.replace('www.', ''));
+      }
+    }
+  });
+  
   // Determine allowed origin
   let allowedOrigin = '*';
-  if (allowedOrigins.includes('*')) {
+  if (normalizedOrigins.includes('*')) {
     allowedOrigin = '*';
-  } else if (origin && allowedOrigins.includes(origin)) {
+  } else if (origin && normalizedOrigins.includes(origin)) {
     allowedOrigin = origin;
   } else if (!origin) {
     // Allow requests without origin (e.g., from extensions, server-to-server)
     allowedOrigin = '*';
   } else {
-    // Default to first allowed origin if origin doesn't match
-    allowedOrigin = allowedOrigins[0] || '*';
+    // Try to match www/non-www variants
+    const normalizedOrigin = origin.replace(/^https:\/\/(www\.)?/, 'https://');
+    const matchingOrigin = normalizedOrigins.find(o => 
+      o.replace(/^https:\/\/(www\.)?/, 'https://') === normalizedOrigin
+    );
+    if (matchingOrigin) {
+      allowedOrigin = origin; // Use the actual origin from request
+    } else {
+      // Default to first allowed origin if origin doesn't match
+      allowedOrigin = normalizedOrigins[0] || '*';
+    }
   }
 
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
