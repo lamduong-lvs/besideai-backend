@@ -19,10 +19,10 @@
       "src": "/api/users/me",
       "dest": "/api/users/me.js"
     },
-          {
-            "src": "/api/subscription/(.*)",
-            "dest": "/api/subscription.js"
-          },
+    {
+      "src": "/api/subscription/(.*)",
+      "dest": "/api/subscription.js"
+    },
     {
       "src": "/api/usage",
       "dest": "/api/usage/index.js"
@@ -36,36 +36,16 @@
       "dest": "/api/migrate.js"
     },
     {
+      "src": "/api/models/preference",
+      "dest": "/api/models.js"
+    },
+    {
       "src": "/api/models",
       "dest": "/api/models.js"
     },
     {
-      "src": "/api/models/preference",
-      "dest": "/api/models/preference.js"
-    },
-    {
-      "src": "/api/ai/call",
-      "dest": "/api/ai/call.js"
-    },
-    {
       "src": "/api/auth/callback",
       "dest": "/api/auth/callback.js"
-    },
-    {
-      "src": "/api/admin/add-api-key",
-      "dest": "/api/admin/add-api-key.js"
-    },
-    {
-      "src": "/api/admin/models",
-      "dest": "/api/admin/models.js"
-    },
-    {
-      "src": "/api/admin/set-admin",
-      "dest": "/api/admin/set-admin.js"
-    },
-    {
-      "src": "/api/admin/list-users",
-      "dest": "/api/admin/list-users.js"
     },
     {
       "src": "/api/(.*)",
