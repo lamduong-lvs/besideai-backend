@@ -30,20 +30,25 @@ export default async function handler(req, res) {
     const redirectUri = process.env.GOOGLE_REDIRECT_URI?.trim();
     const corsOrigin = process.env.CORS_ORIGIN?.trim();
 
-    return res.status(200).json({
-      success: true,
-      config: {
-        hasClientId: !!clientId,
-        clientId: clientId || null,
-        clientIdLength: clientId?.length || 0,
-        hasClientSecret: !!clientSecret,
-        clientSecretLength: clientSecret?.length || 0,
-        redirectUri: redirectUri || null,
-        corsOrigin: corsOrigin || null,
-        environment: process.env.NODE_ENV || 'development'
-      },
-      timestamp: new Date().toISOString()
-    });
+            return res.status(200).json({
+              success: true,
+              config: {
+                hasClientId: !!clientId,
+                clientId: clientId || null,
+                clientIdLength: clientId?.length || 0,
+                clientIdTrimmedLength: clientId?.trim()?.length || 0,
+                hasClientSecret: !!clientSecret,
+                clientSecretLength: clientSecret?.length || 0,
+                redirectUri: redirectUri || null,
+                redirectUriTrimmedLength: redirectUri?.trim()?.length || 0,
+                corsOrigin: corsOrigin || null,
+                environment: process.env.NODE_ENV || 'development',
+                // Debug info
+                hasTrailingNewline: clientId ? (clientId.length !== clientId.trim().length) : false,
+                redirectUriHasTrailingNewline: redirectUri ? (redirectUri.length !== redirectUri.trim().length) : false
+              },
+              timestamp: new Date().toISOString()
+            });
   } catch (error) {
     console.error('[OAuth Test Config] Error:', error);
     return res.status(500).json({
